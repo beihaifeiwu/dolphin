@@ -1,4 +1,4 @@
-package com.freetmp.mbg.plugin;
+package com.freetmp.mbg.plugin.batch;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
