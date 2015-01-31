@@ -14,6 +14,8 @@
 
         <!-- 主要依赖库的版本定义 -->
         <commons.lang3.version>3.3.2</commons.lang3.version>
+        <commons.io.version>2.4</commons.io.version>
+        <guava.version>18.0</guava.version>
 
         <!-- Plugin属性定义 -->
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -28,11 +30,31 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- 日志组件 -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.10</version>
+            </dependency>
+
             <!-- Apache commons -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons.lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+            <!-- Google Guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <!-- 子模块依赖管理 -->

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>maven.mbg.extend.plugin</artifactId>
+    <artifactId>maven-mbg-extend-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <dependencies>

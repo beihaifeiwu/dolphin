@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dolphin-querdsl</artifactId>
+    <artifactId>dolphin-querydsl</artifactId>
 
     <properties>
         <querydsl.version>3.5.1</querydsl.version>

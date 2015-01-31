@@ -127,3 +127,14 @@ nbactions.xml
 nb-configuration.xml
 
 
+
+.gitignore
+### Maven template
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+

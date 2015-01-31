@@ -1,6 +1,6 @@
 package com.freetmp.springbatch.support.composite;
 
-import com.palmaplus.util.batch.ResettableItemReader;
+import com.freetmp.springbatch.support.ResettableItemReader;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package com.freetmp.springbatch.support.composite;
 
-import com.palmaplus.util.batch.ResettableItemReader;
+import com.freetmp.springbatch.support.ResettableItemReader;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,8 +104,6 @@ public class DoubleAccessReader<L,R> extends MultipleAccessReader<Pair<L,R>> {
 	 * 是否所有的值均是读取器最后的值
 	 * @author Pin Liu
 	 * @编写日期: 2014年11月12日下午4:42:51
-	 * @param left
-	 * @param right
 	 * @return
 	 */
 	protected boolean isAllLasted(Pair<L,R> item) {

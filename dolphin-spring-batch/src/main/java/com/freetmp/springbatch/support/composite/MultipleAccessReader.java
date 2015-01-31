@@ -1,8 +1,8 @@
 package com.freetmp.springbatch.support.composite;
 
-import com.palmaplus.util.batch.RecordLastReader;
-import com.palmaplus.util.batch.ResettableItemReader;
-import com.palmaplus.util.batch.ResettableItemReaderSupport;
+import com.freetmp.springbatch.support.RecordLastReader;
+import com.freetmp.springbatch.support.ResettableItemReader;
+import com.freetmp.springbatch.support.ResettableItemReaderSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.NonTransientResourceException;
