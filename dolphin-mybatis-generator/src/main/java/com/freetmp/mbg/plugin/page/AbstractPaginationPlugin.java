@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * MBG分页插件的抽象基类，提供统一的分页属性及分页操作
+ * 使用统一的数据模型：offset 当前页离开始记录的偏移，limit 当前页的记录数限制
  * Created by LiuPin on 2015/1/30.
  */
 public abstract class AbstractPaginationPlugin extends PluginAdapter {

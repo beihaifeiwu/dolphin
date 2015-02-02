@@ -26,8 +26,8 @@ public class MySqlPaginationPlugin extends AbstractPaginationPlugin {
 			XmlElement element, IntrospectedTable introspectedTable) {
 
 		XmlElement isNotNullElement = new XmlElement("if"); 
-		isNotNullElement.addAttribute(new Attribute("test", "limit != null and limit>=0"));
-		isNotNullElement.addElement(new TextElement("limit #{limit} , #{offset}"));
+		isNotNullElement.addAttribute(new Attribute("test", "limit != null and limit>=0 and offset != null"));
+		isNotNullElement.addElement(new TextElement("limit #{offset} , #{limit}"));
 
 		element.addElement(isNotNullElement);
 		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element,
