@@ -65,7 +65,7 @@
             </dependency>
             <dependency>
                 <groupId>com.freetmp</groupId>
-                <artifactId>maven.mbg.extend.plugin</artifactId>
+                <artifactId>xmbg-maven-plugin</artifactId>
                 <version>${dolphin.version}</version>
             </dependency>
             <dependency>
@@ -73,12 +73,17 @@
                 <artifactId>dolphin-spring-batch</artifactId>
                 <version>${dolphin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.freetmp</groupId>
+                <artifactId>dolphin-querydsl</artifactId>
+                <version>${dolphin.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
         <module>dolphin-mybatis-generator</module>
-        <module>maven-mbg-extend-plugin</module>
+        <module>xmbg-maven-plugin</module>
         <module>dolphin-spring-batch</module>
         <module>dolphin-querydsl</module>
     </modules>

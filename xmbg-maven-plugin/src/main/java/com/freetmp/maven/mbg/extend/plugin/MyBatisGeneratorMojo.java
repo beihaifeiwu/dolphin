@@ -36,7 +36,7 @@ import java.util.*;
 /**
  * Created by LiuPin on 2015/1/30.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+@Mojo(name = "generate",defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MyBatisGeneratorMojo extends AbstractMojo {
     
     @Parameter(defaultValue ="${project}", required = true, readonly = true)

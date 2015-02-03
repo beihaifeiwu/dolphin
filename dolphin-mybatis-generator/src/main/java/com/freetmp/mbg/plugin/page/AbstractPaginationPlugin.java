@@ -1,5 +1,6 @@
 package com.freetmp.mbg.plugin.page;
 
+import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -13,14 +14,19 @@ import java.util.List;
  * Created by LiuPin on 2015/1/30.
  */
 public abstract class AbstractPaginationPlugin extends PluginAdapter {
+    
+    public static final String LIMIT_NAME = "limit";
+    public static final String OFFSET_NAME = "offset";
+    
+    public static final String BOUND_BUILDER_NAME = "BoundBuilder";
 
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
                                               IntrospectedTable introspectedTable) {
         // add field, getter, setter for limit clause
-        addLimit(topLevelClass, introspectedTable, "limit");
-        addLimit(topLevelClass, introspectedTable, "offset");
-        addFluentApi(topLevelClass,introspectedTable,"limit","offset");
+        addLimit(topLevelClass, introspectedTable, LIMIT_NAME);
+        addLimit(topLevelClass, introspectedTable, OFFSET_NAME);
+        addFluentApi(topLevelClass, introspectedTable, LIMIT_NAME, OFFSET_NAME);
         return super.modelExampleClassGenerated(topLevelClass,introspectedTable);
     }
     
@@ -79,7 +85,7 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setName("bound");
         method.setReturnType(boundBuilder.getType());
-        method.addBodyLine("return new BoundBuilder(this);");
+        method.addBodyLine("return new "+BOUND_BUILDER_NAME+"(this);");
         
         topLevelClass.addMethod(method);
     }
@@ -92,9 +98,9 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
      * @return
      */
     private InnerClass generateBoundBuilder(TopLevelClass topLevelClass, String limit, String offset) {
-        FullyQualifiedJavaType BoundBuilderType = new FullyQualifiedJavaType("PageBuilder");
+        FullyQualifiedJavaType boundBuilderType = new FullyQualifiedJavaType(BOUND_BUILDER_NAME);
 
-        InnerClass boundBuilder = new InnerClass(BoundBuilderType);
+        InnerClass boundBuilder = new InnerClass(boundBuilderType);
         boundBuilder.setVisibility(JavaVisibility.PUBLIC);
         boundBuilder.setStatic(true);
 
@@ -116,29 +122,36 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
         field.setName("target");
         boundBuilder.addField(field);
 
+        // 构造方法
         Method method = new Method();
         method.setConstructor(true);
+        method.setName(BOUND_BUILDER_NAME);
         method.setVisibility(JavaVisibility.PUBLIC);
         method.addParameter(new Parameter(topLevelClass.getType(),"target"));
         method.addBodyLine("this.target = target;");
         boundBuilder.addMethod(method);
         
+        // 设置limit的方法
+        method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setName(limit);
         method.addParameter(new Parameter(PrimitiveTypeWrapper.getIntegerInstance(), limit));
-        method.setReturnType(BoundBuilderType);
+        method.setReturnType(boundBuilderType);
         method.addBodyLine("this." + limit + "=" + limit + ";");
         method.addBodyLine("return this;");
         boundBuilder.addMethod(method);
 
+        // 设置offset的方法
         method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setName(offset);
         method.addParameter(new Parameter(PrimitiveTypeWrapper.getIntegerInstance(), offset));
-        method.setReturnType(BoundBuilderType);
+        method.setReturnType(boundBuilderType);
         method.addBodyLine("this." + offset + "=" + offset + ";");
         method.addBodyLine("return this;");
+        boundBuilder.addMethod(method);
 
+        // 将搜集到的page相关属性设置到target中
         method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setName("build");
@@ -147,6 +160,7 @@ public abstract class AbstractPaginationPlugin extends PluginAdapter {
         method.addBodyLine("this.target.set" + getCamel(offset) + "(" + offset + ");");
         method.addBodyLine("return this.target;");
         boundBuilder.addMethod(method);
+        
         return boundBuilder;
     }
 
