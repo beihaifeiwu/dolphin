@@ -111,7 +111,9 @@
                         <configuration>
                             <configurationFile>${basedir}/src/test/resources/generatorConfig-mysql.xml</configurationFile>
                             <overwrite>true</overwrite>
+                            <disableGeom>true</disableGeom>
                             <outputDirectory>${basedir}/target/generated-test-sources</outputDirectory>
+                            <verbose>true</verbose>
                         </configuration>
                         <dependencies>
                             <dependency>

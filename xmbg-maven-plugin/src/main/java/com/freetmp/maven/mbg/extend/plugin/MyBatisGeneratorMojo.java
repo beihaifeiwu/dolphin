@@ -272,27 +272,30 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             pluginConfiguration.setConfigurationType(ColumnNameConversionPlugin.class.getTypeName());
             pluginConfiguration.addProperty(ColumnNameConversionPlugin.COLUMN_PATTERN_NAME, columnPattern);
             addToContext(contexts, pluginConfiguration);
+            if(verbose) getLog().info("enable name conversion service");
         }
         
         if(!disableExtendMethods){
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.setConfigurationType(BatchInsertPlugin.class.getTypeName());
             addToContext(contexts,pluginConfiguration);
+            if(verbose) getLog().info("enable batch insert service");
             
             pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.setConfigurationType(BatchUpdatePlugin.class.getTypeName());
             addToContext(contexts,pluginConfiguration);
+            if(verbose) getLog().info("enable batch update service");
             
             pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.setConfigurationType(UpsertPlugin.class.getTypeName());
             addToContext(contexts,pluginConfiguration);
+            if(verbose) getLog().info("enable if existed update record else insert service");
         }
         
         if(!disableGeom){
-            PluginConfiguration pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.setConfigurationType(PostgisGeoPlugin.class.getTypeName());
-            pluginConfiguration.addProperty(PostgisGeoPlugin.SRID_NAME, srid);
-            addToContext(contexts,pluginConfiguration);
+            for(Context context : contexts){
+                chooseGeomPlugin(context);
+            }
         }
         
         if(!disablePagination){
@@ -305,18 +308,21 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.setConfigurationType(MapperOverwriteEnablePlugin.class.getTypeName());
             addToContext(contexts,pluginConfiguration);
+            if(verbose) getLog().info("enable mapper overwrite service");
         }
         
         if(enableQueryDslSupport){
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.setConfigurationType(QueryDslPlugin.class.getTypeName());
             addToContext(contexts,pluginConfiguration);
+            if(verbose) getLog().info("enable querydsl support service");
         }
         
         if(!disableContentMerge){
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.setConfigurationType(ContentMergePlugin.class.getTypeName());
             pluginConfiguration.addProperty(ContentMergePlugin.ROOTDIR_NAME, outputDirectory.getAbsolutePath());
+            if(verbose) getLog().info("enable content merge service");
         }
         
     }
@@ -326,25 +332,50 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
      * @param context
      */
     void choosePaginationPlugin(Context context) {
-        JDBCConnectionConfiguration jdbcConnectionConfiguration = context.getJdbcConnectionConfiguration();
-        String url = jdbcConnectionConfiguration.getConnectionURL();
-        int start = url.indexOf(":");
-        if(start == -1) return;
-        start += 1;
-        int end = url.indexOf(":",start);
-        if(end == -1) return;
-        String dbName = url.substring(start,end).toLowerCase();
+        String dbName = detectDBName(context);
+        if (dbName == null) return;
+        if (dbName == null || dbName.trim().equals("")) return;
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         switch (dbName){
             case "mysql":
                 pluginConfiguration.setConfigurationType(MySqlPaginationPlugin.class.getTypeName());
                 context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable pagination service for context " + context.getId());
                 break;
             case "postgresql":
                 pluginConfiguration.setConfigurationType(PostgreSQLPaginationPlugin.class.getTypeName());
                 context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable pagination service for context " + context.getId());
                 break;
         }
+    }
+    
+    void chooseGeomPlugin(Context context){
+        String dbName = detectDBName(context);
+        if (dbName == null || dbName.trim().equals("")) return;
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        switch (dbName){
+            case "mysql":
+                break;
+            case "postgresql":
+                pluginConfiguration.setConfigurationType(PostgisGeoPlugin.class.getTypeName());
+                pluginConfiguration.addProperty(PostgisGeoPlugin.SRID_NAME, srid);
+                context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable geom service for context " + context.getId());                
+                break;
+        }
+    }
+
+    private String detectDBName(Context context) {
+        JDBCConnectionConfiguration jdbcConnectionConfiguration = context.getJdbcConnectionConfiguration();
+        String url = jdbcConnectionConfiguration.getConnectionURL();
+        int start = url.indexOf(":");
+        if(start == -1) return null;
+        start += 1;
+        int end = url.indexOf(":",start);
+        if(end == -1) return null;
+        String dbName = url.substring(start,end).toLowerCase();
+        return dbName;
     }
 
     private void addToContext(List<Context> contexts, PluginConfiguration pluginConfiguration) {
