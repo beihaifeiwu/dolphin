@@ -11,9 +11,15 @@
 
     <artifactId>xmbg-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
+    
+    <properties>
+        <surefire.version>2.18.1</surefire.version>
+        <mysql.version>5.1.30</mysql.version>
+        <postgis.version>1.3.3</postgis.version>
+        <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+    </properties>
 
     <dependencies>
-        
         <!-- Junit Test -->
         <dependency>
             <groupId>junit</groupId>
@@ -94,7 +100,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.18.1</version>
+                        <version>${surefire.version}</version>
                     </plugin>
                     
                     <!-- XMBG test for mysql -->
@@ -119,7 +125,59 @@
                             <dependency>
                                 <groupId>mysql</groupId>
                                 <artifactId>mysql-connector-java</artifactId>
-                                <version>5.1.30</version>
+                                <version>${mysql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>postgresql</id>
+            <build>
+                <plugins>
+                    <!-- Open Test -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.18.1</version>
+                    </plugin>
+                    
+                    <!-- XMBG test for postgresql -->
+                    <plugin>
+                        <groupId>com.freetmp</groupId>
+                        <artifactId>xmbg-maven-plugin</artifactId>
+                        <version>${dolphin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals><goal>generate</goal></goals>
+                                <phase>generate-sources</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <configurationFile>${basedir}/src/test/resources/generatorConfig-postgresql.xml</configurationFile>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${basedir}/target/generated-test-sources</outputDirectory>
+                            <verbose>true</verbose>
+                        </configuration>
+                        <dependencies>
+                            <!-- PostGis jdbc driver -->
+                            <dependency>
+                                <groupId>org.postgis</groupId>
+                                <artifactId>postgis-jdbc</artifactId>
+                                <version>${postgis.version}</version>
+                                <exclusions>
+                                    <!-- 需要排除桩代码否则运行会出问题 -->
+                                    <exclusion>
+                                        <groupId>org.postgis</groupId>
+                                        <artifactId>postgis-stubs</artifactId>
+                                    </exclusion>
+                                </exclusions>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgresql.version}</version>
                             </dependency>
                         </dependencies>
                     </plugin>

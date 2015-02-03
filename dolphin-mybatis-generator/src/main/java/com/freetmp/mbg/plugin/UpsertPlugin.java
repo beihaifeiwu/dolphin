@@ -42,19 +42,19 @@ public class UpsertPlugin extends PluginAdapter {
 		Method upsert = new Method(UPSERT);
 		upsert.setReturnType(FullyQualifiedJavaType.getIntInstance());
 		
-    Set<FullyQualifiedJavaType> importedTypes = new TreeSet<FullyQualifiedJavaType>();
+        Set<FullyQualifiedJavaType> importedTypes = new TreeSet<FullyQualifiedJavaType>();
 
-    FullyQualifiedJavaType parameterType = introspectedTable.getRules().calculateAllFieldsClass();
-    upsert.addParameter(new Parameter(parameterType, "record", "@Param(\"record\")"));
-    importedTypes.add(parameterType);
+        FullyQualifiedJavaType parameterType = introspectedTable.getRules().calculateAllFieldsClass();
+        upsert.addParameter(new Parameter(parameterType, "record", "@Param(\"record\")"));
+        importedTypes.add(parameterType);
 
-    FullyQualifiedJavaType arrayType = new FullyQualifiedJavaType((new String[] {}).getClass().getCanonicalName());
-    upsert.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
-    importedTypes.add(arrayType);
+        FullyQualifiedJavaType arrayType = new FullyQualifiedJavaType((new String[] {}).getClass().getCanonicalName());
+        upsert.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
+        importedTypes.add(arrayType);
 
-    importedTypes.add(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param"));
-
-    interfaze.addMethod(upsert);
+        importedTypes.add(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param"));
+    
+        interfaze.addMethod(upsert);
 		
 		/*-----------------------------添加批量upsert的接口方法--------------------------------------*/
 		Method batchUpsert = new Method(BATCH_UPSERT);
@@ -157,6 +157,11 @@ public class UpsertPlugin extends PluginAdapter {
         List<IntrospectedColumn> nonPkColumn = introspectedTable.getNonPrimaryKeyColumns();
         for(IntrospectedColumn introspectedColumn : nonPkColumn){
         	sb.append(MyBatis3FormattingUtilities.getAliasedEscapedColumnName(introspectedColumn));
+            if(sb.length() > 80){
+                parent.addElement(new TextElement(sb.toString()));
+                sb.setLength(0);
+                OutputUtilities.xmlIndent(sb,2);
+            }
         	sb.append(",");
         }
         sb.setLength(sb.length()-1);
