@@ -53,7 +53,7 @@ public class UpsertPlugin extends PluginAdapter {
         importedTypes.add(arrayType);
 
         importedTypes.add(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param"));
-    
+
         interfaze.addMethod(upsert);
 		
 		/*-----------------------------添加批量upsert的接口方法--------------------------------------*/
