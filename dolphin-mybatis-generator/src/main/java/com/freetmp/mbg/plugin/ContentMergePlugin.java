@@ -42,14 +42,16 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
 public class ContentMergePlugin extends PluginAdapter {
   
   static Logger log = LoggerFactory.getLogger(ContentMergePlugin.class);
-  
+    
+  public static final String ROOTDIR_NAME = "rootDir";
+    
   private DefaultShellCallback callback = new DefaultShellCallback(true);
   
   private String rootDir = ".";
 
   @Override
   public boolean validate(List<String> warnings) {
-    String prop = properties.getProperty("rootDir");
+    String prop = properties.getProperty(ROOTDIR_NAME);
     
     boolean valid = stringHasValue(prop);
     if(valid){
@@ -808,7 +810,6 @@ public class ContentMergePlugin extends PluginAdapter {
    * @author Pin Liu
    * @编写日期: 2014年12月17日下午6:03:36
    * @param origins 解析之前文件的元素集合
-   * @param as 当前MBG生成的元素集合
    * @return
    */
   protected List<String> findNewAddedElement(List<String> origins, List<String> currents) {

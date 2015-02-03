@@ -91,6 +91,13 @@
             <artifactId>postgis-jdbc</artifactId>
             <version>${postgis.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- 需要排除桩代码否则运行会出问题 -->
+                <exclusion>
+                    <groupId>org.postgis</groupId>
+                    <artifactId>postgis-stubs</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

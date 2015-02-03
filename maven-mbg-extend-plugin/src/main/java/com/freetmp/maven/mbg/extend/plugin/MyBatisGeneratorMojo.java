@@ -1,5 +1,11 @@
 package com.freetmp.maven.mbg.extend.plugin;
 
+import com.freetmp.mbg.plugin.*;
+import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
+import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
+import com.freetmp.mbg.plugin.geom.PostgisGeoPlugin;
+import com.freetmp.mbg.plugin.page.MySqlPaginationPlugin;
+import com.freetmp.mbg.plugin.page.PostgreSQLPaginationPlugin;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -11,6 +17,9 @@ import org.apache.maven.project.MavenProject;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.JDBCConnectionConfiguration;
+import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
@@ -100,6 +109,54 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     @Parameter(property = "mybatis.generator.contexts")
     private String contexts;
 
+    /**
+     * set true to disable the extend methods(include batch,upsert etc) 
+     */
+    @Parameter(defaultValue = "false",property = "x.mybatis.generator.disableExtendMethods")
+    private boolean disableExtendMethods;
+
+    /**
+     * set true to disable the geom support 
+     */
+    @Parameter(defaultValue = "false", property = "x.mybatis.generator.disableGeom")
+    private boolean disableGeom;
+
+    /**
+     * set true to disable the name conversion 
+     */
+    @Parameter(defaultValue = "false", property = "x.mybatis.generator.disableNameConversion")
+    private boolean disableNameConversion;
+
+    /**
+     * set true to disable the pagination
+     */
+    @Parameter(defaultValue = "false", property = "x.mybatis.generator.disablePagination")
+    private boolean disablePagination;
+
+    /**
+     * set true to disable the content merge
+     */
+    @Parameter(defaultValue = "false", property = "x.mybatis.generator.disableContentMerge")
+    private boolean disableContentMerge;
+
+    /**
+     * set true to enable QueryDsl support
+     */
+    @Parameter(defaultValue = "false", property = "x.mybatis.generator.enableQueryDslSupport")
+    private boolean enableQueryDslSupport;
+
+    /**
+     * the regex pattern used to match the word in the column name 
+     */
+    @Parameter(defaultValue = "[a-zA-Z0-9]+", property = "x.mybatis.generator.columnPattern")
+    private String columnPattern;
+
+    /**
+     * the srid used by the geom to standard space identifier quote
+     */
+    @Parameter(defaultValue = "3857", property = "x.mybatis.generator.srid")
+    private String srid;
+
     public void execute() throws MojoExecutionException {
 
         // add resource directories to the classpath.  This is required to support
@@ -155,6 +212,8 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             ConfigurationParser cp = new ConfigurationParser(
                     project.getProperties(), warnings);
             Configuration config = cp.parseConfiguration(configurationFile);
+            
+            extendConfig(config);
 
             ShellCallback callback = new MavenShellCallback(this, overwrite);
 
@@ -197,6 +256,100 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             resource.setDirectory(outputDirectory.getAbsolutePath());
             resource.addInclude("**/*.xml");
             project.addResource(resource);
+        }
+    }
+
+    /**
+     * 扩展配置实现XMBG
+     * @param config
+     */
+    private void extendConfig( Configuration config){
+        List<Context> contexts = config.getContexts();
+        if(contexts == null ) return;
+        
+        if(!disableNameConversion){
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(ColumnNameConversionPlugin.class.getTypeName());
+            pluginConfiguration.addProperty(ColumnNameConversionPlugin.COLUMN_PATTERN_NAME, columnPattern);
+            addToContext(contexts, pluginConfiguration);
+        }
+        
+        if(!disableExtendMethods){
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(BatchInsertPlugin.class.getTypeName());
+            addToContext(contexts,pluginConfiguration);
+            
+            pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(BatchUpdatePlugin.class.getTypeName());
+            addToContext(contexts,pluginConfiguration);
+            
+            pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(UpsertPlugin.class.getTypeName());
+            addToContext(contexts,pluginConfiguration);
+        }
+        
+        if(!disableGeom){
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(PostgisGeoPlugin.class.getTypeName());
+            pluginConfiguration.addProperty(PostgisGeoPlugin.SRID_NAME, srid);
+            addToContext(contexts,pluginConfiguration);
+        }
+        
+        if(!disablePagination){
+            for(Context context : contexts){
+                choosePaginationPlugin(context);
+            }
+        }
+        
+        if(overwrite){
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(MapperOverwriteEnablePlugin.class.getTypeName());
+            addToContext(contexts,pluginConfiguration);
+        }
+        
+        if(enableQueryDslSupport){
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(QueryDslPlugin.class.getTypeName());
+            addToContext(contexts,pluginConfiguration);
+        }
+        
+        if(!disableContentMerge){
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType(ContentMergePlugin.class.getTypeName());
+            pluginConfiguration.addProperty(ContentMergePlugin.ROOTDIR_NAME, outputDirectory.getAbsolutePath());
+        }
+        
+    }
+
+    /**
+     * 根据context中的driver配置检测数据库的类别，并为其添加相应的分页插件
+     * @param context
+     */
+    void choosePaginationPlugin(Context context) {
+        JDBCConnectionConfiguration jdbcConnectionConfiguration = context.getJdbcConnectionConfiguration();
+        String url = jdbcConnectionConfiguration.getConnectionURL();
+        int start = url.indexOf(":");
+        if(start == -1) return;
+        start += 1;
+        int end = url.indexOf(":",start);
+        if(end == -1) return;
+        String dbName = url.substring(start,end).toLowerCase();
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        switch (dbName){
+            case "mysql":
+                pluginConfiguration.setConfigurationType(MySqlPaginationPlugin.class.getTypeName());
+                context.addPluginConfiguration(pluginConfiguration);
+                break;
+            case "postgresql":
+                pluginConfiguration.setConfigurationType(PostgreSQLPaginationPlugin.class.getTypeName());
+                context.addPluginConfiguration(pluginConfiguration);
+                break;
+        }
+    }
+
+    private void addToContext(List<Context> contexts, PluginConfiguration pluginConfiguration) {
+        for(Context context : contexts){
+            context.addPluginConfiguration(pluginConfiguration);
         }
     }
 

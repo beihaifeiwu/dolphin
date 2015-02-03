@@ -1,5 +1,6 @@
-package com.freetmp.mbg.plugin;
+package com.freetmp.mbg.plugin.geom;
 
+import com.freetmp.mbg.plugin.UpsertPlugin;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -27,6 +28,8 @@ import java.util.List;
  * @编写日期 2014年11月26日下午1:38:55
  */
 public class PostgisGeoPlugin extends PluginAdapter {
+    
+    public static final String SRID_NAME = "srid";
 	
     public static final String lineSeparator;
 
@@ -47,7 +50,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 	@Override
 	public boolean validate(List<String> warnings) {
 		boolean valid = true;
-		srid = properties.getProperty("srid");
+		srid = properties.getProperty(SRID_NAME);
 		if(StringUtils.isEmpty(srid)){
 			srid = "3857";
 		}

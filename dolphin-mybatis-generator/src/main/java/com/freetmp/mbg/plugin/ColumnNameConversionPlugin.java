@@ -21,6 +21,8 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
  * @编写日期 2014年11月13日下午5:35:16
  */
 public class ColumnNameConversionPlugin extends PluginAdapter {
+    
+    public static final String COLUMN_PATTERN_NAME = "columnPattern";
 	
 	private Pattern columnPattern; //匹配数据库列名的模式
 	
@@ -31,7 +33,7 @@ public class ColumnNameConversionPlugin extends PluginAdapter {
 	@Override
 	public boolean validate(List<String> warnings) {
 		
-		String column = properties.getProperty("columnPattern");
+		String column = properties.getProperty(COLUMN_PATTERN_NAME);
 		
 		boolean valid = stringHasValue(column);
 		//System.out.println(column);
