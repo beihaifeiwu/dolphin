@@ -340,12 +340,12 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             case "mysql":
                 pluginConfiguration.setConfigurationType(MySqlPaginationPlugin.class.getTypeName());
                 context.addPluginConfiguration(pluginConfiguration);
-                if(verbose)getLog().info("enable pagination service for context " + context.getId());
+                if(verbose)getLog().info("enable pagination service with mysql for context " + context.getId());
                 break;
             case "postgresql":
                 pluginConfiguration.setConfigurationType(PostgreSQLPaginationPlugin.class.getTypeName());
                 context.addPluginConfiguration(pluginConfiguration);
-                if(verbose)getLog().info("enable pagination service for context " + context.getId());
+                if(verbose)getLog().info("enable pagination service with postgresql for context " + context.getId());
                 break;
         }
     }
@@ -361,7 +361,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
                 pluginConfiguration.setConfigurationType(PostgisGeoPlugin.class.getTypeName());
                 pluginConfiguration.addProperty(PostgisGeoPlugin.SRID_NAME, srid);
                 context.addPluginConfiguration(pluginConfiguration);
-                if(verbose)getLog().info("enable geom service for context " + context.getId());                
+                if(verbose)getLog().info("enable geom service with postgresql for context " + context.getId());
                 break;
         }
     }
