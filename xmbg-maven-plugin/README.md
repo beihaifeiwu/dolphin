@@ -91,6 +91,10 @@ setter方法外，还增加了fluent API操作，通过一个静态内部类`Abs
 
 * 针对PostgreSQL的插件 `com.freetmp.mbg.plugin.page.PostgreSQLPaginationPlugin`
 * 针对MySql的插件 `com.freetmp.mbg.plugin.page.MySqlPaginationPlugin`
+* 针对DB2的插件 `com.freetmp.mbg.plugin.page.DB2PaginationPlugin`
+* 针对Hsqldb的插件 `com.freetmp.mbg.plugin.page.HsqldbPaginationPlugin`
+* 针对Oracle的插件 `com.freetmp.mbg.plugin.page.OraclePaginationPlugin`
+* 针对SQLServer的插件 `com.freetmp.mbg.plugin.page.SQLServerPaginationPlugin`
 * 其它待续
 
 分页查询针对的方法为selectByExample，生成示例如下：

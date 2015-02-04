@@ -4,8 +4,7 @@ import com.freetmp.mbg.plugin.*;
 import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
 import com.freetmp.mbg.plugin.geom.PostgisGeoPlugin;
-import com.freetmp.mbg.plugin.page.MySqlPaginationPlugin;
-import com.freetmp.mbg.plugin.page.PostgreSQLPaginationPlugin;
+import com.freetmp.mbg.plugin.page.*;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -346,6 +345,26 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
                 pluginConfiguration.setConfigurationType(PostgreSQLPaginationPlugin.class.getTypeName());
                 context.addPluginConfiguration(pluginConfiguration);
                 if(verbose)getLog().info("enable pagination service with postgresql for context " + context.getId());
+                break;
+            case "sqlserver":
+                pluginConfiguration.setConfigurationType(SQLServerPaginationPlugin.class.getTypeName());
+                context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable pagination service with sqlserver for context " + context.getId());
+                break;
+            case "db2":
+                pluginConfiguration.setConfigurationType(DB2PaginationPlugin.class.getTypeName());
+                context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable pagination service with db2 for context " + context.getId());
+                break;
+            case "oracle":
+                pluginConfiguration.setConfigurationType(OraclePaginationPlugin.class.getTypeName());
+                context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable pagination service with oracle for context " + context.getId());
+                break;
+            case "hsqldb":
+                pluginConfiguration.setConfigurationType(HsqldbPaginationPlugin.class.getTypeName());
+                context.addPluginConfiguration(pluginConfiguration);
+                if(verbose)getLog().info("enable pagination service with hsqldb for context " + context.getId());
                 break;
         }
     }
