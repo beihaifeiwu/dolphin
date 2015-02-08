@@ -38,6 +38,18 @@
             <artifactId>guava</artifactId>
         </dependency>
 
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
         <!-- MBG 核心包 -->
         <dependency>
             <groupId>org.mybatis.generator</groupId>

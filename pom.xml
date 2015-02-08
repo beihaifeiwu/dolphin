@@ -16,6 +16,7 @@
         <commons.lang3.version>3.3.2</commons.lang3.version>
         <commons.io.version>2.4</commons.io.version>
         <guava.version>18.0</guava.version>
+        <junit.version>4.12</junit.version>
 
         <!-- Plugin属性定义 -->
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -55,6 +56,14 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+
+            <!-- Test -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- 子模块依赖管理 -->

@@ -57,12 +57,6 @@ public class PostgisGeoPlugin extends PluginAdapter {
 		if(connection == null){
 	        try {
 				connection = ConnectionFactory.getInstance().getConnection(context.getJdbcConnectionConfiguration());
-/*				if(connection instanceof org.postgresql.PGConnection){
-					((org.postgresql.PGConnection)connection).addDataType("geometry", org.postgis.PGgeometry.class);
-					((org.postgresql.PGConnection)connection).addDataType("box3d", org.postgis.PGbox3d.class);
-				}else{
-					valid = false;
-				}*/
 			} catch (SQLException e) {
 				e.printStackTrace();
 				valid = false;
@@ -278,7 +272,6 @@ public class PostgisGeoPlugin extends PluginAdapter {
 	public String fetchTypeName(IntrospectedColumn introspectedColumn){
 		
 		String columnName = introspectedColumn.getActualColumnName();
-		//System.out.println(introspectedColumn.getIntrospectedTable().getTableConfiguration());
 		String catalog = introspectedColumn.getIntrospectedTable().getTableConfiguration().getCatalog();
 		String schema = introspectedColumn.getIntrospectedTable().getTableConfiguration().getSchema();
 		String table = introspectedColumn.getIntrospectedTable().getTableConfiguration().getTableName();
