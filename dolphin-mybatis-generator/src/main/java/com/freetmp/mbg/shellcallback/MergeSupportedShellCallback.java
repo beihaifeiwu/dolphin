@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by pin on 2015/2/7.
@@ -131,7 +132,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
         for(Object oldObject : oldBodies){
             if(oldObject instanceof FieldDeclaration){
                 FieldDeclaration oldField = (FieldDeclaration) oldObject;
-                if(matcher.safeSubtreeListMatch(newField.fragments(),oldField.fragments())){
+                if(matcher.safeSubtreeListMatch(newField.fragments(), oldField.fragments())){
                     matched = oldField;
                 }
             }
@@ -192,14 +193,52 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
         return matched;
     }
 
+    /**
+     * find the syntax equals enum constant declaration in the node list
+     * @param newED
+     * @param oldEDs
+     * @param matcher
+     * @return
+     */
+    public EnumConstantDeclaration findSyntaxMatched(EnumConstantDeclaration newED, List oldEDs, ASTMatcher matcher){
+        EnumConstantDeclaration matched = null;
+        for(Object oldObject : oldEDs){
+            EnumConstantDeclaration oldED = (EnumConstantDeclaration) oldObject;
+            if(matcher.match(newED.getName(),oldED.getName())){
+                matched = oldED;
+            }
+        }
+        return matched;
+    }
+
+    /**
+     * add new changes to the old enum declaration
+     * @param newEnum
+     * @param oldEnum
+     * @param matcher
+     */
     public void mergedToOldAst(EnumDeclaration newEnum, EnumDeclaration oldEnum, ASTMatcher matcher){
-        // just ignore for now
+        // check javadoc
+        copyAndAddToOldJavadoc(newEnum.getJavadoc(),oldEnum.getJavadoc(),oldEnum,matcher);
+
+        // check modifiers
+        copyAndAddToOldModifiers(newEnum.modifiers(),oldEnum.modifiers(),oldEnum.getAST(),matcher);
+
+        // check super interfaces
+        copyAndAddToOldSuperInterfaces(newEnum.superInterfaceTypes(),oldEnum.superInterfaceTypes(),oldEnum.getAST(),matcher);
+
+        // check enum constants
+        copyAndAddToOldEnumConstants(newEnum.enumConstants(),oldEnum.enumConstants(),oldEnum.getAST(),matcher);
+
+        // check body declaration
+        copyAndAddToOldBodies(newEnum.bodyDeclarations(),oldEnum.bodyDeclarations(),oldEnum.getAST(),matcher);
+
     }
 
     public void mergedToOldAst(TypeDeclaration newType, TypeDeclaration oldType, ASTMatcher matcher){
 
         // check javadoc
-        copyAndAddToOldJavadoc(newType.getJavadoc(),oldType.getJavadoc(),matcher);
+        copyAndAddToOldJavadoc(newType.getJavadoc(),oldType.getJavadoc(),oldType,matcher);
 
         // check modifiers and add new added modifiers to the old ast
         copyAndAddToOldModifiers(newType.modifiers(),oldType.modifiers(),oldType.getAST(), matcher);
@@ -209,6 +248,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
             Type newSupperClass = newType.getSuperclassType();
             Type oldSupperClass = oldType.getSuperclassType();
 
+            // only if added new supper class and old is just object
             if(oldSupperClass == null && newSupperClass != null){
                 Type copy = (Type) newType.copySubtree(oldType.getAST(),newSupperClass);
                 oldType.setSuperclassType(copy);
@@ -216,7 +256,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
         }
 
         // check super interfaces
-        copyAndAddToOldSuperInterfaces(newType.superInterfaceTypes(),oldType.superInterfaceTypes(),oldType.getAST(),matcher);
+        copyAndAddToOldSuperInterfaces(newType.superInterfaceTypes(), oldType.superInterfaceTypes(), oldType.getAST(), matcher);
 
         // check body declaration
         copyAndAddToOldBodies(newType.bodyDeclarations(), oldType.bodyDeclarations(), oldType.getAST(), matcher);
@@ -224,7 +264,15 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     }
 
     public void mergedToOldAst(AnnotationTypeDeclaration newAnnotation, AnnotationTypeDeclaration oldAnnotation, ASTMatcher matcher){
-        // just ignore for now
+        // check javadoc
+        copyAndAddToOldJavadoc(newAnnotation.getJavadoc(),oldAnnotation.getJavadoc(),oldAnnotation,matcher);
+
+        // check modifiers
+        copyAndAddToOldModifiers(newAnnotation.modifiers(),oldAnnotation.modifiers(),oldAnnotation.getAST(),matcher);
+
+        // check body declaration
+        copyAndAddToOldBodies(newAnnotation.bodyDeclarations(),oldAnnotation.bodyDeclarations(),oldAnnotation.getAST(),matcher);
+
     }
 
     /**
@@ -257,7 +305,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     public void mergedToOldAst(FieldDeclaration newField, FieldDeclaration oldField, ASTMatcher matcher){
 
         // check javadoc
-        copyAndAddToOldJavadoc(newField.getJavadoc(),oldField.getJavadoc(),matcher);
+        copyAndAddToOldJavadoc(newField.getJavadoc(),oldField.getJavadoc(),oldField,matcher);
 
         // check modifiers
         copyAndAddToOldModifiers(newField.modifiers(),oldField.modifiers(),oldField.getAST(),matcher);
@@ -273,7 +321,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     public void mergedToOldAst(MethodDeclaration newMethod, MethodDeclaration oldMethod, ASTMatcher matcher){
 
         // check javadoc
-        copyAndAddToOldJavadoc(newMethod.getJavadoc(),oldMethod.getJavadoc(),matcher);
+        copyAndAddToOldJavadoc(newMethod.getJavadoc(),oldMethod.getJavadoc(),oldMethod,matcher);
 
         // check modifiers
         copyAndAddToOldModifiers(newMethod.modifiers(),oldMethod.modifiers(),oldMethod.getAST(),matcher);
@@ -297,7 +345,63 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
      */
     public void mergedToOldAst(SingleVariableDeclaration newSVD, SingleVariableDeclaration oldSVD, ASTMatcher matcher){
         //check modifiers
-        copyAndAddToOldModifiers(newSVD.modifiers(),oldSVD.modifiers(),oldSVD.getAST(),matcher);
+        copyAndAddToOldModifiers(newSVD.modifiers(), oldSVD.modifiers(), oldSVD.getAST(), matcher);
+    }
+
+    /**
+     * add new added changes to the old ast node
+     * @param newED
+     * @param oldED
+     * @param matcher
+     */
+    public void mergedToOldAst(EnumConstantDeclaration newED, EnumConstantDeclaration oldED, ASTMatcher matcher){
+        // check javadoc
+        copyAndAddToOldJavadoc(newED.getJavadoc(),oldED.getJavadoc(),oldED,matcher);
+
+        // check modifiers
+        copyAndAddToOldModifiers(newED.modifiers(),oldED.modifiers(),oldED.getAST(),matcher);
+
+        // check arguments
+        copyAndAddToOldExpressions(newED.arguments(),oldED.arguments(),oldED.getAST(),matcher);
+
+        // check anonymous class declaration
+        copyAndAddToOldAnonymousClassDeclaration(newED.getAnonymousClassDeclaration(),oldED.getAnonymousClassDeclaration(),matcher);
+    }
+
+    /**
+     * copy and add new added changes to the old ast
+     * @param newACD
+     * @param oldACD
+     * @param matcher
+     */
+    public void copyAndAddToOldAnonymousClassDeclaration(AnonymousClassDeclaration newACD, AnonymousClassDeclaration oldACD, ASTMatcher matcher) {
+        // check class body
+        copyAndAddToOldBodies(newACD.bodyDeclarations(),oldACD.bodyDeclarations(),oldACD.getAST(),matcher);
+    }
+
+    /**
+     * copy and add new added expressions to the old ast
+     * @param newExpressions
+     * @param oldExpressions
+     * @param oldAst
+     * @param matcher
+     */
+    public void copyAndAddToOldExpressions(List newExpressions, List oldExpressions, AST oldAst, ASTMatcher matcher){
+        ListIterator<Expression> newIterator = newExpressions.listIterator();
+        ListIterator<Expression> oldIterator = oldExpressions.listIterator();
+
+        // compare expression in order and add the absence to the old ast
+        while(newIterator.hasNext() || oldIterator.hasNext()){
+            Expression newExp = newIterator.next();
+            int oldIndex = oldIterator.nextIndex();
+            Expression oldExpTemp = (Expression) oldExpressions.get(oldIndex);
+            if(newExp.subtreeMatch(matcher,oldExpTemp)){
+                oldIterator.next();
+            }else{
+                oldIterator.add((Expression) oldExpTemp.copySubtree(oldAst,newExp));
+            }
+        }
+
     }
 
     /**
@@ -306,7 +410,17 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
      * @param oldJavadoc
      * @param matcher
      */
-    public void copyAndAddToOldJavadoc(Javadoc newJavadoc, Javadoc oldJavadoc, ASTMatcher matcher) {
+    public void copyAndAddToOldJavadoc(Javadoc newJavadoc, Javadoc oldJavadoc,BodyDeclaration oldBdNode, ASTMatcher matcher) {
+
+        // if no javadoc in the new old ast just return
+        if(newJavadoc == null) return;
+
+        // if no javadoc in the old ast and there is one in the old ast then just create one
+        if(newJavadoc != null && oldJavadoc == null){
+            oldJavadoc = oldBdNode.getAST().newJavadoc();
+            oldBdNode.setJavadoc(oldJavadoc);
+        }
+
         List newAdded = findNewAdded(newJavadoc.tags(),oldJavadoc.tags(), matcher);
         if(newAdded != null && !newAdded.isEmpty()){
             List copies = newJavadoc.copySubtrees(oldJavadoc.getAST(),newAdded);
@@ -348,6 +462,26 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     }
 
     /**
+     * copy and add new changes to the old ast
+     * @param newEnumConstants
+     * @param oldEnumConstants
+     * @param oldAst
+     * @param matcher
+     */
+    public void copyAndAddToOldEnumConstants(List newEnumConstants,List oldEnumConstants,AST oldAst, ASTMatcher matcher){
+        List<EnumConstantDeclaration> newAdded = new ArrayList<>();
+        for(Object newObject : newEnumConstants){
+            EnumConstantDeclaration newED = (EnumConstantDeclaration) newObject;
+            EnumConstantDeclaration matched = findSyntaxMatched(newED,oldEnumConstants,matcher);
+            if(matched == null){
+                newAdded.add(newED);
+            }else{
+                mergedToOldAst(newED,matched,matcher);
+            }
+        }
+    }
+
+    /**
      * copy and add new added body declarations to the old ast
      * @param newBodyList
      * @param oldBodyList
@@ -384,8 +518,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
 
             }else if(newBd instanceof Initializer){
 
-                // just ignore for now
-
+                // can not determine what to do ?
 
             }else if(newBd instanceof AbstractTypeDeclaration){
 
@@ -401,6 +534,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
         }
 
     }
+
     /**
      * check types and add new added annotations, fields and methods to the old ast
      * @param newAst
