@@ -19,6 +19,7 @@ package com.freetmp.maven.mbg.extend.plugin;
 import java.io.File;
 import java.util.StringTokenizer;
 
+import com.freetmp.mbg.shellcallback.MergeSupportedShellCallback;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.messages.Messages;
@@ -26,8 +27,10 @@ import org.mybatis.generator.internal.util.messages.Messages;
 /**
  * @author Jeff Butler
  */
-public class MavenShellCallback extends DefaultShellCallback {
+public class MavenShellCallback extends MergeSupportedShellCallback {
     private MyBatisGeneratorMojo mybatisGeneratorMojo;
+
+    private boolean mergeSupported = false;
 
     /**
      * @param overwrite
@@ -35,6 +38,15 @@ public class MavenShellCallback extends DefaultShellCallback {
     public MavenShellCallback(MyBatisGeneratorMojo mybatisGeneratorMojo, boolean overwrite) {
         super(overwrite);
         this.mybatisGeneratorMojo = mybatisGeneratorMojo;
+    }
+
+    @Override
+    public boolean isMergeSupported() {
+        return mergeSupported;
+    }
+
+    public void setMergeSupported(boolean mergeSupported) {
+        this.mergeSupported = mergeSupported;
     }
 
     @Override

@@ -170,6 +170,12 @@ MBG本身并没有提供增量生成的支持，MBG的eclipse插件借助AST抽�
 依赖第三方包装的AST构件提供了相应的内容合并插件`com.freetmp.mbg.plugin.ContentMergePlugin`从而实现了对增量生成的支持，由于是通过
 插件来实现的，当然也受到一些插件的限制。插件中有些是添加新的生成内容的，为避免把这部分代码遗漏，必须保证 **内容合并插件最后被执行**
 
+####0.0.1
+重构内容合并插件，使用MBG的ShellCallback扩展点对Java源文件进行合并，并去除AST到MBG中Java dom的转换步骤，新旧源文件都使用ast进行解析
+合并，这使XMBG可以提供对枚举、注解等类型的支持`com.freetmp.mbg.shellcallback.MergeSupportedShellCallback`, MBG中XmlFileMergerJaxp
+提供了对XML合并的简单支持，但其合并方式会直接删除旧的生成xml节点和属性，与直观意义上的合并并不一致，所以XMBG仍需对xml的合并提供支持，但
+ShellCallback并没有提供相应的扩展点，所以XML的合并仍是通过插件来实现的`com.freetmp.mbg.plugin.XMLMergePlugin`
+
 ##其它
 
 ###Mapper文件覆写
@@ -205,7 +211,7 @@ XMBG兼容大部分[MBG的配置](http://mybatis.github.io/generator/configrefer
 |disableGeom                |${x.mybatis.generator.disableGeom}             |boolean            |设置为true, 关闭地理信息相关代码的生成|
 |disableNameConversion      |${x.mybatis.generator.disableNameConversion}   |boolean            |设置为true，关闭命名转换服务|
 |disablePagination          |${x.mybatis.generator.disablePagination}       |boolean            |设置为true，关闭物理分页代码的生成|
-|disableContentMerge        |${x.mybatis.generator.disableContentMerge}     |boolean            |设置为true，关闭内容合并服务|
+|disableMergeSupport        |${x.mybatis.generator.disableMergeSupport}     |boolean            |设置为true，关闭内容合并服务|
 |enableQueryDslSupport      |${x.mybatis.generator.enableQueryDslSupport}   |boolean            |设置为true，启用QueryDSL支持|
 |columnPattern              |${x.mybatis.generator.columnPattern}           |java.lang.String   |如果启用了命名转换服务，可通过本属性指定匹配单个单词的正则表达式|
 |srid                       |${x.mybatis.generator.srid}                    |java.lang.String   |如果启用地理信息相关代码生成，可通过本属性指定其使用的空间引用标识符|

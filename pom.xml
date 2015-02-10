@@ -72,16 +72,13 @@
                 <artifactId>dolphin-mybatis-generator</artifactId>
                 <version>${dolphin.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.freetmp</groupId>
-                <artifactId>xmbg-maven-plugin</artifactId>
-                <version>${dolphin.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.freetmp</groupId>
                 <artifactId>dolphin-spring-batch</artifactId>
                 <version>${dolphin.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.freetmp</groupId>
                 <artifactId>dolphin-querydsl</artifactId>

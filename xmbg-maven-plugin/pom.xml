@@ -11,6 +11,7 @@
 
     <artifactId>xmbg-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
+    <version>0.0.1</version>
     
     <properties>
         <surefire.version>2.18.1</surefire.version>
@@ -107,7 +108,7 @@
                     <plugin>
                         <groupId>com.freetmp</groupId>
                         <artifactId>xmbg-maven-plugin</artifactId>
-                        <version>${dolphin.version}</version>
+                        <version>${project.version}</version>
                         <executions>
                             <execution>
                                 <goals><goal>generate</goal></goals>
@@ -147,7 +148,7 @@
                     <plugin>
                         <groupId>com.freetmp</groupId>
                         <artifactId>xmbg-maven-plugin</artifactId>
-                        <version>${dolphin.version}</version>
+                        <version>${project.version}</version>
                         <executions>
                             <execution>
                                 <goals><goal>generate</goal></goals>

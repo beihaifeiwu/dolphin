@@ -8,7 +8,6 @@ import com.freetmp.mbg.plugin.page.*;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -135,8 +134,8 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     /**
      * set true to disable the content merge
      */
-    @Parameter(defaultValue = "false", property = "x.mybatis.generator.disableContentMerge")
-    private boolean disableContentMerge;
+    @Parameter(defaultValue = "false", property = "x.mybatis.generator.disableMergeSupport")
+    private boolean disableMergeSupport;
 
     /**
      * set true to enable QueryDsl support
@@ -211,10 +210,10 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             ConfigurationParser cp = new ConfigurationParser(
                     project.getProperties(), warnings);
             Configuration config = cp.parseConfiguration(configurationFile);
-            
-            extendConfig(config);
 
             ShellCallback callback = new MavenShellCallback(this, overwrite);
+
+            extendConfig(config, (MavenShellCallback) callback);
 
             MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config,
                     callback, warnings);
@@ -261,8 +260,9 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     /**
      * 扩展配置实现XMBG
      * @param config
+     * @param callback
      */
-    private void extendConfig( Configuration config){
+    private void extendConfig(Configuration config, MavenShellCallback callback){
         List<Context> contexts = config.getContexts();
         if(contexts == null ) return;
         
@@ -317,10 +317,12 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             if(verbose) getLog().info("enable querydsl support service");
         }
         
-        if(!disableContentMerge){
+        if(!disableMergeSupport){
+            callback.setMergeSupported(true);
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.setConfigurationType(ContentMergePlugin.class.getTypeName());
-            pluginConfiguration.addProperty(ContentMergePlugin.ROOTDIR_NAME, outputDirectory.getAbsolutePath());
+            pluginConfiguration.setConfigurationType(XMLMergePlugin.class.getTypeName());
+            pluginConfiguration.addProperty(XMLMergePlugin.ROOTDIR_NAME, outputDirectory.getAbsolutePath());
+            addToContext(contexts,pluginConfiguration);
             if(verbose) getLog().info("enable content merge service");
         }
         
