@@ -1,18 +1,18 @@
 package com.freetmp.mbg.comment;
 
+import com.freetmp.mbg.dom.ExtendedDocument;
+import com.freetmp.mbg.i18n.Resources;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.*;
-import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Element;
-import org.mybatis.generator.api.dom.xml.TextElement;
-import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.mybatis.generator.internal.util.StringUtility.isTrue;
 
@@ -21,13 +21,30 @@ import static org.mybatis.generator.internal.util.StringUtility.isTrue;
  */
 public class CommentGenerator extends DefaultCommentGenerator {
 
-    protected XmlElement rootElement;
+    protected ThreadLocal<XmlElement> rootElement = new ThreadLocal<>();
 
     protected boolean suppressAllComments;
     protected boolean suppressDate;
 
+    protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+
+    protected Resources resources;
+
     public CommentGenerator() {
         super();
+        resources = new Resources("i18n/Comments",Locale.getDefault());
+    }
+
+    /**
+     * This method returns a formated date string to include in the Javadoc tag
+     * and XML comments. You may return null if you do not want the date in
+     * these documentation elements.
+     *
+     * @return a string representing the current timestamp, or null
+     */
+    @Override
+    protected String getDateString() {
+        return sdf.format(new Date());
     }
 
     @Override
@@ -45,19 +62,21 @@ public class CommentGenerator extends DefaultCommentGenerator {
     @Override
     public void addJavaFileComment(CompilationUnit compilationUnit) {
 
-        compilationUnit.addFileCommentLine(" Copyright 2014-2015 the original author or authors.");
-        compilationUnit.addFileCommentLine("");
-        compilationUnit.addFileCommentLine(" Licensed under the Apache License, Version 2.0 (the \"License\");");
-        compilationUnit.addFileCommentLine(" you may not use this file except in compliance with the License.");
-        compilationUnit.addFileCommentLine(" You may obtain a copy of the License at");
-        compilationUnit.addFileCommentLine("");
-        compilationUnit.addFileCommentLine("   http://www.apache.org/licenses/LICENSE-2.0");
-        compilationUnit.addFileCommentLine("");
-        compilationUnit.addFileCommentLine(" Unless required by applicable law or agreed to in writing, software");
-        compilationUnit.addFileCommentLine(" distributed under the License is distributed on an \"AS IS\" BASIS,");
-        compilationUnit.addFileCommentLine(" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
-        compilationUnit.addFileCommentLine(" See the License for the specific language governing permissions and");
-        compilationUnit.addFileCommentLine(" limitations under the License.");
+        compilationUnit.addFileCommentLine("/*");
+        compilationUnit.addFileCommentLine(" * Copyright 2014-2015 the original author or authors.");
+        compilationUnit.addFileCommentLine(" *");
+        compilationUnit.addFileCommentLine(" * Licensed under the Apache License, Version 2.0 (the \"License\");");
+        compilationUnit.addFileCommentLine(" * you may not use this file except in compliance with the License.");
+        compilationUnit.addFileCommentLine(" * You may obtain a copy of the License at");
+        compilationUnit.addFileCommentLine(" *");
+        compilationUnit.addFileCommentLine(" *   http://www.apache.org/licenses/LICENSE-2.0");
+        compilationUnit.addFileCommentLine(" *");
+        compilationUnit.addFileCommentLine(" * Unless required by applicable law or agreed to in writing, software");
+        compilationUnit.addFileCommentLine(" * distributed under the License is distributed on an \"AS IS\" BASIS,");
+        compilationUnit.addFileCommentLine(" * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
+        compilationUnit.addFileCommentLine(" * See the License for the specific language governing permissions and");
+        compilationUnit.addFileCommentLine(" * limitations under the License.");
+        compilationUnit.addFileCommentLine(" */");
     }
 
     /**
@@ -70,34 +89,69 @@ public class CommentGenerator extends DefaultCommentGenerator {
         elements.add(0,child);
     }
 
-    @Override
-    public void addRootComment(XmlElement rootElement) {
+    /**
+     * add the sql map file comment
+     * @param document
+     */
+    public void addSqlMapFileComment(Document document){
 
         if(suppressAllComments) return;
 
-        List<Element> comments = new ArrayList<>();
-        
-        comments.add(new TextElement("<!--"));
-        comments.add(new TextElement(" Copyright 2014-2015 the original author or authors."));
-        comments.add(new TextElement(""));
-        comments.add(new TextElement(" Licensed under the Apache License, Version 2.0 (the \"License\");"));
-        comments.add(new TextElement(" you may not use this file except in compliance with the License."));
-        comments.add(new TextElement(" You may obtain a copy of the License at"));
-        comments.add(new TextElement(""));
-        comments.add(new TextElement("   http://www.apache.org/licenses/LICENSE-2.0"));
-        comments.add(new TextElement(""));
-        comments.add(new TextElement(" Unless required by applicable law or agreed to in writing, software"));
-        comments.add(new TextElement(" distributed under the License is distributed on an \"AS IS\" BASIS,"));
-        comments.add(new TextElement(" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied."));
-        comments.add(new TextElement(" See the License for the specific language governing permissions and"));
-        comments.add(new TextElement("-->"));
+        ExtendedDocument ed = null;
+        if(document instanceof ExtendedDocument) {
+            ed = (ExtendedDocument) document;
+        } else return;
 
-        // 倒序添加以保证注释顺序正确
-        for(int index = comments.size() - 1; index >= 0; index--){
-            addToFirstChildren(rootElement,comments.get(index));
-        }
+        StringBuilder sb = new StringBuilder();
+        OutputUtilities.newLine(sb);
+        sb.append("<!--");
+        OutputUtilities.newLine(sb);
+        sb.append(" Copyright 2014-2015 the original author or authors.");
+        OutputUtilities.newLine(sb);
+        sb.append("");
+        OutputUtilities.newLine(sb);
+        sb.append(" Licensed under the Apache License, Version 2.0 (the \"License\");");
+        OutputUtilities.newLine(sb);
+        sb.append(" you may not use this file except in compliance with the License.");
+        OutputUtilities.newLine(sb);
+        sb.append(" You may obtain a copy of the License at");
+        OutputUtilities.newLine(sb);
+        OutputUtilities.newLine(sb);
+        sb.append("   http://www.apache.org/licenses/LICENSE-2.0");
+        OutputUtilities.newLine(sb);
+        OutputUtilities.newLine(sb);
+        sb.append(" Unless required by applicable law or agreed to in writing, software");
+        OutputUtilities.newLine(sb);
+        sb.append(" distributed under the License is distributed on an \"AS IS\" BASIS,");
+        OutputUtilities.newLine(sb);
+        sb.append(" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
+        OutputUtilities.newLine(sb);
+        sb.append(" See the License for the specific language governing permissions and");
+        OutputUtilities.newLine(sb);
+        sb.append("-->");
+        OutputUtilities.newLine(sb);
 
-        this.rootElement = rootElement;
+        ed.setFileComments(sb.toString());
+    }
+
+    /**
+     * 初始化XML文件的根节点
+     */
+    public void initRootElement(XmlElement rootElement){
+        // just init the root element
+        this.rootElement.set(rootElement);
+    }
+
+    /**
+     * 清除XML文件的根节点
+     */
+    public void clearRootElement(){
+        this.rootElement.remove();
+    }
+
+    @Override
+    public void addRootComment(XmlElement rootElement) {
+        // nothing have to do
     }
 
     public String getID(XmlElement xmlElement){
@@ -111,10 +165,11 @@ public class CommentGenerator extends DefaultCommentGenerator {
     }
 
     public void addBeforeSelfInParent(XmlElement self,String comment){
-        if(this.rootElement == null) return;
-        int selfIndex = this.rootElement.getElements().indexOf(self);
+        if(this.rootElement.get() == null) return;
+        int selfIndex = this.rootElement.get().getElements().indexOf(self);
         if(selfIndex != -1){
-            this.rootElement.getElements().add(selfIndex,new TextElement(comment));
+            this.rootElement.get().getElements().add(selfIndex, new TextElement(""));
+            this.rootElement.get().getElements().add(selfIndex + 1,new TextElement("<!-- " + comment + " -->"));
         }
     }
 
@@ -130,72 +185,10 @@ public class CommentGenerator extends DefaultCommentGenerator {
         if(suppressAllComments) return;
 
         String id = getID(xmlElement);
-        switch (id){
-            case "BaseResultMap":
-                addBeforeSelfInParent(xmlElement,"the basic mapping of pojo fields and db table's columns");
-                break;
-            case "ResultMapWithBLOBs":
-                addBeforeSelfInParent(xmlElement,"the mapping of pojo fields and db table's columns with type BLOB in it");
-                break;
-            case "Example_Where_Clause":
-                addBeforeSelfInParent(xmlElement,"the where condition clause of the helper class example");
-                break;
-            case "Update_By_Example_Where_Clause":
-                addBeforeSelfInParent(xmlElement, "the where condition for updating the db data using the example helper class");
-                break;
-            case "Base_Column_List":
-                addBeforeSelfInParent(xmlElement,"the basic columns of db table used by select");
-                break;
-            case "Blob_Column_List":
-                addBeforeSelfInParent(xmlElement,"the columns of db table used by select with type BLOB in it");
-                break;
-            case "selectAll":
-                addBeforeSelfInParent(xmlElement,"select all the db data of the specific table");
-                break;
-            case "selectByExample":
-                addBeforeSelfInParent(xmlElement,"select the db data of the specific table by the example condition");
-                break;
-            case "selectByExampleWithBLOBs":
-                addBeforeSelfInParent(xmlElement,"select the db data of the specific table by the example condition with type BLOB in it");
-                break;
-            case "selectByPrimaryKey":
-                addBeforeSelfInParent(xmlElement,"select the db data of the specific table by primary key");
-                break;
-            case "updateByExample":
-                addBeforeSelfInParent(xmlElement,"update the db data with all fields by example condition");
-                break;
-            case "updateByExampleSelective":
-                addBeforeSelfInParent(xmlElement,"update the db data with legal fields selected by example condition");
-                break;
-            case "updateByExampleWithBLOBs":
-                addBeforeSelfInParent(xmlElement,"update the db data by example condition with Type BLOB in it");
-                break;
-            case "updateByPrimaryKey":
-                addBeforeSelfInParent(xmlElement,"update the db data by table primary key");
-                break;
-            case "updateByPrimaryKeySelective":
-                addBeforeSelfInParent(xmlElement,"update the db data with legal fields selected by table primary key");
-                break;
-            case "updateByPrimaryKeyWithBLOBs":
-                addBeforeSelfInParent(xmlElement,"update the db data by table primary key with Type BLOB in it");
-                break;
-            case "insert":
-                addBeforeSelfInParent(xmlElement,"insert the db data for all fields");
-                break;
-            case "insertSelective":
-                addBeforeSelfInParent(xmlElement,"insert the db data with legal fields");
-                break;
-            case "deleteByExample":
-                addBeforeSelfInParent(xmlElement,"delete the db data by example condition");
-                break;
-            case "deleteByPrimaryKey":
-                addBeforeSelfInParent(xmlElement,"delete the db data by table primary key");
-                break;
-            case "countByExample":
-                addBeforeSelfInParent(xmlElement,"count the db table rows by example condition");
-                break;
-            default:break;
-        }
+
+        String comment = resources.getString(id);
+        if(StringUtils.isNotEmpty(comment));
+        addBeforeSelfInParent(xmlElement,comment);
     }
 
     @Override
@@ -204,7 +197,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         StringBuilder sb = new StringBuilder();
 
         method.addJavaDocLine("/**"); //$NON-NLS-1$
-        sb.append(" * created by X MyBatis Generator"); //$NON-NLS-1$
+        sb.append(" * created by XMBG"); //$NON-NLS-1$
         if(!suppressDate){
             sb.append(" on " + getDateString());
         }else {

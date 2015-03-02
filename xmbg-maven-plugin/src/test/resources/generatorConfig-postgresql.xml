@@ -13,7 +13,7 @@
 
 		<!--去除注释 -->
 		<commentGenerator>
-			<property name="suppressAllComments" value="true" />
+			<property name="suppressAllComments" value="false" />
 		</commentGenerator>
 
 		<!--数据库连接 -->

@@ -1,5 +1,6 @@
 package com.freetmp.maven.mbg.extend.plugin;
 
+import com.freetmp.mbg.comment.CommentGenerator;
 import com.freetmp.mbg.plugin.*;
 import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
@@ -213,6 +214,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
 
             ShellCallback callback = new MavenShellCallback(this, overwrite);
 
+            // 扩展原配置
             extendConfig(config, (MavenShellCallback) callback);
 
             MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config,
@@ -325,7 +327,17 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             addToContext(contexts,pluginConfiguration);
             if(verbose) getLog().info("enable content merge service");
         }
-        
+
+        // just use the extended comment generator
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        pluginConfiguration.setConfigurationType(CommentsWavePlugin.class.getTypeName());
+        addToContext(contexts,pluginConfiguration);
+        if(verbose) getLog().info("enable comment wave service");
+
+        for(Context context : config.getContexts()){
+            context.getCommentGeneratorConfiguration().setConfigurationType(CommentGenerator.class.getTypeName());
+        }
+        if(verbose) getLog().info("replace the origin comment generator");
     }
 
     /**
