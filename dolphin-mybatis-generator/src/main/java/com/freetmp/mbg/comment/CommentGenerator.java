@@ -5,12 +5,14 @@ import com.freetmp.mbg.i18n.Resources;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -21,6 +23,13 @@ import static org.mybatis.generator.internal.util.StringUtility.isTrue;
  */
 public class CommentGenerator extends DefaultCommentGenerator {
 
+    public static final String I18N_PATH_KEY = "i18n_path_key_for_CG";
+
+    public static final String PROJECT_START_YEAR = "project_start_year_for_copyright";
+
+    public static final String I18N_DEFAULT_PATH = "i18n_for_CG";
+    public static final String PROJECT_START_DEFAULT_YEAR = "" + Calendar.getInstance().get(Calendar.YEAR);
+
     protected ThreadLocal<XmlElement> rootElement = new ThreadLocal<>();
 
     protected boolean suppressAllComments;
@@ -28,11 +37,23 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
-    protected Resources resources;
+    protected Resources comments;
+
+    protected Resources copyrights;
+
+    protected int startYear;
+    protected int endYear;
+
+    protected String i18nPath = I18N_DEFAULT_PATH;
 
     public CommentGenerator() {
         super();
-        resources = new Resources("i18n/Comments",Locale.getDefault());
+    }
+
+    private void initResources(){
+        comments = new Resources(i18nPath + "/Comments",Locale.getDefault());
+        copyrights = new Resources(i18nPath + "/Copyright",Locale.getDefault());
+        endYear = Calendar.getInstance().get(Calendar.YEAR);
     }
 
     /**
@@ -57,26 +78,41 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
         suppressAllComments = isTrue(properties
                 .getProperty(PropertyRegistry.COMMENT_GENERATOR_SUPPRESS_ALL_COMMENTS));
+
+        // 获取国际化资源的路径
+        i18nPath = properties.getProperty(I18N_PATH_KEY, I18N_DEFAULT_PATH);
+
+        // 获取项目开始时间，用在版权声明中
+        String startYearStr = properties.getProperty(PROJECT_START_YEAR);
+        if(StringUtils.isNotEmpty(startYearStr)){
+            startYear = Integer.parseInt(startYearStr);
+        }else{
+            startYear = Integer.parseInt(PROJECT_START_DEFAULT_YEAR);
+        }
+
+        // 初始化资源
+        initResources();
     }
 
     @Override
     public void addJavaFileComment(CompilationUnit compilationUnit) {
 
-        compilationUnit.addFileCommentLine("/*");
-        compilationUnit.addFileCommentLine(" * Copyright 2014-2015 the original author or authors.");
-        compilationUnit.addFileCommentLine(" *");
-        compilationUnit.addFileCommentLine(" * Licensed under the Apache License, Version 2.0 (the \"License\");");
-        compilationUnit.addFileCommentLine(" * you may not use this file except in compliance with the License.");
-        compilationUnit.addFileCommentLine(" * You may obtain a copy of the License at");
-        compilationUnit.addFileCommentLine(" *");
-        compilationUnit.addFileCommentLine(" *   http://www.apache.org/licenses/LICENSE-2.0");
-        compilationUnit.addFileCommentLine(" *");
-        compilationUnit.addFileCommentLine(" * Unless required by applicable law or agreed to in writing, software");
-        compilationUnit.addFileCommentLine(" * distributed under the License is distributed on an \"AS IS\" BASIS,");
-        compilationUnit.addFileCommentLine(" * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
-        compilationUnit.addFileCommentLine(" * See the License for the specific language governing permissions and");
-        compilationUnit.addFileCommentLine(" * limitations under the License.");
-        compilationUnit.addFileCommentLine(" */");
+        String copyright = copyrights.getFormatted("JavaSource", startYear, endYear);
+        StringReader sr = new StringReader(copyright);
+        BufferedReader br = new BufferedReader(sr);
+        try {
+            int length = 0;
+            do {
+                String line = br.readLine();
+                length += line.length();
+                if(!line.equals("")){
+                    compilationUnit.addFileCommentLine(line);
+                }
+            }while (length < copyright.length());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -102,36 +138,10 @@ public class CommentGenerator extends DefaultCommentGenerator {
             ed = (ExtendedDocument) document;
         } else return;
 
-        StringBuilder sb = new StringBuilder();
-        OutputUtilities.newLine(sb);
-        sb.append("<!--");
-        OutputUtilities.newLine(sb);
-        sb.append(" Copyright 2014-2015 the original author or authors.");
-        OutputUtilities.newLine(sb);
-        sb.append("");
-        OutputUtilities.newLine(sb);
-        sb.append(" Licensed under the Apache License, Version 2.0 (the \"License\");");
-        OutputUtilities.newLine(sb);
-        sb.append(" you may not use this file except in compliance with the License.");
-        OutputUtilities.newLine(sb);
-        sb.append(" You may obtain a copy of the License at");
-        OutputUtilities.newLine(sb);
-        OutputUtilities.newLine(sb);
-        sb.append("   http://www.apache.org/licenses/LICENSE-2.0");
-        OutputUtilities.newLine(sb);
-        OutputUtilities.newLine(sb);
-        sb.append(" Unless required by applicable law or agreed to in writing, software");
-        OutputUtilities.newLine(sb);
-        sb.append(" distributed under the License is distributed on an \"AS IS\" BASIS,");
-        OutputUtilities.newLine(sb);
-        sb.append(" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.");
-        OutputUtilities.newLine(sb);
-        sb.append(" See the License for the specific language governing permissions and");
-        OutputUtilities.newLine(sb);
-        sb.append("-->");
-        OutputUtilities.newLine(sb);
-
-        ed.setFileComments(sb.toString());
+        String copyright = copyrights.getFormatted("XmlSource", startYear, endYear);
+        if(StringUtils.isNotEmpty(copyright)) {
+            ed.setFileComments(copyright);
+        }
     }
 
     /**
@@ -166,10 +176,19 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     public void addBeforeSelfInParent(XmlElement self,String comment){
         if(this.rootElement.get() == null) return;
-        int selfIndex = this.rootElement.get().getElements().indexOf(self);
+        List<Element> elements = this.rootElement.get().getElements();
+        int selfIndex = elements.indexOf(self);
         if(selfIndex != -1){
-            this.rootElement.get().getElements().add(selfIndex, new TextElement(""));
-            this.rootElement.get().getElements().add(selfIndex + 1,new TextElement("<!-- " + comment + " -->"));
+            // 使用块儿状注释，并限制每行的长度
+            elements.add(selfIndex++, new TextElement(""));
+            elements.add(selfIndex++, new TextElement("<!-- "));
+            while (comment.length() > 80){
+                String current = comment.substring(0,80);
+                elements.add(selfIndex++, new TextElement("    " + current));
+                comment = comment.substring(80);
+            }
+            elements.add(selfIndex++, new TextElement("-->"));
+
         }
     }
 
@@ -186,7 +205,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
         String id = getID(xmlElement);
 
-        String comment = resources.getString(id);
+        String comment = comments.getString(id);
         if(StringUtils.isNotEmpty(comment));
         addBeforeSelfInParent(xmlElement,comment);
     }

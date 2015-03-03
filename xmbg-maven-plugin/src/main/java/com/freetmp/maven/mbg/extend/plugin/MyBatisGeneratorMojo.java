@@ -156,6 +156,18 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     @Parameter(defaultValue = "3857", property = "x.mybatis.generator.srid")
     private String srid;
 
+    /**
+     * the path to the i18n resources directory
+     */
+    @Parameter(defaultValue = CommentGenerator.I18N_DEFAULT_PATH, property = "x.mybatis.generator.i18nPath")
+    private String i18nPath;
+
+    /**
+     * the start year of the project used by copyright generated
+     */
+    @Parameter(defaultValue = CommentGenerator.PROJECT_START_DEFAULT_YEAR, property = "x.mybatis.generator.projectStartYear")
+    private String projectStartYear;
+
     public void execute() throws MojoExecutionException {
 
         // add resource directories to the classpath.  This is required to support
@@ -329,13 +341,17 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
         }
 
         // just use the extended comment generator
+
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         pluginConfiguration.setConfigurationType(CommentsWavePlugin.class.getTypeName());
         addToContext(contexts,pluginConfiguration);
+
         if(verbose) getLog().info("enable comment wave service");
 
         for(Context context : config.getContexts()){
             context.getCommentGeneratorConfiguration().setConfigurationType(CommentGenerator.class.getTypeName());
+            context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.I18N_PATH_KEY,i18nPath);
+            context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.PROJECT_START_YEAR,projectStartYear);
         }
         if(verbose) getLog().info("replace the origin comment generator");
     }
