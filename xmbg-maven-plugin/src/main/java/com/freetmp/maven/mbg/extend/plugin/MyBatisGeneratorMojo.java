@@ -6,6 +6,7 @@ import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
 import com.freetmp.mbg.plugin.geom.PostgisGeoPlugin;
 import com.freetmp.mbg.plugin.page.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -15,10 +16,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ShellCallback;
-import org.mybatis.generator.config.Configuration;
-import org.mybatis.generator.config.Context;
-import org.mybatis.generator.config.JDBCConnectionConfiguration;
-import org.mybatis.generator.config.PluginConfiguration;
+import org.mybatis.generator.config.*;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
@@ -165,7 +163,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     /**
      * the start year of the project used by copyright generated
      */
-    @Parameter(defaultValue = CommentGenerator.PROJECT_START_DEFAULT_YEAR, property = "x.mybatis.generator.projectStartYear")
+    @Parameter(property = "x.mybatis.generator.projectStartYear")
     private String projectStartYear;
 
     public void execute() throws MojoExecutionException {
@@ -279,6 +277,11 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     private void extendConfig(Configuration config, MavenShellCallback callback){
         List<Context> contexts = config.getContexts();
         if(contexts == null ) return;
+
+        // fix java file encoding
+        for(Context context : contexts){
+            context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING,"UTF-8");
+        }
         
         if(!disableNameConversion){
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -351,6 +354,9 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
         for(Context context : config.getContexts()){
             context.getCommentGeneratorConfiguration().setConfigurationType(CommentGenerator.class.getTypeName());
             context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.I18N_PATH_KEY,i18nPath);
+            if(StringUtils.isEmpty(projectStartYear)){
+                projectStartYear = CommentGenerator.PROJECT_START_DEFAULT_YEAR;
+            }
             context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.PROJECT_START_YEAR,projectStartYear);
         }
         if(verbose) getLog().info("replace the origin comment generator");

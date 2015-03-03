@@ -13,13 +13,13 @@
 
 		<!--去除注释 -->
 		<commentGenerator>
-			<property name="suppressAllComments" value="true" />
+			<property name="suppressAllComments" value="false" />
 		</commentGenerator>
 
 		<!--数据库连接 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 			connectionURL="jdbc:mysql://localhost/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8"
-			userId="root" password="">
+			userId="root" password="liupin">
 		</jdbcConnection>
 
 		<!--默认false Java type resolver will always use java.math.BigDecimal if 

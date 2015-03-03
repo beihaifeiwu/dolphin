@@ -6,9 +6,11 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.config.PropertyRegistry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -87,4 +89,14 @@ public class CommentsWavePlugin extends PluginAdapter {
         }
         return true;
     }
+
+    @Override
+    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        //System.out.println(topLevelClass.getFormattedContent());
+        //System.out.println(context.getProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING));
+        return true;
+    }
+
+
 }

@@ -5,6 +5,7 @@ import com.freetmp.mbg.i18n.Resources;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.config.PropertyRegistry;
@@ -28,7 +29,11 @@ public class CommentGenerator extends DefaultCommentGenerator {
     public static final String PROJECT_START_YEAR = "project_start_year_for_copyright";
 
     public static final String I18N_DEFAULT_PATH = "i18n_for_CG";
-    public static final String PROJECT_START_DEFAULT_YEAR = "" + Calendar.getInstance().get(Calendar.YEAR);
+    public static final String PROJECT_START_DEFAULT_YEAR;
+
+    static {
+        PROJECT_START_DEFAULT_YEAR = "" + Calendar.getInstance().get(Calendar.YEAR);
+    }
 
     protected ThreadLocal<XmlElement> rootElement = new ThreadLocal<>();
 
@@ -41,8 +46,8 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     protected Resources copyrights;
 
-    protected int startYear;
-    protected int endYear;
+    protected String startYear;
+    protected String endYear;
 
     protected String i18nPath = I18N_DEFAULT_PATH;
 
@@ -53,7 +58,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
     private void initResources(){
         comments = new Resources(i18nPath + "/Comments",Locale.getDefault());
         copyrights = new Resources(i18nPath + "/Copyright",Locale.getDefault());
-        endYear = Calendar.getInstance().get(Calendar.YEAR);
+        endYear = "" + Calendar.getInstance().get(Calendar.YEAR);
     }
 
     /**
@@ -85,9 +90,9 @@ public class CommentGenerator extends DefaultCommentGenerator {
         // 获取项目开始时间，用在版权声明中
         String startYearStr = properties.getProperty(PROJECT_START_YEAR);
         if(StringUtils.isNotEmpty(startYearStr)){
-            startYear = Integer.parseInt(startYearStr);
+            startYear = startYearStr;
         }else{
-            startYear = Integer.parseInt(PROJECT_START_DEFAULT_YEAR);
+            startYear = PROJECT_START_DEFAULT_YEAR;
         }
 
         // 初始化资源
@@ -98,20 +103,15 @@ public class CommentGenerator extends DefaultCommentGenerator {
     public void addJavaFileComment(CompilationUnit compilationUnit) {
 
         String copyright = copyrights.getFormatted("JavaSource", startYear, endYear);
-        StringReader sr = new StringReader(copyright);
-        BufferedReader br = new BufferedReader(sr);
-        try {
-            int length = 0;
-            do {
-                String line = br.readLine();
-                length += line.length();
-                if(!line.equals("")){
-                    compilationUnit.addFileCommentLine(line);
-                }
-            }while (length < copyright.length());
+        if(StringUtils.isEmpty(copyright)) return;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        String[] array = copyright.split("\\|");
+
+        for(String str : array){
+            if(str.startsWith("*")){
+                str = " " + str;
+            }
+            compilationUnit.addFileCommentLine(str);
         }
     }
 
@@ -140,7 +140,16 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
         String copyright = copyrights.getFormatted("XmlSource", startYear, endYear);
         if(StringUtils.isNotEmpty(copyright)) {
-            ed.setFileComments(copyright);
+            String[] array = copyright.split("\\|");
+            StringBuilder sb = new StringBuilder();
+            for(String str : array){
+                if(!str.startsWith("<!--") && !str.startsWith("-->")){
+                    sb.append("    ");
+                }
+                sb.append(str);
+                OutputUtilities.newLine(sb);
+            }
+            ed.setFileComments(sb.toString());
         }
     }
 

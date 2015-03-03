@@ -1,4 +1,4 @@
-package com.freetmp.mgb.shellcallback;
+package com.freetmp.mbg.shellcallback;
 
 import com.freetmp.mbg.shellcallback.MergeSupportedShellCallback;
 import org.eclipse.jdt.core.dom.*;
