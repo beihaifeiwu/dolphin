@@ -41,18 +41,29 @@ public class Resources {
     }
 
     /**
+     * use specified class loader to load i18n resources
+     * @param s
+     * @param locale
+     * @param loader
+     */
+    public Resources(String s, Locale locale, ClassLoader loader) {
+        ResourceBundle rb = ResourceBundle.getBundle(s,locale,loader,new UTF8Control());
+        this.resource = rb;
+    }
+
+    /**
      * Gets a string from the ResourceBundles.
      * <br> Convenience method to save casting.
      * 
      * @param key the key of the properties.
      * 
-     * @return the value of the property. Return the key if the value is not found.
+     * @return the value of the property. Return empty string if the value is not found.
      */
     public String getString(String key){
         try {
             return resource.getString(key);
         } catch (MissingResourceException e) {
-            return key;
+            return "";
         }
     }
 

@@ -18,6 +18,7 @@
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
         <mybatis.version>3.2.8</mybatis.version>
         <mybatis.generator.version>1.3.2</mybatis.generator.version>
+        <javaparser.version>2.0.0</javaparser.version>
     </properties>
 
     <dependencies>
@@ -64,23 +65,11 @@
             <version>${mybatis.version}</version>
         </dependency>
 
-        <!-- Eclipse AST -->
+        <!-- JavaParser -->
         <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.jdt.core</artifactId>
-            <version>3.10.0.v20140604-1726</version>
-        </dependency>
-        <!-- Eclipse Core Runtime -->
-        <dependency>
-            <groupId>org.eclipse.core</groupId>
-            <artifactId>runtime</artifactId>
-            <version>3.10.0-v20140318-2214</version>
-        </dependency>
-        <!-- Eclipse Core Resources -->
-        <dependency>
-            <groupId>org.eclipse.birt.runtime</groupId>
-            <artifactId>org.eclipse.core.resources</artifactId>
-            <version>3.9.1.v20140825-1431</version>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>${javaparser.version}</version>
         </dependency>
 
         <!-- dom4j xml解析支持 -->

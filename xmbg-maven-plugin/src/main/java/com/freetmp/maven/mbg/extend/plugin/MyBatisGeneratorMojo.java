@@ -157,8 +157,14 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     /**
      * the path to the i18n resources directory
      */
-    @Parameter(defaultValue = CommentGenerator.I18N_DEFAULT_PATH, property = "x.mybatis.generator.i18nPath")
-    private String i18nPath;
+    @Parameter(property = "x.mybatis.generator.i18nPath")
+    private File i18nPath;
+
+    /**
+     * the locale used by the i18n path
+     */
+    @Parameter(defaultValue = "en_US",property = "x.mybatis.generator.locale")
+    private String locale;
 
     /**
      * the start year of the project used by copyright generated
@@ -195,13 +201,13 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
 
         runScriptIfNecessary();
 
-        Set<String> fullyqualifiedTables = new HashSet<String>();
+        Set<String> fullyQualifiedTables = new HashSet<String>();
         if (StringUtility.stringHasValue(tableNames)) {
             StringTokenizer st = new StringTokenizer(tableNames, ","); //$NON-NLS-1$
             while (st.hasMoreTokens()) {
                 String s = st.nextToken().trim();
                 if (s.length() > 0) {
-                    fullyqualifiedTables.add(s);
+                    fullyQualifiedTables.add(s);
                 }
             }
         }
@@ -231,7 +237,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
                     callback, warnings);
 
             myBatisGenerator.generate(new MavenProgressCallback(getLog(),
-                    verbose), contextsToRun, fullyqualifiedTables);
+                    verbose), contextsToRun, fullyQualifiedTables);
 
         } catch (XMLParserException e) {
             for (String error : e.getErrors()) {
@@ -343,6 +349,15 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             if(verbose) getLog().info("enable content merge service");
         }
 
+        // leave the cg for the last
+        extendCG(config, contexts);
+
+    }
+
+    /**
+     * extend origin mbg the ability for generating comments
+     */
+    private void extendCG(Configuration config, List<Context> contexts) {
         // just use the extended comment generator
 
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -353,11 +368,14 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
 
         for(Context context : config.getContexts()){
             context.getCommentGeneratorConfiguration().setConfigurationType(CommentGenerator.class.getTypeName());
-            context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.I18N_PATH_KEY,i18nPath);
-            if(StringUtils.isEmpty(projectStartYear)){
-                projectStartYear = CommentGenerator.PROJECT_START_DEFAULT_YEAR;
+            if(i18nPath != null && i18nPath.exists()) {
+                context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.XMBG_CG_I18N_PATH_KEY, i18nPath.getAbsolutePath());
             }
-            context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.PROJECT_START_YEAR,projectStartYear);
+            if(StringUtils.isEmpty(projectStartYear)){
+                projectStartYear = CommentGenerator.XMBG_CG_PROJECT_START_DEFAULT_YEAR;
+            }
+            context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.XMBG_CG_PROJECT_START_YEAR,projectStartYear);
+            context.getCommentGeneratorConfiguration().addProperty(CommentGenerator.XMBG_CG_I18N_LOCALE_KEY,locale);
         }
         if(verbose) getLog().info("replace the origin comment generator");
     }

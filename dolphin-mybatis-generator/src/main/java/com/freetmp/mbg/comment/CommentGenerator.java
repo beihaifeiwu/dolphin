@@ -11,9 +11,10 @@ import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -24,15 +25,17 @@ import static org.mybatis.generator.internal.util.StringUtility.isTrue;
  */
 public class CommentGenerator extends DefaultCommentGenerator {
 
-    public static final String I18N_PATH_KEY = "i18n_path_key_for_CG";
+    public static final String XMBG_CG_I18N_PATH_KEY = "i18n_path_key_for_CG";
 
-    public static final String PROJECT_START_YEAR = "project_start_year_for_copyright";
+    public static final String XMBG_CG_PROJECT_START_YEAR = "project_start_year_for_copyright";
 
-    public static final String I18N_DEFAULT_PATH = "i18n_for_CG";
-    public static final String PROJECT_START_DEFAULT_YEAR;
+    public static final String XMBG_CG_I18N_LOCALE_KEY = "i18n_locale_key_for_CG";
+
+    public static final String XMBG_CG_I18N_DEFAULT_PATH = "i18n_for_CG";
+    public static final String XMBG_CG_PROJECT_START_DEFAULT_YEAR;
 
     static {
-        PROJECT_START_DEFAULT_YEAR = "" + Calendar.getInstance().get(Calendar.YEAR);
+        XMBG_CG_PROJECT_START_DEFAULT_YEAR = "" + Calendar.getInstance().get(Calendar.YEAR);
     }
 
     protected ThreadLocal<XmlElement> rootElement = new ThreadLocal<>();
@@ -43,21 +46,32 @@ public class CommentGenerator extends DefaultCommentGenerator {
     protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
     protected Resources comments;
+    protected Resources defaultComments;
 
     protected Resources copyrights;
+    protected Resources defaultCopyrights;
 
     protected String startYear;
     protected String endYear;
 
-    protected String i18nPath = I18N_DEFAULT_PATH;
+    protected String i18nPath = XMBG_CG_I18N_DEFAULT_PATH;
 
     public CommentGenerator() {
         super();
     }
 
-    private void initResources(){
-        comments = new Resources(i18nPath + "/Comments",Locale.getDefault());
-        copyrights = new Resources(i18nPath + "/Copyright",Locale.getDefault());
+    private void initResources(Locale locale) throws MalformedURLException {
+
+        // add user specified i18n sources directory to the classpath
+        URL[] urls = {new File(i18nPath).toURI().toURL()};
+        ClassLoader loader = new URLClassLoader(urls);
+
+        comments = new Resources("Comments",locale,loader);
+        defaultComments = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Comments",locale);
+
+        copyrights = new Resources("Copyrights",locale,loader);
+        defaultCopyrights = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Copyrights",locale);
+
         endYear = "" + Calendar.getInstance().get(Calendar.YEAR);
     }
 
@@ -85,25 +99,36 @@ public class CommentGenerator extends DefaultCommentGenerator {
                 .getProperty(PropertyRegistry.COMMENT_GENERATOR_SUPPRESS_ALL_COMMENTS));
 
         // 获取国际化资源的路径
-        i18nPath = properties.getProperty(I18N_PATH_KEY, I18N_DEFAULT_PATH);
+        i18nPath = properties.getProperty(XMBG_CG_I18N_PATH_KEY, XMBG_CG_I18N_DEFAULT_PATH);
 
         // 获取项目开始时间，用在版权声明中
-        String startYearStr = properties.getProperty(PROJECT_START_YEAR);
+        String startYearStr = properties.getProperty(XMBG_CG_PROJECT_START_YEAR);
         if(StringUtils.isNotEmpty(startYearStr)){
             startYear = startYearStr;
         }else{
-            startYear = PROJECT_START_DEFAULT_YEAR;
+            startYear = XMBG_CG_PROJECT_START_DEFAULT_YEAR;
         }
 
         // 初始化资源
-        initResources();
+        String localeStr = properties.getProperty(XMBG_CG_I18N_LOCALE_KEY);
+        String[] localeAras = localeStr.trim().split("_");
+        Locale locale = new Locale(localeAras[0],localeAras[1]);
+        try {
+            initResources(locale);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void addJavaFileComment(CompilationUnit compilationUnit) {
 
+        // if user doesn't supplied the java source copyright then use the default
         String copyright = copyrights.getFormatted("JavaSource", startYear, endYear);
-        if(StringUtils.isEmpty(copyright)) return;
+        if(StringUtils.isEmpty(copyright)){
+            copyright = defaultCopyrights.getFormatted("JavaSource",startYear,endYear);
+            if(StringUtils.isEmpty(copyright)) return;
+        }
 
         String[] array = copyright.split("\\|");
 
@@ -138,7 +163,11 @@ public class CommentGenerator extends DefaultCommentGenerator {
             ed = (ExtendedDocument) document;
         } else return;
 
+        // if user doesn't supplied the xml source copyright then use the default
         String copyright = copyrights.getFormatted("XmlSource", startYear, endYear);
+        if(StringUtils.isEmpty(copyright)){
+            copyright = defaultCopyrights.getFormatted("XmlSource",startYear,endYear);
+        }
         if(StringUtils.isNotEmpty(copyright)) {
             String[] array = copyright.split("\\|");
             StringBuilder sb = new StringBuilder();
@@ -191,10 +220,15 @@ public class CommentGenerator extends DefaultCommentGenerator {
             // use block comments and limit the length of each line
             elements.add(selfIndex++, new TextElement(""));
             elements.add(selfIndex++, new TextElement("<!-- "));
-            while (comment.length() > 80){
-                String current = comment.substring(0,80);
-                elements.add(selfIndex++, new TextElement("    " + current));
-                comment = comment.substring(80);
+
+            if(comment.length() < 80){
+                elements.add(selfIndex++, new TextElement("    " + comment));
+            }else {
+                do {
+                    String current = comment.substring(0, 80);
+                    elements.add(selfIndex++, new TextElement("    " + current));
+                    comment = comment.substring(80);
+                } while (comment.length() > 80);
             }
             elements.add(selfIndex++, new TextElement("-->"));
 
@@ -214,9 +248,14 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
         String id = getID(xmlElement);
 
+        // if user doesn't supply the specified comment the use the default
         String comment = comments.getString(id);
-        if(StringUtils.isNotEmpty(comment));
-        addBeforeSelfInParent(xmlElement,comment);
+        if(StringUtils.isEmpty(comment)){
+            comment = defaultComments.getString(id);
+        }
+        if(StringUtils.isNotEmpty(comment)) {
+            addBeforeSelfInParent(xmlElement, comment);
+        }
     }
 
     @Override

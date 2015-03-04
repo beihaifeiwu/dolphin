@@ -159,6 +159,8 @@
                             <configurationFile>${basedir}/src/test/resources/generatorConfig-postgresql.xml</configurationFile>
                             <overwrite>true</overwrite>
                             <outputDirectory>${basedir}/target/generated-test-sources</outputDirectory>
+                            <locale>en_US</locale>
+                            <i18nPath>${basedir}/src/test/resources/i18n_for_test</i18nPath>
                             <verbose>true</verbose>
                         </configuration>
                         <dependencies>

@@ -13,7 +13,7 @@ public class ResourcesTest {
 
     @Test
     public void testCopyrightReading(){
-        Resources resources = new Resources(CommentGenerator.I18N_DEFAULT_PATH + "/Copyright", Locale.CHINA);
+        Resources resources = new Resources(CommentGenerator.XMBG_CG_I18N_DEFAULT_PATH + "/Copyrights", Locale.CHINA);
         String copyright = resources.getFormatted("JavaSource","2012","2015");
 
         if(StringUtils.isEmpty(copyright)) return;
@@ -31,7 +31,7 @@ public class ResourcesTest {
 
     @Test
     public void testXmlCopyrightReading(){
-        Resources resources = new Resources(CommentGenerator.I18N_DEFAULT_PATH+"/Copyright",Locale.CHINA);
+        Resources resources = new Resources(CommentGenerator.XMBG_CG_I18N_DEFAULT_PATH +"/Copyrights",Locale.CHINA);
         String copyright = resources.getFormatted("XmlSource","2012","2015");
 
         if(StringUtils.isEmpty(copyright)) return;
