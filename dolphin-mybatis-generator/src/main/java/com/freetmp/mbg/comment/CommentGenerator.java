@@ -188,7 +188,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         List<Element> elements = this.rootElement.get().getElements();
         int selfIndex = elements.indexOf(self);
         if(selfIndex != -1){
-            // 使用块儿状注释，并限制每行的长度
+            // use block comments and limit the length of each line
             elements.add(selfIndex++, new TextElement(""));
             elements.add(selfIndex++, new TextElement("<!-- "));
             while (comment.length() > 80){
@@ -222,17 +222,21 @@ public class CommentGenerator extends DefaultCommentGenerator {
     @Override
     public void addGeneralMethodComment(Method method, IntrospectedTable introspectedTable) {
         if(suppressAllComments) return;
-        StringBuilder sb = new StringBuilder();
 
-        method.addJavaDocLine("/**"); //$NON-NLS-1$
-        sb.append(" * created by XMBG"); //$NON-NLS-1$
-        if(!suppressDate){
-            sb.append(" on " + getDateString());
-        }else {
-            sb.append(".");
+        // it's not beauty to add some no use comment to the method
+        if(false) {
+            StringBuilder sb = new StringBuilder();
+
+            method.addJavaDocLine("/**"); //$NON-NLS-1$
+            sb.append(" * created by XMBG"); //$NON-NLS-1$
+            if (!suppressDate) {
+                sb.append(" on " + getDateString());
+            } else {
+                sb.append(".");
+            }
+            method.addJavaDocLine(sb.toString());
+            method.addJavaDocLine(" */"); //$NON-NLS-1$
         }
-        method.addJavaDocLine(sb.toString());
-        method.addJavaDocLine(" */"); //$NON-NLS-1$
     }
 
     /**
