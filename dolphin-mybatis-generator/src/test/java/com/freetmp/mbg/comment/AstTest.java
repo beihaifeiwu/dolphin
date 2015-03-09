@@ -62,11 +62,7 @@ public class AstTest {
                 "    int batchUpsert(@Param(\"records\") List<Admin> list, @Param(\"array\") String[] array);\n" +
                 "}";
 
-        String source2 = "/**                                                                          \n" +
-                " * Copyright 2015-2015 the original author or authors.                         \n" +
-                " *                                                                           \n" +
-                " *       HaHa,I have the right to do anything!                               \n" +
-                " */\n" +
+        String source2 =
                 "package com.freetmp.xmbg.postgresql.mapper;\n" +
                 "\n" +
                 "import com.freetmp.xmbg.postgresql.entity.Admin;\n" +
