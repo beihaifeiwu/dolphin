@@ -9,18 +9,21 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import sun.util.cldr.CLDRLocaleDataMetaInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
 
 /**
  * Created by LiuPin on 2015/3/7.
  */
+@SuppressWarnings("unchecked")
 public class JavaSourceUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JavaSourceUtils.class);
 
 
     public static <T> boolean isAllNull(T one, T two){
@@ -145,13 +148,20 @@ public class JavaSourceUtils {
      */
     public static <T> List<T> mergeListNoDuplicate(List<T> one, List<T> two){
 
+        if(isAllNull(one,two)) return null;
+
         List<T> result = new ArrayList<>();
 
-        TreeSet<T> set = new TreeSet<>();
-        set.addAll(one);
-        set.addAll(two);
-
-        result.addAll(set);
+        if(isAllNotNull(one,two)) {
+            result.addAll(one);
+            for (T t : two) {
+                if (one.indexOf(t) == -1) {
+                    result.add(t);
+                }
+            }
+        }else {
+            result.addAll(findFirstNotNull(one,two));
+        }
 
         return result;
     }
@@ -175,10 +185,11 @@ public class JavaSourceUtils {
                 int index = indexOf(start,two,t);
                 if(index == -1 || index == start){
                     results.add(t);
+                    start += 1;
                 }else {
 
-                    results.addAll(two.subList(start, index));
-                    start = index++;
+                    results.addAll(two.subList(start, ++index));
+                    start = index;
                 }
             }
 
@@ -218,8 +229,11 @@ public class JavaSourceUtils {
             amd.setDefaultValue(mergeSelective(one.getDefaultValue(), two.getDefaultValue()));
             amd.setType(mergeSelective(one.getType(), two.getType()));
 
+            LOG.info("merge AnnotationMemberDeclaration --> {}",amd.getName());
+
         }else {
             amd = findFirstNotNull(one,two);
+            LOG.info("add AnnotationMemberDeclaration --> {}", amd.getName());
         }
 
         return amd;
@@ -306,8 +320,11 @@ public class JavaSourceUtils {
 
             cd.setBlock(mergeBlock(one.getBlock(), two.getBlock()));
 
+            LOG.info("merge ConstructorDeclaration --> {}",cd.getName());
+
         }else {
             cd = findFirstNotNull(one,two);
+            LOG.info("add ConstructorDeclaration --> {}",cd.getName());
         }
 
         return cd;
@@ -336,8 +353,11 @@ public class JavaSourceUtils {
             ecd.setArgs(mergeListInOrder(one.getArgs(), two.getArgs()));
             ecd.setClassBody(mergeBodies(one.getClassBody(), two.getClassBody()));
 
+            LOG.info("merge EnumConstantDeclaration --> {}", ecd.getName());
+
         }else {
             ecd = findFirstNotNull(one,two);
+            LOG.info("add EnumConstantDeclaration --> {}", ecd.getName());
         }
 
         return ecd;
@@ -363,8 +383,11 @@ public class JavaSourceUtils {
             fd.setJavaDoc(mergeSelective(one.getJavaDoc(),two.getJavaDoc()));
             fd.setVariables(mergeListNoDuplicate(one.getVariables(), two.getVariables()));
 
+            LOG.info("merge FieldDeclaration --> {}",fd.getVariables());
+
         }else {
             fd = findFirstNotNull(one,two);
+            LOG.info("add FieldDeclaration --> {}",fd.getVariables());
         }
         return fd;
     }
@@ -390,9 +413,10 @@ public class JavaSourceUtils {
             id.setJavaDoc(mergeSelective(one.getJavaDoc(),two.getJavaDoc()));
             id.setAnnotations(mergeListNoDuplicate(one.getAnnotations(),two.getAnnotations()));
             id.setBlock(mergeBlock(one.getBlock(),two.getBlock()));
-
+            LOG.info("merge InitializerDeclaration --> {}", id.isStatic() ? "static { }" : "{ }");
         }else {
             id = findFirstNotNull(one,two);
+            LOG.info("add InitializerDeclaration --> {}", id.isStatic() ? "static { }" : "{ }");
         }
 
         return id;
@@ -421,13 +445,14 @@ public class JavaSourceUtils {
 
             md.setArrayCount(one.getArrayCount());
 
-            md.setModifiers(mergeModifiers(one.getModifiers(),two.getModifiers()));
-            md.setBody(mergeBlock(one.getBody(),two.getBody()));
-            md.setJavaDoc(mergeSelective(one.getJavaDoc(),two.getJavaDoc()));
-            md.setDefault(one.isDefault());
+            md.setModifiers(mergeModifiers(one.getModifiers(), two.getModifiers()));
+            md.setBody(mergeBlock(one.getBody(), two.getBody()));
+            md.setJavaDoc(mergeSelective(one.getJavaDoc(), two.getJavaDoc()));
 
+            LOG.info("merge MethodDeclaration --> {}",md.getName());
         }else {
             md = findFirstNotNull(one,two);
+            LOG.info("add MethodDeclaration --> {}",md.getName());
         }
 
         return md;
@@ -439,6 +464,7 @@ public class JavaSourceUtils {
      * @param two
      * @return
      */
+    @SuppressWarnings("uncheck")
     public static List<BodyDeclaration> mergeBodies(List<BodyDeclaration> one, List<BodyDeclaration> two){
         List<BodyDeclaration> result = new ArrayList<>();
 
@@ -539,11 +565,11 @@ public class JavaSourceUtils {
                         if(mdOne.getName().equals(mdTwo.getName()) &&
                                 isParametersEquals(mdOne.getParameters(),mdTwo.getParameters()) &&
                                 isListEquals(mdOne.getTypeParameters(),mdTwo.getTypeParameters())){
-
+                                result.add(mergeMethod(mdOne,mdTwo));
+                                found = true;
+                                iterator.remove();
                         }
                     }
-
-
 
                 }
 
@@ -589,8 +615,11 @@ public class JavaSourceUtils {
             // merge content body
             annotationDeclaration.setMembers(mergeBodies(one.getMembers(),two.getMembers()));
 
+            LOG.info("merge AnnotationDeclaration --> {}", annotationDeclaration.getName());
+
         }else {
             annotationDeclaration = findFirstNotNull(one,two);
+            LOG.info("add AnnotationDeclaration --> {}", annotationDeclaration.getName());
         }
 
         return annotationDeclaration;
@@ -621,8 +650,11 @@ public class JavaSourceUtils {
             coid.setInterface(one.isInterface());
             coid.setMembers(mergeBodies(one.getMembers(),two.getMembers()));
 
+            LOG.info("merge ClassOrInterfaceDeclaration --> {}", coid.getName());
+
         }else {
             coid = findFirstNotNull(one,two);
+            LOG.info("add ClassOrInterfaceDeclaration --> {}",coid.getName());
         }
         return coid;
     }
@@ -648,8 +680,10 @@ public class JavaSourceUtils {
             etd.setMembers(mergeBodies(one.getMembers(),two.getMembers()));
             etd.setModifiers(mergeModifiers(one.getModifiers(),two.getModifiers()));
 
+            LOG.info("merge EmptyTypeDeclaration --> {}", etd.getName());
         }else {
             etd = findFirstNotNull(one,two);
+            LOG.info("add EmptyTypeDeclaration --> {}", etd.getName());
         }
         return etd;
     }
@@ -688,13 +722,20 @@ public class JavaSourceUtils {
 
                 if(!found){
                     ecds.add(outer);
+                    LOG.info("add EnumConstantDeclaration --> {}", outer.getName());
                 }
             }
 
-            ecds.addAll(notMatched);
+            for(EnumConstantDeclaration inner : notMatched){
+                ecds.add(inner);
+                LOG.info("add EnumConstantDeclaration --> {}", inner.getName());
+            }
 
         }else {
             ecds = findFirstNotNull(one,two);
+            for(EnumConstantDeclaration ecd : ecds) {
+                LOG.info("add EnumConstantDeclaration --> {}", ecd.getName());
+            }
         }
 
         return ecds;
@@ -722,9 +763,11 @@ public class JavaSourceUtils {
             ed.setImplements(mergeListNoDuplicate(one.getImplements(),two.getImplements()));
             ed.setName(one.getName());
             ed.setEntries(mergeEnumConstants(one.getEntries(),two.getEntries()));
+            LOG.info("merge EnumDeclaration --> {}",ed.getName());
 
         }else {
             ed = findFirstNotNull(one,two);
+            LOG.info("add EnumDeclaration --> {}", ed.getName());
         }
 
         return ed;
@@ -737,6 +780,7 @@ public class JavaSourceUtils {
      * @param two
      * @return
      */
+    @SuppressWarnings("uncheck")
     public static TypeDeclaration mergeType(TypeDeclaration one,TypeDeclaration two){
         TypeDeclaration type = null;
 
@@ -763,6 +807,7 @@ public class JavaSourceUtils {
 
         }else {
             type = findFirstNotNull(one,two);
+            LOG.info("add {} --> {}", type.getClass().getSimpleName(), type.getName());
         }
 
         return type;
@@ -792,6 +837,7 @@ public class JavaSourceUtils {
 
             if(!found){
                 result.add(outer);
+                LOG.info("add {} --> {}", outer.getClass().getSimpleName(), outer.getName());
             }
         }
         return result;

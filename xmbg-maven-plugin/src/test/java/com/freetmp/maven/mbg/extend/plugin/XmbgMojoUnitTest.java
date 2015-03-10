@@ -16,7 +16,8 @@ import java.util.List;
  * Created by LiuPin on 2015/2/3.
  */
 public class XmbgMojoUnitTest {
-    
+
+    @SuppressWarnings("unchecked")
     protected boolean checkPlugin(Class<?> clazz, Context context){
         Field field = FieldUtils.getDeclaredField(Context.class,"pluginConfigurations",true);
         try {
