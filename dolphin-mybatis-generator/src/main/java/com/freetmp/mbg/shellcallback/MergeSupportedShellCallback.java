@@ -36,6 +36,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     @Override
     public String mergeJavaFile(String newFileSource, String existingFileFullPath, String[] javadocTags, String fileEncoding) throws ShellException {
         String mergedFileSource = newFileSource;
+        LOGGER.info("merge java source file for {}",existingFileFullPath);
         try {
             CompilationUnit source = JavaSourceUtils.generateAst(newFileSource);
             CompilationUnit destination = JavaSourceUtils.generateAst(FileUtils.readFileToString(new File(existingFileFullPath),fileEncoding));
@@ -43,6 +44,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
                 mergedFileSource = JavaSourceUtils.mergeContent(source, destination);
             }
         } catch (Exception e) {
+            LOGGER.info("java source merge failed: {}",e);
             throw new ShellException(e);
         }
 

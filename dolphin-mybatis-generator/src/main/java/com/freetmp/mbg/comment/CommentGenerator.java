@@ -10,6 +10,8 @@ import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -24,6 +26,8 @@ import static org.mybatis.generator.internal.util.StringUtility.isTrue;
  * Created by LiuPin on 2015/2/14.
  */
 public class CommentGenerator extends DefaultCommentGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CommentGenerator.class);
 
     public static final String XMBG_CG_I18N_PATH_KEY = "i18n_path_key_for_CG";
 
@@ -62,14 +66,17 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     private void initResources(Locale locale) throws MalformedURLException {
 
-        // add user specified i18n sources directory to the classpath
-        URL[] urls = {new File(i18nPath).toURI().toURL()};
-        ClassLoader loader = new URLClassLoader(urls);
+        ClassLoader loader = getClass().getClassLoader();
 
-        comments = new Resources("Comments",locale,loader);
+        // add user specified i18n sources directory to the classpath
+        if(!i18nPath.equals(XMBG_CG_I18N_DEFAULT_PATH)) {
+            URL[] urls = {new File(i18nPath).toURI().toURL()};
+            loader = new URLClassLoader(urls);
+        }
+        comments = new Resources(i18nPath + "/Comments",locale,loader);
         defaultComments = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Comments",locale);
 
-        copyrights = new Resources("Copyrights",locale,loader);
+        copyrights = new Resources(i18nPath + "/Copyrights",locale,loader);
         defaultCopyrights = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Copyrights",locale);
 
         endYear = "" + Calendar.getInstance().get(Calendar.YEAR);
@@ -98,8 +105,11 @@ public class CommentGenerator extends DefaultCommentGenerator {
         suppressAllComments = isTrue(properties
                 .getProperty(PropertyRegistry.COMMENT_GENERATOR_SUPPRESS_ALL_COMMENTS));
 
+        if(suppressAllComments) return;
+
         // 获取国际化资源的路径
         i18nPath = properties.getProperty(XMBG_CG_I18N_PATH_KEY, XMBG_CG_I18N_DEFAULT_PATH);
+        LOG.info("use the i18n resources under {}",i18nPath);
 
         // 获取项目开始时间，用在版权声明中
         String startYearStr = properties.getProperty(XMBG_CG_PROJECT_START_YEAR);
@@ -111,8 +121,12 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
         // 初始化资源
         String localeStr = properties.getProperty(XMBG_CG_I18N_LOCALE_KEY);
-        String[] localeAras = localeStr.trim().split("_");
-        Locale locale = new Locale(localeAras[0],localeAras[1]);
+        Locale locale = Locale.getDefault();
+        if(localeStr != null && StringUtils.isNoneEmpty(localeStr)) {
+            String[] localeAras = localeStr.trim().split("_");
+            locale = new Locale(localeAras[0], localeAras[1]);
+        }
+        LOG.info("use the locale {}",locale);
         try {
             initResources(locale);
         } catch (MalformedURLException e) {
