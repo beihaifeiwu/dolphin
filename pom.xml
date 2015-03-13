@@ -8,7 +8,58 @@
     <artifactId>dolphin-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <name>dolphin</name>
+    <url>https://github.com/beihaifeiwu/dolphin</url>
 
+    <organization>
+        <name>dolphin</name>
+        <url>https://github.com/beihaifeiwu/</url>
+    </organization>
+
+    <!-- 开发人员信息 -->
+    <developers>
+        <developer>
+            <name>beihaifeiwu</name>
+            <email>liuhuizhang@foxmail.com</email>
+            <url>https://github.com/beihaifeiwu/</url>
+            <roles>
+                <role>software engineer</role>
+            </roles>
+            <timezone>8</timezone>
+        </developer>
+    </developers>
+
+    <!-- 许可证 -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <!-- 问题反馈信息 -->
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/beihaifeiwu/dolphin/issues</url>
+    </issueManagement>
+
+    <!-- 分发管理 -->
+    <distributionManagement>
+        <!-- mvn site:deploy 部署的位置-->
+        <site>
+            <id>local</id>
+            <name>filesystem</name>
+            <!-- 修改到磁盘的相应位置 -->
+            <url>file:D:\target\site</url>
+        </site>
+    </distributionManagement>
+
+    <!-- 版本控制信息 -->
+    <scm>
+        <url>https://github.com/beihaifeiwu/dolphin</url>
+        <connection>scm:git:git://github.com/beihaifeiwu/dolphin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:beihaifeiwu/dolphin.git</developerConnection>
+    </scm>
 
     <properties>
 
