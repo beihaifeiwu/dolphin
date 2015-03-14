@@ -29,7 +29,6 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
 /**
  * 内容合并插件，合并以前和当前生成的文件，只增加和更新，不删除
  * @author Pin Liu
- * @编写日期 2014年12月15日下午3:59:04
  */
 public class ContentMergePlugin extends PluginAdapter {
   
@@ -85,9 +84,6 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 访问并合并mapper的xml文件
    * @author Pin Liu
-   * @编写日期: 2014年12月22日下午4:49:19
-   * @param document
-   * @param targetFile
    * @throws java.io.IOException
    * @throws org.dom4j.DocumentException
    */
@@ -127,9 +123,6 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 合并已经存在的Xml元素
    * @author Pin Liu
-   * @编写日期: 2014年12月23日上午11:20:14
-   * @param src
-   * @param dest
    */
   protected void mergeExistedElement(XmlElement src, XmlElement dest){
     
@@ -160,7 +153,6 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 重组XML元素的亲子节点,合并相邻的文本节点
    * @author Pin Liu
-   * @编写日期: 2014年12月23日下午12:03:46
    */
   protected void reformationTheElementChilds(XmlElement xe){
     List<Element> reformationList = new ArrayList<>();
@@ -194,9 +186,6 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 转换dom4j的element元素，生成mbg的XmlElement元素
    * @author Pin Liu
-   * @编写日期: 2014年12月22日下午5:50:15
-   * @param node
-   * @return
    */
   protected XmlElement transformElement(org.dom4j.Element node) {
     XmlElement xe = new XmlElement(node.getName());
@@ -240,10 +229,6 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 从MBG生成的DOM文档结构中找到与element代表同一节点的元素对象
    * @author Pin Liu
-   * @编写日期: 2014年12月22日下午5:35:08
-   * @param document
-   * @param element
-   * @return
    */
   protected XmlElement findMatchedElementIn(Document document, org.dom4j.Element element){
     org.dom4j.Attribute id = element.attribute("id");

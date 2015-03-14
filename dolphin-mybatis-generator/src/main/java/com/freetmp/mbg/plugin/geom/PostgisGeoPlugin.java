@@ -25,7 +25,6 @@ import java.util.List;
 /**
  * Postgis的地理信息插件
  * @author Pin Liu
- * @编写日期 2014年11月26日下午1:38:55
  */
 public class PostgisGeoPlugin extends PluginAdapter {
     
@@ -204,9 +203,6 @@ public class PostgisGeoPlugin extends PluginAdapter {
 	/**
 	 * 使用新的sql语句替换原来的xml内容
 	 * @author Pin Liu
-	 * @编写日期: 2014年12月15日下午3:27:55
-	 * @param xe
-	 * @param sql
 	 */
 	protected void replaceOriginChildElements(XmlElement xe, String sql) {
 		sql = sql.trim();
@@ -225,9 +221,6 @@ public class PostgisGeoPlugin extends PluginAdapter {
 	/**
 	 * 获取xml标签内部的内容
 	 * @author Pin Liu
-	 * @编写日期: 2014年12月15日下午3:15:45
-	 * @param xe
-	 * @return
 	 */
 	protected String getContentWithoutOuterTags(XmlElement xe){
 		int indentLevel = 0;
@@ -245,11 +238,6 @@ public class PostgisGeoPlugin extends PluginAdapter {
 	/**
 	 * 检查xml标签元素是否包含指定属性
 	 * @author Pin Liu
-	 * @编写日期: 2014年12月15日下午3:16:33
-	 * @param xe
-	 * @param key
-	 * @param value
-	 * @return
 	 */
 	public boolean containsAttribute(XmlElement xe,String key, String value){
 		if(xe.getAttributes() != null){
@@ -265,9 +253,6 @@ public class PostgisGeoPlugin extends PluginAdapter {
 	/**
 	 * 根据MBG探测到的数据库表的元数据获取字段的类别名称
 	 * @author Pin Liu
-	 * @编写日期: 2014年12月15日下午3:17:30
-	 * @param introspectedColumn
-	 * @return
 	 */
 	public String fetchTypeName(IntrospectedColumn introspectedColumn){
 		

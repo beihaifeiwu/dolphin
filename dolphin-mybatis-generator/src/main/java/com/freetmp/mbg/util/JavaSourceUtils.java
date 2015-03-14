@@ -132,9 +132,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并修饰符
-     * @param one
-     * @param two
-     * @return
      */
     public static int mergeModifiers(int one, int two){
         return ModifierSet.addModifier(one,two);
@@ -142,9 +139,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并注解声明
-     * @param one
-     * @param two
-     * @return
      */
     public static <T> List<T> mergeListNoDuplicate(List<T> one, List<T> two){
 
@@ -168,9 +162,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并表达式集合
-     * @param one
-     * @param two
-     * @return
      */
     public static <T> List<T> mergeListInOrder(List<T> one, List<T> two){
         List<T> results = new ArrayList<>();
@@ -206,9 +197,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并注解成员声明
-     * @param one
-     * @param two
-     * @return
      */
     public static AnnotationMemberDeclaration mergeAnnotationMember(
             AnnotationMemberDeclaration one, AnnotationMemberDeclaration two){
@@ -242,9 +230,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并代码块儿
-     * @param one
-     * @param two
-     * @return
      */
     public static BlockStmt mergeBlock(BlockStmt one, BlockStmt two){
 
@@ -265,9 +250,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并参数列表
-     * @param one
-     * @param two
-     * @return
      */
     public static List<Parameter> mergeParameters(List<Parameter> one, List<Parameter> two){
         if(isAllNull(one,two) || !isAllNotNull(one,two)) return null;
@@ -295,9 +277,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并构造函数
-     * @param one
-     * @param two
-     * @return
      */
     public static ConstructorDeclaration mergeConstructor(ConstructorDeclaration one, ConstructorDeclaration two){
 
@@ -332,9 +311,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并枚举常量声明
-     * @param one
-     * @param two
-     * @return
      */
     public static EnumConstantDeclaration mergeEnumConstant(EnumConstantDeclaration one,EnumConstantDeclaration two){
 
@@ -365,7 +341,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并字段声明
-     * @return
      */
     public static FieldDeclaration mergeField(FieldDeclaration one, FieldDeclaration two){
 
@@ -394,9 +369,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并初始化代码块
-     * @param one
-     * @param two
-     * @return
      */
     public static InitializerDeclaration mergeInitializer(InitializerDeclaration one, InitializerDeclaration two){
 
@@ -424,9 +396,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并方法声明
-     * @param one
-     * @param two
-     * @return
      */
     public static MethodDeclaration mergeMethod(MethodDeclaration one, MethodDeclaration two){
         if(isAllNull(one,two)) return null;
@@ -460,9 +429,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并内容
-     * @param one
-     * @param two
-     * @return
      */
     @SuppressWarnings("uncheck")
     public static List<BodyDeclaration> mergeBodies(List<BodyDeclaration> one, List<BodyDeclaration> two){
@@ -587,9 +553,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并注解声明
-     * @param one
-     * @param two
-     * @return
      */
     public static AnnotationDeclaration mergeType(AnnotationDeclaration one, AnnotationDeclaration two){
 
@@ -627,9 +590,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并类或接口类型声明
-     * @param one
-     * @param two
-     * @return
      */
     public static ClassOrInterfaceDeclaration mergeType(ClassOrInterfaceDeclaration one, ClassOrInterfaceDeclaration two){
         if(isAllNull(one,two)) return null;
@@ -661,9 +621,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并空类型声明
-     * @param one
-     * @param two
-     * @return
      */
     public static EmptyTypeDeclaration mergeType(EmptyTypeDeclaration one, EmptyTypeDeclaration two){
         if(isAllNull(one,two)) return null;
@@ -690,9 +647,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并枚举常量集合
-     * @param one
-     * @param two
-     * @return
      */
     public static List<EnumConstantDeclaration> mergeEnumConstants(List<EnumConstantDeclaration> one, List<EnumConstantDeclaration> two){
         if(isAllNull(one,two)) return null;
@@ -743,9 +697,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并枚举类型声明
-     * @param one
-     * @param two
-     * @return
      */
     public static EnumDeclaration mergeType(EnumDeclaration one,EnumDeclaration two){
 
@@ -776,9 +727,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并类型声明的分发函数
-     * @param one
-     * @param two
-     * @return
      */
     @SuppressWarnings("uncheck")
     public static TypeDeclaration mergeType(TypeDeclaration one,TypeDeclaration two){
@@ -815,9 +763,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并类型声明
-     * @param one
-     * @param two
-     * @return
      * @throws Exception
      */
     public static List<TypeDeclaration> mergeTypes(List<TypeDeclaration> one, List<TypeDeclaration> two) throws Exception {
@@ -845,8 +790,6 @@ public class JavaSourceUtils {
     
     /**
      * 合并两个编译单元的内容
-     * @param one
-     * @param two
      */
     public static String mergeContent(CompilationUnit one,CompilationUnit two) throws Exception {
 
@@ -877,9 +820,6 @@ public class JavaSourceUtils {
 
     /**
      * 合并两个源Java source中的内容
-     * @param one
-     * @param two
-     * @return
      */
     public static String mergeContent(String one, String two) throws Exception {
         return mergeContent(generateAst(one),generateAst(two));
@@ -887,8 +827,6 @@ public class JavaSourceUtils {
 
     /**
      * 根据字符串生成编译单元
-     * @param source
-     * @return
      * @throws ParseException
      */
     public static CompilationUnit generateAst(String source) throws ParseException {

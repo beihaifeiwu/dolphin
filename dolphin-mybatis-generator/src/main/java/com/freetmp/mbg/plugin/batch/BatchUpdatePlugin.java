@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * 批量更新生成插件
  * @author Pin Liu
- * @编写日期 2014年11月19日下午2:09:47
  */
 public class BatchUpdatePlugin extends PluginAdapter {
 	

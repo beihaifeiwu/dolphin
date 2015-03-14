@@ -18,7 +18,6 @@ import java.sql.SQLException;
 /**
  * Postgis中Point类型的类型解析器
  * @author Pin Liu
- * @编写日期 2014年11月18日下午3:06:32
  */
 @MappedJdbcTypes(JdbcType.OTHER)
 @MappedTypes({Geometry.class,Point.class})

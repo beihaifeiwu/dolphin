@@ -32,8 +32,8 @@ public class Resources {
 
     /**
      * use utf-8 charset to decode the properties file
-     * @param baseName
-     * @param locale
+     * @param baseName resource properties file name
+     * @param locale the locale to parse the resource
      */
     public Resources(String baseName,Locale locale){
         ResourceBundle rb = ResourceBundle.getBundle(baseName,locale,new UTF8Control());
@@ -42,9 +42,9 @@ public class Resources {
 
     /**
      * use specified class loader to load i18n resources
-     * @param s
-     * @param locale
-     * @param loader
+     * @param s resource properties file name
+     * @param locale the locale to parse the resource
+     * @param loader class loader
      */
     public Resources(String s, Locale locale, ClassLoader loader) {
         ResourceBundle rb = ResourceBundle.getBundle(s,locale,loader,new UTF8Control());

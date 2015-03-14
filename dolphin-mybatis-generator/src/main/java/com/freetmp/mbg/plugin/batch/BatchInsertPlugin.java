@@ -19,7 +19,6 @@ import java.util.List;
 /**
  * 批量插入生成插件
  * @author Pin Liu
- * @编写日期 2014年11月17日下午3:11:43
  */
 public class BatchInsertPlugin extends PluginAdapter {
 	

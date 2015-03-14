@@ -12,8 +12,8 @@ public class ExtendedDocument extends Document {
     protected String fileComments;
 
     /**
-     * @param publicId
-     * @param systemId
+     * @param publicId document identify
+     * @param systemId document identify
      */
     public ExtendedDocument(String publicId, String systemId) {
         super(publicId, systemId);

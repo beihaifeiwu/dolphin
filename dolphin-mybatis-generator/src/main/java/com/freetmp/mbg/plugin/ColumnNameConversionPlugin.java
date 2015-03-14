@@ -18,7 +18,6 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
  * 数据库表列名转换插件,根据指定的正则表达式从列名中提取单词元组
  * 生成符合Java命名规范的驼峰命名格式
  * @author Pin Liu
- * @编写日期 2014年11月13日下午5:35:16
  */
 public class ColumnNameConversionPlugin extends PluginAdapter {
     

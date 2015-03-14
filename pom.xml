@@ -7,8 +7,10 @@
     <groupId>com.freetmp</groupId>
     <artifactId>dolphin-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
+
     <name>dolphin</name>
+    <description>The Dolphin Project is aim to accumulate the repeat problem solution and make it recycle</description>
     <url>https://github.com/beihaifeiwu/dolphin</url>
 
     <organization>
@@ -52,6 +54,18 @@
             <!-- 修改到磁盘的相应位置 -->
             <url>file:D:\target\site</url>
         </site>
+
+        <snapshotRepository>
+            <id>oss</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>oss</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
     </distributionManagement>
 
     <!-- 版本控制信息 -->
@@ -61,6 +75,8 @@
         <developerConnection>scm:git:ssh://git@github.com:beihaifeiwu/dolphin.git</developerConnection>
     </scm>
 
+
+
     <properties>
 
         <!-- 主要依赖库的版本定义 -->
@@ -68,13 +84,18 @@
         <commons.io.version>2.4</commons.io.version>
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
+        <java.version>1.8</java.version>
+        <version.javadoc>8</version.javadoc>
 
         <!-- Plugin属性定义 -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <version.maven-compiler-plugin>3.2</version.maven-compiler-plugin>
+        <version.maven-source-plugin>2.4</version.maven-source-plugin>
+        <version.maven-javadoc-plugin>2.10.1</version.maven-javadoc-plugin>
+        <version.maven-gpg-plugin>1.5</version.maven-gpg-plugin>
 
         <!-- 项目属性 -->
         <dolphin.version>1.0-SNAPSHOT</dolphin.version>
@@ -137,6 +158,74 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${version.maven-source-plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <attach>true</attach>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${version.maven-javadoc-plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                            <links>
+                                <link>http://docs.oracle.com/javase/${version.javadoc}/docs/api</link>
+                            </links>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${version.maven-gpg-plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
     <modules>
         <module>dolphin-mybatis-generator</module>

@@ -5,11 +5,12 @@
     <parent>
         <artifactId>dolphin-parent</artifactId>
         <groupId>com.freetmp</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dolphin-spring-batch</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <properties>
         <spring.batch.version>3.0.2.RELEASE</spring.batch.version>

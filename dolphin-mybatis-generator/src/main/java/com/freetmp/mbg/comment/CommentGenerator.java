@@ -156,8 +156,6 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     /**
      * 添加新元素到子元素的最前面
-     * @param parent
-     * @param child
      */
     public void addToFirstChildren(XmlElement parent,Element child){
         List<Element> elements = parent.getElements();
@@ -166,7 +164,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     /**
      * add the sql map file comment
-     * @param document
+     * @param document mbg dom
      */
     public void addSqlMapFileComment(Document document){
 
@@ -252,8 +250,6 @@ public class CommentGenerator extends DefaultCommentGenerator {
     /**
      * Adds a suitable comment to warn users that the element was generated, and
      * when it was generated.
-     *
-     * @param xmlElement
      */
     @Override
     public void addComment(XmlElement xmlElement) {

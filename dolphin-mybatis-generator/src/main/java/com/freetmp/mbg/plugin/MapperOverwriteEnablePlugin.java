@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * 修复MBG的mapper文件不能复写的错误
  * @author Pin Liu
- * @编写日期 2014年11月17日下午4:34:13
  */
 public class MapperOverwriteEnablePlugin extends PluginAdapter {
 

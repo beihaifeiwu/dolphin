@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * 对QueryDsl提供支持的插件
  * @author Pin Liu
- * @编写日期 2014年11月20日上午11:51:15
  */
 public class QueryDslPlugin extends PluginAdapter {
 	

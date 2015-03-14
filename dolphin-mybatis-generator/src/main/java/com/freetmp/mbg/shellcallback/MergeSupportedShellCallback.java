@@ -22,7 +22,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     static final Logger LOGGER = LoggerFactory.getLogger(MergeSupportedShellCallback.class);
 
     /**
-     * @param overwrite
+     * @param overwrite if true overwrite the existed file
      */
     public MergeSupportedShellCallback(boolean overwrite) {
         super(overwrite);

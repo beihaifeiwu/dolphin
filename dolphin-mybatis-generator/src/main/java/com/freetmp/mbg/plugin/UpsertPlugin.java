@@ -18,7 +18,6 @@ import java.util.TreeSet;
 /**
  * 存在即更新否则插入方法生成插件
  * @author Pin Liu
- * @编写日期 2014年11月19日下午4:41:30
  */
 public class UpsertPlugin extends PluginAdapter {
 	
@@ -112,9 +111,6 @@ public class UpsertPlugin extends PluginAdapter {
 	/**
 	 * 生成sqlMap里对应的xml元素
 	 * @author Pin Liu
-	 * @编写日期: 2014年12月15日下午3:50:34
-	 * @param introspectedTable
-	 * @param parent
 	 */
 	protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
 		/*----------------------------update语句--------------------------------*/
@@ -217,9 +213,6 @@ public class UpsertPlugin extends PluginAdapter {
 	/**
 	 * 创建根据传入的Array数组进行判断的sql语句
 	 * @author Pin Liu
-	 * @编写日期: 2014年12月15日下午3:49:37
-	 * @param introspectedTable
-	 * @return
 	 */
 	protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
 		
