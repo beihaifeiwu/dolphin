@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
-/**
+/*
  * Created by pin on 2015/2/10.
  */
 public class XMLMergePlugin extends PluginAdapter {
@@ -50,7 +50,7 @@ public class XMLMergePlugin extends PluginAdapter {
         return true;
     }
 
-    /**
+    /*
      * 从DefaultShellCallback中借用的解析文件夹的函数
      * @throws ShellException
      */
@@ -88,7 +88,7 @@ public class XMLMergePlugin extends PluginAdapter {
         return directory;
     }
 
-    /**
+    /*
      * 根据xml文件所属的包名获取相应的文件
      * @param packiage package declaration
      * @param fileName target file name
@@ -120,7 +120,7 @@ public class XMLMergePlugin extends PluginAdapter {
         return true;
     }
 
-    /**
+    /*
      * 访问并合并mapper的xml文件
      * @author Pin Liu
      * @throws java.io.IOException
@@ -159,7 +159,7 @@ public class XMLMergePlugin extends PluginAdapter {
         });
     }
 
-    /**
+    /*
      * 合并已经存在的Xml元素
      * @author Pin Liu
      * @param src source xml node
@@ -191,7 +191,7 @@ public class XMLMergePlugin extends PluginAdapter {
         // 暂时不做处理 ---留待后续添加
     }
 
-    /**
+    /*
      * 重组XML元素的亲子节点,合并相邻的文本节点
      * @author Pin Liu
      */
@@ -224,7 +224,7 @@ public class XMLMergePlugin extends PluginAdapter {
         xe.getElements().addAll(reformationList);
     }
 
-    /**
+    /*
      * 转换dom4j的element元素，生成mbg的XmlElement元素
      * @author Pin Liu
      */
@@ -267,7 +267,7 @@ public class XMLMergePlugin extends PluginAdapter {
         return xe;
     }
 
-    /**
+    /*
      * 从MBG生成的DOM文档结构中找到与element代表同一节点的元素对象
      * @author Pin Liu
      */

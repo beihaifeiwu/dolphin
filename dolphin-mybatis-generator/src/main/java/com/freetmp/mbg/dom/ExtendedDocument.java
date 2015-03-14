@@ -4,14 +4,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.xml.Document;
 
-/**
+/*
  * Created by LiuPin on 2015/3/2.
  */
 public class ExtendedDocument extends Document {
 
     protected String fileComments;
 
-    /**
+    /*
      * @param publicId document identify
      * @param systemId document identify
      */

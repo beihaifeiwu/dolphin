@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-/**
+/*
  * <B>AppResources</B> is a convenience wrapper for accessing resource
  * store in a <I>ResourceBundle<I>.
  * 
@@ -18,10 +18,10 @@ import java.util.ResourceBundle;
  */
 public class Resources {
 
-    /** The wrapped resource bundle. */
+    /* The wrapped resource bundle. */
     protected final ResourceBundle resource;
 
-    /**
+    /*
      * Instantiates a new resourcebundleutil which wraps the provided resource
      * bundle.
      * @param r the ResourceBundle
@@ -30,7 +30,7 @@ public class Resources {
         resource = r;
     }
 
-    /**
+    /*
      * use utf-8 charset to decode the properties file
      * @param baseName resource properties file name
      * @param locale the locale to parse the resource
@@ -40,7 +40,7 @@ public class Resources {
         this.resource = rb;
     }
 
-    /**
+    /*
      * use specified class loader to load i18n resources
      * @param s resource properties file name
      * @param locale the locale to parse the resource
@@ -51,7 +51,7 @@ public class Resources {
         this.resource = rb;
     }
 
-    /**
+    /*
      * Gets a string from the ResourceBundles.
      * <br> Convenience method to save casting.
      * 
@@ -67,7 +67,7 @@ public class Resources {
         }
     }
 
-    /**
+    /*
      * a convenience mentod to get all strings as a sentence or phrase.
      * @since 1.1 
      */
@@ -87,7 +87,7 @@ public class Resources {
         }
         return retval;
     }
-    /**
+    /*
      * Gets the integer from the properties.
      * 
      * @param key the key of the property.
@@ -102,7 +102,7 @@ public class Resources {
         }
     }
 
-    /**
+    /*
      * Gets the int.
      * 
      * @param key the key
@@ -117,7 +117,7 @@ public class Resources {
         }
     }
 
-    /**
+    /*
      * Gets the bundle.
      * 
      * @return the bundle
@@ -126,7 +126,7 @@ public class Resources {
         return resource;
     }
 
-    /**
+    /*
      * Gets the keys.
      * 
      * @return the keys
@@ -135,7 +135,7 @@ public class Resources {
         return resource.getKeys();
     }
 
-    /**
+    /*
      * Gets a resource string formatted with MessageFormat.
      * 
      * @param key the key
@@ -147,7 +147,7 @@ public class Resources {
         return MessageFormat.format(resource.getString(key), new Object[] {argument});
     }
 
-    /**
+    /*
      * Gets a resource string formatted with MessageFormat.
      * 
      * @param key the key

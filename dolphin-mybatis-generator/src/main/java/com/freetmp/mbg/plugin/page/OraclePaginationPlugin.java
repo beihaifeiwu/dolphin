@@ -9,7 +9,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 
 import java.util.List;
 
-/**
+/*
  * Created by LiuPin on 2015/2/3.
  */
 public class OraclePaginationPlugin extends AbstractPaginationPlugin {

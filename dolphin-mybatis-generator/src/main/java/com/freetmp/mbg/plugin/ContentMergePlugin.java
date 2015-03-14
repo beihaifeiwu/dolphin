@@ -26,7 +26,7 @@ import java.util.List;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
-/**
+/*
  * 内容合并插件，合并以前和当前生成的文件，只增加和更新，不删除
  * @author Pin Liu
  */
@@ -81,7 +81,7 @@ public class ContentMergePlugin extends PluginAdapter {
     return true;
   }
 
-  /**
+  /*
    * 访问并合并mapper的xml文件
    * @author Pin Liu
    * @throws java.io.IOException
@@ -120,7 +120,7 @@ public class ContentMergePlugin extends PluginAdapter {
     });
   }
   
-  /**
+  /*
    * 合并已经存在的Xml元素
    * @author Pin Liu
    */
@@ -150,7 +150,7 @@ public class ContentMergePlugin extends PluginAdapter {
     // 暂时不做处理 ---留待后续添加
   }
   
-  /**
+  /*
    * 重组XML元素的亲子节点,合并相邻的文本节点
    * @author Pin Liu
    */
@@ -183,7 +183,7 @@ public class ContentMergePlugin extends PluginAdapter {
     xe.getElements().addAll(reformationList);
   }
   
-  /**
+  /*
    * 转换dom4j的element元素，生成mbg的XmlElement元素
    * @author Pin Liu
    */
@@ -226,7 +226,7 @@ public class ContentMergePlugin extends PluginAdapter {
     return xe;
   }
 
-  /**
+  /*
    * 从MBG生成的DOM文档结构中找到与element代表同一节点的元素对象
    * @author Pin Liu
    */

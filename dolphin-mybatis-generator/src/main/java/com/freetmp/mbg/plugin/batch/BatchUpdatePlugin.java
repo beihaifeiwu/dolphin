@@ -12,7 +12,7 @@ import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
 import java.util.List;
 
-/**
+/*
  * 批量更新生成插件
  * @author Pin Liu
  */

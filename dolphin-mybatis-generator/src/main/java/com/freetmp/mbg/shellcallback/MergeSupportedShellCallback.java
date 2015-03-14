@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
-/**
+/*
  * Created by pin on 2015/2/7.
  */
 public class MergeSupportedShellCallback extends DefaultShellCallback {
 
     static final Logger LOGGER = LoggerFactory.getLogger(MergeSupportedShellCallback.class);
 
-    /**
+    /*
      * @param overwrite if true overwrite the existed file
      */
     public MergeSupportedShellCallback(boolean overwrite) {

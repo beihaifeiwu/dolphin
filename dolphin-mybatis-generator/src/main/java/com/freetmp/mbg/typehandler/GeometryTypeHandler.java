@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-/**
+/*
  * Postgis中Point类型的类型解析器
  * @author Pin Liu
  */

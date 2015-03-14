@@ -5,7 +5,7 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-/**
+/*
  * Created by LiuPin on 2015/2/4.
  */
 public class HsqldbPaginationPlugin extends AbstractPaginationPlugin {

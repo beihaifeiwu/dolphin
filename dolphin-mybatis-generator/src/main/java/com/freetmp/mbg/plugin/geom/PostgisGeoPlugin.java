@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
+/*
  * Postgis的地理信息插件
  * @author Pin Liu
  */
@@ -65,7 +65,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 		return valid;
 	}
 	
-	/**
+	/*
 	 * 在初始化阶段，检查所有字段的JdbcType为OTHER的字段，获取其类型名称（TYPE_NAME）
 	 * 根据其类型名称确定其实际的地理信息类型
 	 */
@@ -124,7 +124,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 		return true;
 	}
 	
-	/**
+	/*
 	 * 检查并替换输入的地理信息相关参数，使用PostGis提供的ST_GeomFromText函数
 	 * @author Pin Liu
 	 */
@@ -161,7 +161,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
     }
   }
 	
-	/**
+	/*
 	 * 检查并替换输出的地理信息相关参数，使用PostGis提供的ST_AsText函数
 	 * @author Pin Liu
 	 */
@@ -200,7 +200,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
     }		
   }
 
-	/**
+	/*
 	 * 使用新的sql语句替换原来的xml内容
 	 * @author Pin Liu
 	 */
@@ -218,7 +218,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 		}
 	}
 	
-	/**
+	/*
 	 * 获取xml标签内部的内容
 	 * @author Pin Liu
 	 */
@@ -235,7 +235,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
         return sb.toString();
 	}
 
-	/**
+	/*
 	 * 检查xml标签元素是否包含指定属性
 	 * @author Pin Liu
 	 */
@@ -250,7 +250,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 		return false;
 	}
 
-	/**
+	/*
 	 * 根据MBG探测到的数据库表的元数据获取字段的类别名称
 	 * @author Pin Liu
 	 */

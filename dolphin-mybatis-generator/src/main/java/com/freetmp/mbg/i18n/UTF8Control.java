@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-/**
+/*
  * used by resource bundle
  */
 public class UTF8Control extends ResourceBundle.Control {

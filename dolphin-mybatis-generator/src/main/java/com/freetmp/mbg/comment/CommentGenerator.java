@@ -22,7 +22,7 @@ import java.util.*;
 
 import static org.mybatis.generator.internal.util.StringUtility.isTrue;
 
-/**
+/*
  * Created by LiuPin on 2015/2/14.
  */
 public class CommentGenerator extends DefaultCommentGenerator {
@@ -82,7 +82,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         endYear = "" + Calendar.getInstance().get(Calendar.YEAR);
     }
 
-    /**
+    /*
      * This method returns a formated date string to include in the Javadoc tag
      * and XML comments. You may return null if you do not want the date in
      * these documentation elements.
@@ -154,7 +154,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         }
     }
 
-    /**
+    /*
      * 添加新元素到子元素的最前面
      */
     public void addToFirstChildren(XmlElement parent,Element child){
@@ -162,7 +162,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         elements.add(0,child);
     }
 
-    /**
+    /*
      * add the sql map file comment
      * @param document mbg dom
      */
@@ -194,7 +194,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         }
     }
 
-    /**
+    /*
      * 初始化XML文件的根节点
      */
     public void initRootElement(XmlElement rootElement){
@@ -202,7 +202,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         this.rootElement.set(rootElement);
     }
 
-    /**
+    /*
      * 清除XML文件的根节点
      */
     public void clearRootElement(){
@@ -247,7 +247,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         }
     }
 
-    /**
+    /*
      * Adds a suitable comment to warn users that the element was generated, and
      * when it was generated.
      */
@@ -276,7 +276,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         if(false) {
             StringBuilder sb = new StringBuilder();
 
-            method.addJavaDocLine("/**"); //$NON-NLS-1$
+            method.addJavaDocLine("/*"); //$NON-NLS-1$
             sb.append(" * created by XMBG"); //$NON-NLS-1$
             if (!suppressDate) {
                 sb.append(" on " + getDateString());
@@ -288,7 +288,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
         }
     }
 
-    /**
+    /*
      * This method adds the custom javadoc tag for. You may do nothing if you do
      * not wish to include the Javadoc tag - however, if you do not include the
      * Javadoc tag then the Java merge capability of the eclipse plugin will

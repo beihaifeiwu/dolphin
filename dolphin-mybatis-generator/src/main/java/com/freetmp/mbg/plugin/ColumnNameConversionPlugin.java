@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
-/**
+/*
  * 数据库表列名转换插件,根据指定的正则表达式从列名中提取单词元组
  * 生成符合Java命名规范的驼峰命名格式
  * @author Pin Liu

@@ -8,7 +8,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import java.lang.reflect.Field;
 import java.util.List;
 
-/**
+/*
  * 修复MBG的mapper文件不能复写的错误
  * @author Pin Liu
  */

@@ -10,7 +10,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 
 import java.util.List;
 
-/**
+/*
  * MySql数据库查询分页插件
  * @author Pin Liu
  * @编写日期 2014年11月26日下午12:43:50
@@ -34,7 +34,7 @@ public class MySqlPaginationPlugin extends AbstractPaginationPlugin {
 				introspectedTable);
 	}
 	
-	/**
+	/*
 	 * This plugin is always valid - no properties are required
 	 */
 	public boolean validate(List<String> warnings) {

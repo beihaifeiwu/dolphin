@@ -7,7 +7,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.util.List;
 
-/**
+/*
  * 对QueryDsl提供支持的插件
  * @author Pin Liu
  */

@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
+/*
  * Created by LiuPin on 2015/3/2.
  */
 public class CommentsWavePlugin extends PluginAdapter {
 
-    /**
+    /*
      * This method is called after all the setXXX methods are called, but before
      * any other method is called. This allows the plugin to determine whether
      * it can run or not. For example, if the plugin requires certain properties

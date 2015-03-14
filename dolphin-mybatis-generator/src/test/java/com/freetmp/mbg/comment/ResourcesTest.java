@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.Locale;
 
-/**
+/*
  * Created by pin on 2015/3/3.
  */
 public class ResourcesTest {

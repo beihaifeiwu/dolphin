@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
+/*
  * Created by LiuPin on 2015/3/7.
  */
 @SuppressWarnings("unchecked")
@@ -130,14 +130,14 @@ public class JavaSourceUtils {
         return isEqual;
     }
 
-    /**
+    /*
      * 合并修饰符
      */
     public static int mergeModifiers(int one, int two){
         return ModifierSet.addModifier(one,two);
     }
 
-    /**
+    /*
      * 合并注解声明
      */
     public static <T> List<T> mergeListNoDuplicate(List<T> one, List<T> two){
@@ -160,7 +160,7 @@ public class JavaSourceUtils {
         return result;
     }
 
-    /**
+    /*
      * 合并表达式集合
      */
     public static <T> List<T> mergeListInOrder(List<T> one, List<T> two){
@@ -195,7 +195,7 @@ public class JavaSourceUtils {
         return results;
     }
 
-    /**
+    /*
      * 合并注解成员声明
      */
     public static AnnotationMemberDeclaration mergeAnnotationMember(
@@ -228,7 +228,7 @@ public class JavaSourceUtils {
 
     }
 
-    /**
+    /*
      * 合并代码块儿
      */
     public static BlockStmt mergeBlock(BlockStmt one, BlockStmt two){
@@ -248,7 +248,7 @@ public class JavaSourceUtils {
         return blockStmt;
     }
 
-    /**
+    /*
      * 合并参数列表
      */
     public static List<Parameter> mergeParameters(List<Parameter> one, List<Parameter> two){
@@ -275,7 +275,7 @@ public class JavaSourceUtils {
     }
 
 
-    /**
+    /*
      * 合并构造函数
      */
     public static ConstructorDeclaration mergeConstructor(ConstructorDeclaration one, ConstructorDeclaration two){
@@ -309,7 +309,7 @@ public class JavaSourceUtils {
         return cd;
     }
 
-    /**
+    /*
      * 合并枚举常量声明
      */
     public static EnumConstantDeclaration mergeEnumConstant(EnumConstantDeclaration one,EnumConstantDeclaration two){
@@ -339,7 +339,7 @@ public class JavaSourceUtils {
         return ecd;
     }
 
-    /**
+    /*
      * 合并字段声明
      */
     public static FieldDeclaration mergeField(FieldDeclaration one, FieldDeclaration two){
@@ -367,7 +367,7 @@ public class JavaSourceUtils {
         return fd;
     }
 
-    /**
+    /*
      * 合并初始化代码块
      */
     public static InitializerDeclaration mergeInitializer(InitializerDeclaration one, InitializerDeclaration two){
@@ -394,7 +394,7 @@ public class JavaSourceUtils {
         return id;
     }
 
-    /**
+    /*
      * 合并方法声明
      */
     public static MethodDeclaration mergeMethod(MethodDeclaration one, MethodDeclaration two){
@@ -427,7 +427,7 @@ public class JavaSourceUtils {
         return md;
     }
 
-    /**
+    /*
      * 合并内容
      */
     @SuppressWarnings("uncheck")
@@ -551,7 +551,7 @@ public class JavaSourceUtils {
         return result;
     }
 
-    /**
+    /*
      * 合并注解声明
      */
     public static AnnotationDeclaration mergeType(AnnotationDeclaration one, AnnotationDeclaration two){
@@ -588,7 +588,7 @@ public class JavaSourceUtils {
         return annotationDeclaration;
     }
 
-    /**
+    /*
      * 合并类或接口类型声明
      */
     public static ClassOrInterfaceDeclaration mergeType(ClassOrInterfaceDeclaration one, ClassOrInterfaceDeclaration two){
@@ -619,7 +619,7 @@ public class JavaSourceUtils {
         return coid;
     }
 
-    /**
+    /*
      * 合并空类型声明
      */
     public static EmptyTypeDeclaration mergeType(EmptyTypeDeclaration one, EmptyTypeDeclaration two){
@@ -645,7 +645,7 @@ public class JavaSourceUtils {
         return etd;
     }
 
-    /**
+    /*
      * 合并枚举常量集合
      */
     public static List<EnumConstantDeclaration> mergeEnumConstants(List<EnumConstantDeclaration> one, List<EnumConstantDeclaration> two){
@@ -695,7 +695,7 @@ public class JavaSourceUtils {
         return ecds;
     }
 
-    /**
+    /*
      * 合并枚举类型声明
      */
     public static EnumDeclaration mergeType(EnumDeclaration one,EnumDeclaration two){
@@ -725,7 +725,7 @@ public class JavaSourceUtils {
     }
 
 
-    /**
+    /*
      * 合并类型声明的分发函数
      */
     @SuppressWarnings("uncheck")
@@ -761,7 +761,7 @@ public class JavaSourceUtils {
         return type;
     }
 
-    /**
+    /*
      * 合并类型声明
      * @throws Exception
      */
@@ -788,7 +788,7 @@ public class JavaSourceUtils {
         return result;
     }
     
-    /**
+    /*
      * 合并两个编译单元的内容
      */
     public static String mergeContent(CompilationUnit one,CompilationUnit two) throws Exception {
@@ -818,14 +818,14 @@ public class JavaSourceUtils {
         return cu.toString();
     }
 
-    /**
+    /*
      * 合并两个源Java source中的内容
      */
     public static String mergeContent(String one, String two) throws Exception {
         return mergeContent(generateAst(one),generateAst(two));
     }
 
-    /**
+    /*
      * 根据字符串生成编译单元
      * @throws ParseException
      */

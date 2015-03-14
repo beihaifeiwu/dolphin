@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
+/*
  * 存在即更新否则插入方法生成插件
  * @author Pin Liu
  */
@@ -108,7 +108,7 @@ public class UpsertPlugin extends PluginAdapter {
 		document.getRootElement().addElement(update);
 	}
 
-	/**
+	/*
 	 * 生成sqlMap里对应的xml元素
 	 * @author Pin Liu
 	 */
@@ -195,7 +195,7 @@ public class UpsertPlugin extends PluginAdapter {
 		
 	}
 
-	/**
+	/*
 	 * 生成根据参数array判断where条件的元素
 	 * @author Pin Liu
 	 */
@@ -210,7 +210,7 @@ public class UpsertPlugin extends PluginAdapter {
 		return where;
 	}
 
-	/**
+	/*
 	 * 创建根据传入的Array数组进行判断的sql语句
 	 * @author Pin Liu
 	 */
