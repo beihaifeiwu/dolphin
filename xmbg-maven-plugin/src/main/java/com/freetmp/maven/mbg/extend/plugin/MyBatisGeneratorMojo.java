@@ -174,6 +174,8 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
 
+        printAnnounce();
+
         // add resource directories to the classpath.  This is required to support
         // use of a properties file in the build.  Typically, the properties file
         // is in the project's source tree, but the plugin classpath does not
@@ -273,6 +275,14 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             resource.addInclude("**/*.xml");
             project.addResource(resource);
         }
+    }
+
+    /**
+     * 打印一些通知
+     */
+    private void printAnnounce(){
+        getLog().info("Welcome using the XMBG!");
+        getLog().info("issue report: https://github.com/beihaifeiwu/dolphin/issues");
     }
 
     /**
