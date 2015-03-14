@@ -7,7 +7,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 可重置读取器的支持类
  * @author Pin Liu
  * @编写日期 2014年11月12日下午4:13:35

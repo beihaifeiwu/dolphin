@@ -72,7 +72,7 @@
     <scm>
         <url>https://github.com/beihaifeiwu/dolphin</url>
         <connection>scm:git:git://github.com/beihaifeiwu/dolphin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:beihaifeiwu/dolphin.git</developerConnection>
+        <developerConnection>scm:git:git://github.com/beihaifeiwu/dolphin.git</developerConnection>
     </scm>
 
 

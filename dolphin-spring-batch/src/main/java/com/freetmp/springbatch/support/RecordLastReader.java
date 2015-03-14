@@ -2,7 +2,7 @@ package com.freetmp.springbatch.support;
 
 import org.springframework.batch.item.ItemReader;
 
-/**
+/*
  * 记录上一个读取值的读取器
  * 	其上一个的有效数据会在read()调用后被重置
  *  reset会清除记录的值

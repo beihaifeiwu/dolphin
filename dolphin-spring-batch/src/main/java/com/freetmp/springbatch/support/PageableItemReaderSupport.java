@@ -6,7 +6,7 @@ import org.springframework.batch.item.UnexpectedInputException;
 
 import java.util.List;
 
-/**
+/*
  * 可分页的读取器
  * @author Pin Liu
  * @编写日期 2014年11月17日上午10:02:49
@@ -14,22 +14,22 @@ import java.util.List;
  */
 public abstract class PageableItemReaderSupport<T> extends ResettableItemReaderSupport<T> {
 	
-	/**
+	/*
 	 * 缓存当前页的内容
 	 */
 	protected List<T> pageContent = null;
 
-	/**
+	/*
 	 * 当前页的当前索引
 	 */
 	protected volatile int indexOfCurrentPage = 0;
 	
-	/**
+	/*
 	 * 分页的页面大小
 	 */
 	protected int pageSize = 100;
 	
-	/**
+	/*
 	 * 当前页
 	 */
 	protected int currentPage = 0;
@@ -83,7 +83,7 @@ public abstract class PageableItemReaderSupport<T> extends ResettableItemReaderS
 		return null;
 	}
 	
-	/**
+	/*
 	 * 读取一页的内容需要子类去实现
 	 * @author Pin Liu
 	 * @编写日期: 2014年11月17日上午10:11:24

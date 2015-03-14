@@ -8,7 +8,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 三路读取器
  * @author Pin Liu
  * @编写日期 2014年11月10日下午3:17:03

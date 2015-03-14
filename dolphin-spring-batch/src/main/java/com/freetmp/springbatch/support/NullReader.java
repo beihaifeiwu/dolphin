@@ -4,7 +4,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 永远返回空的可重置读取器
  * @author Pin Liu
  * @编写日期 2014年11月12日下午3:00:05

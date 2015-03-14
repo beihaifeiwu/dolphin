@@ -9,7 +9,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 以笛卡尔乘积的方式读取连个读取器的内容
  * @author Pin Liu
  * @编写日期 2014年11月12日上午11:57:40

@@ -5,14 +5,14 @@ import com.mysema.query.types.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * querydsl相关的工具类
  * @author Pin Liu
  * @编写日期 2014年11月17日下午12:03:15
  */
 public class QDslUtil {
 
-	/**
+	/*
 	 * 根据dsl提供的路径取出属性名
 	 * @author Pin Liu
 	 * @编写日期: 2014年11月17日下午12:46:05

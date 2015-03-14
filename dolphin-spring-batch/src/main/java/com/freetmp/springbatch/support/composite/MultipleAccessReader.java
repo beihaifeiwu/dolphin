@@ -9,7 +9,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 多路读取器支持基类
  *   * 	有3种读取策略
  * 	 1.任何一个子读取器读取完成则整个读取器读取完成
@@ -61,7 +61,7 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 		return item;
 	}
 	
-	/**
+	/*
 	 * 正常读取所有子读取器的内容
 	 * @author Pin Liu
 	 * @编写日期: 2014年11月13日上午11:35:43
@@ -69,7 +69,7 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 	 */
 	protected abstract T doReadNormally() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException;
 
-	/**
+	/*
 	 * 支持策略 POLICY_IMMEDIATELY 的读取方式
 	 * @author Pin Liu
 	 */
@@ -82,7 +82,7 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 		return item;
 	}
 
-	/**
+	/*
 	 * 支持策略 POLICY_GREEDY_RESEAT 的读取方式
 	 * @author Pin Liu
 	 */
@@ -102,7 +102,7 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 		return item;
 	}
 	
-	/**
+	/*
 	 * 以reset的方式解决空值
 	 * @author Pin Liu
 	 */
@@ -116,7 +116,7 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 		return item;
 	}
 
-	/**
+	/*
 	 * 支持策略 POLICY_GREEDY_REPEAT 的读取方式
 	 * @author Pin Liu
 	 */
@@ -136,13 +136,13 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 		return item;
 	}
 	
-	/**
+	/*
 	 * 以repeat的方式解决空值
 	 * @author Pin Liu
 	 */
 	protected abstract T resolveLast(T item) throws Exception;
 	
-	/**
+	/*
 	 * 以repeat的方式为子读取器reader解决空值
 	 * @author Pin Liu
 	 */
@@ -153,19 +153,19 @@ public abstract class MultipleAccessReader<T> extends ResettableItemReaderSuppor
 		return item;
 	}
 
-	/**
+	/*
 	 * 是否item中的值都为null
 	 * @author Pin Liu
 	 */
 	protected abstract boolean isAllNull(T item);
 	
-	/**
+	/*
 	 * 是否item中有值为null
 	 * @author Pin Liu
 	 */	
 	protected abstract boolean isAnyNull(T item);
 	
-	/**
+	/*
 	 * item中是否有正常读取到的值存在，非重复、非重置且非空
 	 * @author Pin Liu
 	 */

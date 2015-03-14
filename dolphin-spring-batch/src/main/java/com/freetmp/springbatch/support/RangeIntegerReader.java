@@ -4,7 +4,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 可重置范围整数读取器
  * @author Pin Liu
  * @编写日期 2014年11月12日下午2:42:45
@@ -32,7 +32,7 @@ public class RangeIntegerReader extends ResettableItemReaderSupport<Integer>{
 		this.count = min;
 	}
 
-	/**
+	/*
 	 * 构造一个范围为[min,max)的读取器
 	 * @param min
 	 * @param max

@@ -8,7 +8,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-/**
+/*
  * 双路读取器，每次返回两个读取器读取到的一对元组
  * @author Pin Liu
  * @编写日期 2014年11月12日下午3:17:26
@@ -72,7 +72,7 @@ public class DoubleAccessReader<L,R> extends MultipleAccessReader<Pair<L,R>> {
 		return Pair.of(left, right);
 	}
 	
-	/**
+	/*
 	 * 是否读取到的所有值均为null
 	 * @author Pin Liu
 	 * @return
@@ -81,7 +81,7 @@ public class DoubleAccessReader<L,R> extends MultipleAccessReader<Pair<L,R>> {
 		return (item.getLeft() == null) && (item.getRight() == null);
 	}
 	
-	/**
+	/*
 	 * 是否读取到的值中有null
 	 * @author Pin Liu
 	 */
@@ -89,7 +89,7 @@ public class DoubleAccessReader<L,R> extends MultipleAccessReader<Pair<L,R>> {
 		return (item.getLeft() == null) || (item.getRight() == null);
 	}
 	
-	/**
+	/*
 	 * 是否所有的读取器都已经被重置过
 	 * @author Pin Liu
 	 * @编写日期: 2014年11月12日下午4:39:14
@@ -100,7 +100,7 @@ public class DoubleAccessReader<L,R> extends MultipleAccessReader<Pair<L,R>> {
 		return leftReader.isReseted() && rightReader.isReseted();
 	}
 	
-	/**
+	/*
 	 * 是否所有的值均是读取器最后的值
 	 * @author Pin Liu
 	 * @编写日期: 2014年11月12日下午4:42:51
