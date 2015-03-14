@@ -7,7 +7,8 @@ XMBG扩展自Mybatis Generator插件，增加了一些：
 2. 类型转换
 3. 命名转换（通过正则表达式）
 4. 增量生成
-5. 其它
+5. 自定义注释
+6. 其它
 
 ##扩展的方法包括：
 
@@ -171,10 +172,27 @@ MBG本身并没有提供增量生成的支持，MBG的eclipse插件借助AST抽�
 插件来实现的，当然也受到一些插件的限制。插件中有些是添加新的生成内容的，为避免把这部分代码遗漏，必须保证 **内容合并插件最后被执行**
 
 ####0.0.1
-重构内容合并插件，使用MBG的ShellCallback扩展点对Java源文件进行合并，并去除AST到MBG中Java dom的转换步骤，新旧源文件都使用ast进行解析
+重构内容合并插件， **使用MBG的ShellCallback扩展点对Java源文件进行合并** ，并去除AST到MBG中Java dom的转换步骤，新旧源文件都使用ast进行解析
 合并，这使XMBG可以提供对枚举、注解等类型的支持`com.freetmp.mbg.shellcallback.MergeSupportedShellCallback`, MBG中XmlFileMergerJaxp
 提供了对XML合并的简单支持，但其合并方式会直接删除旧的生成xml节点和属性，与直观意义上的合并并不一致，所以XMBG仍需对xml的合并提供支持，但
 ShellCallback并没有提供相应的扩展点，所以XML的合并仍是通过插件来实现的`com.freetmp.mbg.plugin.XMLMergePlugin`
+
+##自定义注释
+
+给自动生成的代码添加有意义的注释通常是有用的，尤其是代码的维护，MBG对注释生成的支持非常有限而且没有实际意义，XMBG通过继承扩展了注释生成器
+`org.mybatis.generator.internal.DefaultCommentGenerator`的功能，包括XML中的注释以及Java源文件的版权声明，默认使用的是Apache的开源
+版权声明。XMBG默认提供了英文和中文两个版本的注释资源，保存在类路径下的`i18n_for_CG`文件夹下，用户可以提供自己的注释资源，普通注释以`Comments`
+命名，版权声明以`Copyrights`命名，可以参考默认资源的实现方式。
+
+    # XML映射文件中POJO字段与数据库表列的对应声明
+    BaseResultMap=the basic mapping of POJO fields and db table's columns
+    ResultMapWithBLOBs=the mapping of POJO fields and db table's columns with type BLOB in it
+
+    # 可重用的SQL片段声明
+    Example_Where_Clause=the where condition clause of the helper class example
+    Update_By_Example_Where_Clause=the where condition for updating the db data using the example helper class
+    Base_Column_List=the basic columns of db table used by select
+    Blob_Column_List=the columns of db table used by select with type BLOB in it
 
 ##其它
 
@@ -215,3 +233,6 @@ XMBG兼容大部分[MBG的配置](http://mybatis.github.io/generator/configrefer
 |enableQueryDslSupport      |${x.mybatis.generator.enableQueryDslSupport}   |boolean            |设置为true，启用QueryDSL支持|
 |columnPattern              |${x.mybatis.generator.columnPattern}           |java.lang.String   |如果启用了命名转换服务，可通过本属性指定匹配单个单词的正则表达式|
 |srid                       |${x.mybatis.generator.srid}                    |java.lang.String   |如果启用地理信息相关代码生成，可通过本属性指定其使用的空间引用标识符|
+|i18nPath                   |${x.mybatis.generator.i18nPath}                |java.io.File       |指定自定义的注释资源所在的文件夹|
+|locale                     |${x.mybatis.generator.locale}                  |java.lang.String   |指定本次代码生成使用的locale，默认为en_US|
+|projectStartYear           |${x.mybatis.generator.projectStartYear}        |java.lang.String   |指定项目开始的年份，用在版权声明中，默认为今年|
