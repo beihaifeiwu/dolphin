@@ -142,7 +142,7 @@
             <dependency>
                 <groupId>com.freetmp</groupId>
                 <artifactId>dolphin-mybatis-generator</artifactId>
-                <version>${dolphin.version}</version>
+                <version>0.0.1</version>
             </dependency>
 
             <dependency>
