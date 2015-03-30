@@ -66,18 +66,21 @@ public class CommentGenerator extends DefaultCommentGenerator {
 
     private void initResources(Locale locale) throws MalformedURLException {
 
+        defaultComments = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Comments",locale);
+        defaultCopyrights = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Copyrights",locale);
+
         ClassLoader loader = getClass().getClassLoader();
 
         // add user specified i18n sources directory to the classpath
         if(!i18nPath.equals(XMBG_CG_I18N_DEFAULT_PATH)) {
             URL[] urls = {new File(i18nPath).toURI().toURL()};
             loader = new URLClassLoader(urls);
+            comments = new Resources("Comments",locale,loader);
+            copyrights = new Resources("Copyrights",locale,loader);
+        }else {
+            comments = defaultComments;
+            copyrights = defaultCopyrights;
         }
-        comments = new Resources(i18nPath + "/Comments",locale,loader);
-        defaultComments = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Comments",locale);
-
-        copyrights = new Resources(i18nPath + "/Copyrights",locale,loader);
-        defaultCopyrights = new Resources(XMBG_CG_I18N_DEFAULT_PATH + "/Copyrights",locale);
 
         endYear = "" + Calendar.getInstance().get(Calendar.YEAR);
     }
