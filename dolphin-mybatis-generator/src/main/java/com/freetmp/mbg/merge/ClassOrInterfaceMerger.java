@@ -20,9 +20,18 @@ public class ClassOrInterfaceMerger extends AbstractMerger<ClassOrInterfaceDecla
 
         if(first.isInterface() != second.isInterface()) return null;
 
+        ClassOrInterfaceDeclaration declaration = new ClassOrInterfaceDeclaration();
+
+        declaration.setInterface(first.isInterface());
+        declaration.setName(first.getName());
+
+        declaration.setModifiers(mergeModifiers(first.getModifiers(),second.getModifiers()));
+        declaration.setJavaDoc(mergeSingle(first.getJavaDoc(),second.getJavaDoc()));
+        declaration.setTypeParameters(mergeCollcetions(first.getTypeParameters(),second.getTypeParameters()));
+
         //TODO
 
-        return null;
+        return declaration;
     }
 
     @Override

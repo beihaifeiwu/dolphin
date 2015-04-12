@@ -199,8 +199,13 @@ public abstract class AbstractMerger<M> {
         map.put(clazz,abstractMerger);
     }
 
+
     @SuppressWarnings("unchecked")
     protected static <T extends Node> List<T> mergeCollcetions(List<T> first, List<T> second){
+
+        if(first == null) return second;
+        if(second == null) return first;
+
         List<T> nodes = new ArrayList<>();
 
         List<T> copies = new ArrayList<>();
@@ -237,12 +242,20 @@ public abstract class AbstractMerger<M> {
         return nodes;
     }
 
+
     @SuppressWarnings("unchecked")
     protected static <T extends Node> T mergeSingle(T first, T second){
+
+        /**
+         * ensure the parameter passed to the merge is either not null
+         */
+        if(first == null) return second;
+        if(second == null) return first;
+
         AbstractMerger<T> merger = getMerger(first.getClass());
 
         if(merger.isEquals(first,second)){
-            return merger.merge(first,second);
+            return merger.merge(first, second);
         }
 
         return null;

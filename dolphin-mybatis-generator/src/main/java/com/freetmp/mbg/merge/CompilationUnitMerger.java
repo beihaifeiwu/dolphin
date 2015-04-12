@@ -22,7 +22,7 @@ public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
 
         CompilationUnit unit = new CompilationUnit();
 
-        unit.setPackage(mergeSingle(first.getPackage(),second.getPackage()));
+        unit.setPackage(mergeSingle(first.getPackage(), second.getPackage()));
 
         unit.setImports(mergeCollcetions(first.getImports(), second.getImports()));
 
