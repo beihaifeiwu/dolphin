@@ -1,19 +1,20 @@
-package com.freetmp.mbg.merge;
+package com.freetmp.mbg.merge.comment;
 
+import com.freetmp.mbg.merge.AbstractMerger;
 import com.github.javaparser.ast.comments.JavadocComment;
 
 /**
  * Created by pin on 2015/4/12.
  */
-public class JavadocMerger extends AbstractMerger<JavadocComment> {
+public class JavadocCommentMerger extends AbstractMerger<JavadocComment> {
 
     static {
-        if(getMerger(JavadocMerger.class) == null){
-            register(JavadocComment.class,new JavadocMerger());
+        if(getMerger(JavadocComment.class) == null){
+            register(JavadocComment.class,new JavadocCommentMerger());
         }
     }
 
-    private JavadocMerger(){}
+    private JavadocCommentMerger(){}
 
     @Override
     public JavadocComment merge(JavadocComment first, JavadocComment second) {

@@ -24,9 +24,9 @@ public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
 
         unit.setPackage(mergeSingle(first.getPackage(), second.getPackage()));
 
-        unit.setImports(mergeCollcetions(first.getImports(), second.getImports()));
+        unit.setImports(mergeCollections(first.getImports(), second.getImports()));
 
-        unit.setTypes(mergeCollcetions(first.getTypes(),second.getTypes()));
+        unit.setTypes(mergeCollections(first.getTypes(), second.getTypes()));
 
         return unit;
     }

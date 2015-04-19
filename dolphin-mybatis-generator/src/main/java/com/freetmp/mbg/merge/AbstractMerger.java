@@ -1,6 +1,7 @@
 package com.freetmp.mbg.merge;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.TypeParameter;
 import com.github.javaparser.ast.body.BaseParameter;
 import com.github.javaparser.ast.body.ModifierSet;
 
@@ -99,29 +100,39 @@ public abstract class AbstractMerger<M> {
         return isEqual;
     }
 
+    @SuppressWarnings("unchecked")
     public  <T extends BaseParameter> boolean isParametersEquals(List<T> one, List<T> two) {
-        boolean isEqual = true;
 
-        if (isAllNull(one, two)) {
-            isEqual = true;
-        } else if (isAllNotNull(one, two)) {
-            if (one.size() != two.size()) {
-                isEqual = false;
-            } else {
-                for (int index = 0; index < one.size(); index++) {
-                    T t1 = one.get(index);
-                    T t2 = one.get(index);
-                    if (!t1.getId().equals(t2.getId())) {
-                        isEqual = false;
-                        break;
-                    }
-                }
-            }
-        } else {
-            isEqual = false;
+        if(one == two) return true;
+        if(one == null || two == null) return false;
+
+        if(one.size() != two.size()) return false;
+
+        for(int i = 0; i < one.size(); i++){
+
+            T o = one.get(i);
+            T t = two.get(i);
+
+            AbstractMerger merger = getMerger(o.getClass());
+            if(!merger.isEquals(o,t)) return false;
         }
 
-        return isEqual;
+        return true;
+    }
+
+    public boolean isTypeParameterEquals(List<TypeParameter> first, List<TypeParameter> second){
+
+        if(first == second) return true;
+        if(first == null || second == null) return false;
+
+        if(first.size() != second.size()) return false;
+
+        for(int i = 0; i < first.size(); i++){
+            AbstractMerger<TypeParameter> merger = getMerger(TypeParameter.class);
+            if(!merger.isEquals(first.get(i),second.get(i))) return false;
+        }
+
+        return true;
     }
 
     /*
@@ -191,8 +202,24 @@ public abstract class AbstractMerger<M> {
         return results;
     }
 
-    public static <T> AbstractMerger getMerger(Class<T> clazz){
-        return map.get(clazz);
+    /**
+     * first check if mapper of the type T exist, if existed return it
+     * else check if mapper of the supper type exist, then return it
+     * ...
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Node> AbstractMerger<T> getMerger(Class<T> clazz){
+
+        AbstractMerger<T> merger = null;
+
+        Class<?> type = clazz;
+
+        while (merger == null && type != null){
+            merger = map.get(type);
+            type = type.getSuperclass();
+        }
+
+        return merger;
     }
 
     protected static <T> void register(Class<T> clazz,AbstractMerger<T> abstractMerger){
@@ -201,7 +228,7 @@ public abstract class AbstractMerger<M> {
 
 
     @SuppressWarnings("unchecked")
-    protected static <T extends Node> List<T> mergeCollcetions(List<T> first, List<T> second){
+    protected <T extends Node> List<T> mergeCollections(List<T> first, List<T> second){
 
         if(first == null) return second;
         if(second == null) return first;
@@ -213,7 +240,7 @@ public abstract class AbstractMerger<M> {
 
         for(T node : first){
 
-            AbstractMerger<T> merger = getMerger(node.getClass());
+            AbstractMerger merger = getMerger(node.getClass());
 
             T found = null;
 
@@ -227,7 +254,7 @@ public abstract class AbstractMerger<M> {
             }
 
             if(found != null){
-                nodes.add(merger.merge(node, found));
+                nodes.add((T) merger.merge(node, found));
                 copies.remove(found);
             }else {
                 nodes.add(node);
@@ -242,9 +269,33 @@ public abstract class AbstractMerger<M> {
         return nodes;
     }
 
+    @SuppressWarnings("unchecked")
+    protected <T extends Node> List<T> mergeCollectionsInOrder(List<T> first,List<T> second){
+        if(first == null) return second;
+        if(second == null) return first;
+
+        List<T> nodes = new ArrayList<>();
+
+        int max = Math.max(first.size(),second.size());
+        for(int i = 0; i < max; i++){
+            T f = i < first.size() ? first.get(i) : null;
+            T s = i < second.size() ? second.get(i) : null;
+            if(isAllNotNull(f,s)){
+
+                AbstractMerger merger = getMerger(f.getClass());
+                nodes.add((T) merger.merge(f,s));
+
+            }else {
+                nodes.add(f != null ? f : s);
+            }
+        }
+
+        return nodes;
+    }
+
 
     @SuppressWarnings("unchecked")
-    protected static <T extends Node> T mergeSingle(T first, T second){
+    protected <T extends Node> T mergeSingle(T first, T second){
 
         /**
          * ensure the parameter passed to the merge is either not null
@@ -252,10 +303,10 @@ public abstract class AbstractMerger<M> {
         if(first == null) return second;
         if(second == null) return first;
 
-        AbstractMerger<T> merger = getMerger(first.getClass());
+        AbstractMerger merger = getMerger(first.getClass());
 
         if(merger.isEquals(first,second)){
-            return merger.merge(first, second);
+            return (T) merger.merge(first, second);
         }
 
         return null;
