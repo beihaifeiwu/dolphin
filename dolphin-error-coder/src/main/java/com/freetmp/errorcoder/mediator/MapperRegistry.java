@@ -43,5 +43,13 @@ public class MapperRegistry {
         return mapper;
     }
 
+    /**
+     * scan the input paths and register the found mapper
+     * @param paths the location where mapper exists
+     */
+    public static void scanForMapper(String[] paths){
+
+
+    }
 
 }

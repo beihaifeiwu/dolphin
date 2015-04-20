@@ -156,6 +156,12 @@
                 <artifactId>dolphin-querydsl</artifactId>
                 <version>${dolphin.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.freetmp</groupId>
+                <artifactId>dolphin-common</artifactId>
+                <version>1.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -233,6 +239,7 @@
         <module>dolphin-spring-batch</module>
         <module>dolphin-querydsl</module>
         <module>dolphin-error-coder</module>
+        <module>dolphin-common</module>
     </modules>
 
 
