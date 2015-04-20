@@ -13,7 +13,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <querydsl.version>3.5.1</querydsl.version>
+        <querydsl.version>3.6.3</querydsl.version>
     </properties>
 
     <dependencies>
