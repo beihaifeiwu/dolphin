@@ -232,6 +232,7 @@
         <module>xmbg-maven-plugin</module>
         <module>dolphin-spring-batch</module>
         <module>dolphin-querydsl</module>
+        <module>dolphin-error-coder</module>
     </modules>
 
 
