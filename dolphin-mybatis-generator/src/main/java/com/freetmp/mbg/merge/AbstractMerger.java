@@ -6,7 +6,9 @@ import com.github.javaparser.ast.body.BaseParameter;
 import com.github.javaparser.ast.body.ModifierSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,25 +45,6 @@ public abstract class AbstractMerger<M> {
         return index;
     }
 
-    public  <T> boolean isEitherContains(List<T> one, List<T> two) {
-        if (!isAllNotNull(one, two)) return true;
-
-        List<T> longer = one.size() > two.size() ? one : two;
-        List<T> shorter = one.size() > two.size() ? two : one;
-
-        boolean contains = true;
-
-        for (T t : shorter) {
-            if (!longer.contains(t)) {
-                contains = false;
-                break;
-            }
-        }
-
-        return contains;
-
-    }
-
     @SuppressWarnings("unchecked")
     public  <T> T mergeSelective(T one, T two) {
         T t = null;
@@ -73,31 +56,6 @@ public abstract class AbstractMerger<M> {
         t = findFirstNotNull(one, two);
 
         return t;
-    }
-
-    public  <T> boolean isListEquals(List<T> one, List<T> two) {
-        boolean isEqual = true;
-
-        if (isAllNull(one, two)) {
-            isEqual = true;
-        } else if (isAllNotNull(one, two)) {
-            if (one.size() != two.size()) {
-                isEqual = false;
-            } else {
-                for (int index = 0; index < one.size(); index++) {
-                    T t1 = one.get(index);
-                    T t2 = one.get(index);
-                    if (!t1.equals(t2)) {
-                        isEqual = false;
-                        break;
-                    }
-                }
-            }
-        } else {
-            isEqual = false;
-        }
-
-        return isEqual;
     }
 
     @SuppressWarnings("unchecked")
@@ -135,40 +93,86 @@ public abstract class AbstractMerger<M> {
         return true;
     }
 
-    /*
-     * 合并修饰符
-     */
+    @SuppressWarnings("unchecked")
+    public <T extends Node> boolean isSmallerHasEqualsInBigger(List<T> first, List<T> second, boolean useOrigin){
+
+        if(first == second) return true;
+        if(first == null || second == null) return true;
+
+        List<T> smaller = null;
+        List<T> bigger = null;
+
+        if(first.size() > second.size()){
+            smaller = second; bigger = first;
+        }else {
+            smaller = first; bigger = second;
+        }
+
+        for(T st : smaller){
+            if(useOrigin){
+                if(!bigger.contains(st)) return false;
+            }else {
+                AbstractMerger merger = getMerger(st.getClass());
+                boolean found = false;
+                for(T bt : bigger){
+                    if(merger.isEquals(st,bt)){
+                        found = true; break;
+                    }
+                }
+                if(!found) return false;
+            }
+        }
+
+        return true;
+    }
+
     public  int mergeModifiers(int one, int two) {
         return ModifierSet.addModifier(one, two);
     }
 
-    /*
-     * 合并注解声明
-     */
+
     @SuppressWarnings("unchecked")
-    public  <T> List<T> mergeListNoDuplicate(List<T> one, List<T> two) {
+    public  <T extends Node> List<T> mergeListNoDuplicate(List<T> one, List<T> two, boolean useMerger) {
 
-        if (isAllNull(one, two)) return null;
+        if(one == two) return one;
+        if(one == null) return two;
+        if(two == null) return one;
 
-        List<T> result = new ArrayList<>();
+        List<T> results = new ArrayList<>();
 
-        if (isAllNotNull(one, two)) {
-            result.addAll(one);
-            for (T t : two) {
-                if (one.indexOf(t) == -1) {
-                    result.add(t);
+        if(useMerger){
+
+            List<T> twoCopy = new ArrayList<>();
+            Collections.copy(twoCopy,two);
+
+            for(T ot : one){
+                AbstractMerger merger = getMerger(ot.getClass());
+                T found = null;
+                for(T tt : twoCopy){
+                    if(ot.getClass().equals(tt.getClass()) && merger.isEquals(ot,tt)){
+                        found = tt; break;
+                    }
+                }
+                if(found != null){
+                    twoCopy.remove(found);
+                    results.add((T) merger.merge(ot,found));
+                }else {
+                    results.add(ot);
                 }
             }
-        } else {
-            result.addAll(findFirstNotNull(one, two));
+
+            results.addAll(twoCopy);
+
+        }else {
+            TreeSet<T> treeSet = new TreeSet<>();
+            treeSet.addAll(one);
+            treeSet.addAll(two);
+            results.addAll(treeSet);
         }
 
-        return result;
+        return results;
     }
 
-    /*
-     * 合并表达式集合
-     */
     @SuppressWarnings("unchecked")
     public  <T> List<T> mergeListInOrder(List<T> one, List<T> two) {
         List<T> results = new ArrayList<>();
@@ -303,10 +307,15 @@ public abstract class AbstractMerger<M> {
         if(first == null) return second;
         if(second == null) return first;
 
-        AbstractMerger merger = getMerger(first.getClass());
+        if(first.getClass().equals(second.getClass())) {
 
-        if(merger.isEquals(first,second)){
-            return (T) merger.merge(first, second);
+            AbstractMerger merger = getMerger(first.getClass());
+
+            if (merger.isEquals(first, second)) {
+                return (T) merger.merge(first, second);
+            }
+        }else {
+            //TODO have no idea what to do
         }
 
         return null;

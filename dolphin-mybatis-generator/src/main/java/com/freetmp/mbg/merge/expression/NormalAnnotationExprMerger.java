@@ -46,22 +46,7 @@ public class NormalAnnotationExprMerger extends AbstractMerger<NormalAnnotationE
 
             if(first.getPairs() == null) return second.getPairs() == null;
 
-            List<MemberValuePair> smaller;
-            List<MemberValuePair> bigger;
-
-            if(first.getPairs().size() <= second.getPairs().size()){
-                smaller = first.getPairs();
-                bigger = second.getPairs();
-            }else {
-                smaller = second.getPairs();
-                bigger = second.getPairs();
-            }
-
-            for(MemberValuePair mvp : smaller){
-                if(!bigger.contains(mvp)){
-                    equals = false; break;
-                }
-            }
+            if(!isSmallerHasEqualsInBigger(first.getPairs(),second.getPairs(),true)) return false;
 
         }
 

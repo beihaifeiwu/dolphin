@@ -30,7 +30,7 @@ public class ConstructorDeclarationMerger extends AbstractMerger<ConstructorDecl
         cd.setParameters(mergeCollectionsInOrder(first.getParameters(), second.getParameters()));
         cd.setTypeParameters(mergeCollectionsInOrder(first.getTypeParameters(),second.getTypeParameters()));
 
-        cd.setThrows(mergeListNoDuplicate(first.getThrows(),second.getThrows()));
+        cd.setThrows(mergeListNoDuplicate(first.getThrows(),second.getThrows(),false));
         cd.setBlock(mergeSingle(first.getBlock(),second.getBlock()));
         return cd;
     }

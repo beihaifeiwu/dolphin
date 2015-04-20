@@ -1,4 +1,4 @@
-package com.freetmp.mbg.merge.parameter;
+package com.freetmp.mbg.merge.variable;
 
 import com.freetmp.mbg.merge.AbstractMerger;
 import com.github.javaparser.ast.body.VariableDeclaratorId;
