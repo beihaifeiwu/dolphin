@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.freetmp.common.type;
+package com.freetmp.common.type.classreading;
 
 
 import com.freetmp.common.resource.Resource;
+import com.freetmp.common.type.AnnotationMetadata;
+import com.freetmp.common.type.ClassMetadata;
 
 /**
  * Simple facade for accessing class metadata,
