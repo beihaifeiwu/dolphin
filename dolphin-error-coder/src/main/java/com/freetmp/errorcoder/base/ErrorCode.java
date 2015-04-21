@@ -2,7 +2,6 @@ package com.freetmp.errorcoder.base;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -12,7 +11,9 @@ import java.util.Map;
  */
 public class ErrorCode implements Serializable {
 
-    public static final ErrorCode ERROR_MAPPING = new ErrorCode(1000,"Error occurred when invoke the map method");
+    public static final ErrorCode ERROR_MAPPING = new ErrorCode(9999,"Error occurred when invoke the map method");
+
+    public static final ErrorCode ERROR_RENDERRING = new ErrorCode(9998,"Error occurred when invoke the render method");
 
     private long code;
 
@@ -87,10 +88,11 @@ public class ErrorCode implements Serializable {
     }
 
     @Override public String toString() {
-        return new ToStringBuilder(this)
-                .append("code", code)
-                .append("message", message)
-                .append("props", props)
-                .toString();
+        final StringBuilder sb = new StringBuilder("ErrorCode{");
+        sb.append("code=").append(code);
+        sb.append(", message='").append(message).append('\'');
+        sb.append(", props=").append(props);
+        sb.append('}');
+        return sb.toString();
     }
 }

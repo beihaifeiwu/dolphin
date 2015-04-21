@@ -1,6 +1,7 @@
 package com.freetmp.errorcoder.mapper;
 
 import com.freetmp.errorcoder.base.ErrorCode;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,5 +50,14 @@ public class AnnotationBasedCodeMapper implements Mapper {
 
     @Override public Class<? extends Throwable> mapTo() {
         return clazz;
+    }
+
+    @Override public String toString() {
+        return new ToStringBuilder(this)
+                .append("method", method.getName())
+                .append("object", object.getClass().getName())
+                .append("clazz", clazz.getTypeName())
+                .append("code", code)
+                .toString();
     }
 }

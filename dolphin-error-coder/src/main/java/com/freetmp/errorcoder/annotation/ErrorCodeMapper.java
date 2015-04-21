@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ErrorCodeMapper {
 
-    Class<?> value() default Throwable.class;
+    Class<? extends Throwable> value() default Throwable.class;
 
     long code() default 10000L;
 }
