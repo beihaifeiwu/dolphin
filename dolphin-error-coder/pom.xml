@@ -72,6 +72,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Html Parser -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>

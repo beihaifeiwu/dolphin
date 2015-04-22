@@ -1,9 +1,11 @@
 package com.freetmp.errorcoder.mapper;
 
+import com.freetmp.common.util.ClassUtils;
 import com.freetmp.errorcoder.base.ErrorCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -30,6 +32,13 @@ public class AnnotationBasedCodeMapper implements Mapper {
         this.clazz = clazz;
     }
 
+    public String determineMessage(Throwable throwable){
+        if(StringUtils.isEmpty(throwable.getMessage())){
+            return throwable.getClass().getTypeName();
+        }
+        return throwable.getMessage();
+    }
+
     @Override public ErrorCode map(Throwable throwable) {
         try {
             Parameter[] parameters = method.getParameters();
@@ -40,7 +49,7 @@ public class AnnotationBasedCodeMapper implements Mapper {
                 case 1:
                     return (ErrorCode) method.invoke(object,throwable);
                 case 2:
-                    return (ErrorCode) method.invoke(object,throwable,new ErrorCode(code,throwable.getMessage()));
+                    return (ErrorCode) method.invoke(object,throwable,new ErrorCode(code,determineMessage(throwable)));
             }
         } catch (Exception e) {
             log.error("error occurred when invoked the mapping method",e);

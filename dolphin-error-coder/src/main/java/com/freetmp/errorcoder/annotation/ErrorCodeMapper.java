@@ -14,5 +14,5 @@ public @interface ErrorCodeMapper {
 
     Class<? extends Throwable> value() default Throwable.class;
 
-    long code() default 10000L;
+    long code() default 20000L;
 }

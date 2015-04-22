@@ -1,6 +1,6 @@
-package com.freetmp.errorcoder.support;
+package com.freetmp.errorcoder.support.filter;
 
-import com.freetmp.errorcoder.support.filter.ErrorCoderFilter;
+import com.freetmp.errorcoder.support.ParameterConstant;
 import org.apache.log4j.BasicConfigurator;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
@@ -12,7 +12,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -43,7 +42,7 @@ public class ErrorCoderFilterTest {
          * custom their behavior to do what we wanted
          */
         doThrow(ServletException.class).when(filterChain).doFilter(request,response);
-        when(filterConfig.getInitParameter(ErrorCoderFilter.MAPPER_LOCATIONS_KEY)).thenReturn("com.freetmp.errorcoder.support.filter");
+        when(filterConfig.getInitParameter(ParameterConstant.MAPPER_LOCATIONS_KEY)).thenReturn("com.freetmp.errorcoder.support.filter");
         doReturn(writer).when(response).getWriter();
 
         /**
@@ -58,11 +57,17 @@ public class ErrorCoderFilterTest {
          * verify the result
          */
         ArgumentCaptor<String> errorStrCaptor = ArgumentCaptor.forClass(String.class);
-        verify(writer).println(errorStrCaptor);
+        verify(writer).println(errorStrCaptor.capture());
 
-        Assertions.assertThat(errorStrCaptor.capture()).isNotEmpty().contains("code", "message");
-        System.out.println(errorStrCaptor.capture());
+        Assertions.assertThat(errorStrCaptor.getValue()).isNotEmpty().contains("code", "message", "props");
+        System.out.println(errorStrCaptor.getValue());
 
         filter.destroy();
+    }
+
+    @Test
+    public void testFormat(){
+        System.out.println(Long.parseLong("0000000001"));
+        System.out.println(String.format("%1$09d",1L));
     }
 }

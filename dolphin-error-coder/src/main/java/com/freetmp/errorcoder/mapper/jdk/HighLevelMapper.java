@@ -9,17 +9,17 @@ import com.freetmp.errorcoder.base.ErrorCode;
 @ErrorCodeMapper
 public class HighLevelMapper {
 
-    @ErrorCodeMapper(value = Throwable.class,code = 1000)
+    @ErrorCodeMapper(value = Throwable.class)
     public ErrorCode throwable(Throwable trowable,ErrorCode code){
         return code;
     }
 
-    @ErrorCodeMapper(value = Error.class,code = 1001)
+    @ErrorCodeMapper(value = Error.class)
     public ErrorCode error(Error error, ErrorCode code){
         return code;
     }
 
-    @ErrorCodeMapper(value = Exception.class,code = 2001)
+    @ErrorCodeMapper(value = Exception.class)
     public ErrorCode exception(Exception exception, ErrorCode code){
         return code;
     }
