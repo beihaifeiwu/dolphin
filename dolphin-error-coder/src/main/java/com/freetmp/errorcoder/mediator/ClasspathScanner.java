@@ -6,6 +6,7 @@ import com.freetmp.common.type.classreading.MetadataReader;
 import com.freetmp.common.type.filter.AnnotationTypeFilter;
 import com.freetmp.common.util.ClassUtils;
 import com.freetmp.errorcoder.annotation.ErrorCodeMapper;
+import com.freetmp.errorcoder.annotation.LoadOnClassExist;
 import com.freetmp.errorcoder.base.MapperMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,16 @@ public class ClasspathScanner {
 
     private static final Logger log = LoggerFactory.getLogger(ClasspathScanner.class);
 
-    public static boolean checkIfBaseExceptionClassExists(AnnotationMetadata annotationMetadata){
-       Map<String,Object> attributes = annotationMetadata.getAnnotationAttributes(ErrorCodeMapper.class.getTypeName(),true);
-       String baseClass = (String) attributes.get("value");
+    public static boolean checkIfSpecifyClassExists(AnnotationMetadata annotationMetadata){
+        String baseClass = null;
+        if(annotationMetadata.hasAnnotation(LoadOnClassExist.class.getTypeName())){
+           Map<String,Object> attributes = annotationMetadata.getAnnotationAttributes(LoadOnClassExist.class.getTypeName(),true);
+           baseClass = (String) attributes.get("value");
+
+       }else {
+            Map<String, Object> attributes = annotationMetadata.getAnnotationAttributes(ErrorCodeMapper.class.getTypeName(), true);
+            baseClass = (String) attributes.get("value");
+        }
        return ClassUtils.isPresent(baseClass,Thread.currentThread().getContextClassLoader());
     }
 
@@ -37,6 +45,7 @@ public class ClasspathScanner {
 
         ClassPathScanningProvider provider = new ClassPathScanningProvider();
         provider.addIncludeFilter(new AnnotationTypeFilter(ErrorCodeMapper.class));
+        provider.addIncludeFilter(new AnnotationTypeFilter(LoadOnClassExist.class));
 
         Set<MetadataReader> metadataReaders = new HashSet<>();
 
@@ -50,7 +59,7 @@ public class ClasspathScanner {
         });
 
         Set<MapperMetadata> mms = metadataReaders.stream()
-                .filter(metadataReader -> checkIfBaseExceptionClassExists(metadataReader.getAnnotationMetadata()))
+                .filter(metadataReader -> checkIfSpecifyClassExists(metadataReader.getAnnotationMetadata()))
                 .map(mr-> new MapperMetadata(mr))
                 .collect(Collectors.toSet());
 

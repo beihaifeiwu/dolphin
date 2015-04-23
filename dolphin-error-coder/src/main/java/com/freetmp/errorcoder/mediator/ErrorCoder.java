@@ -61,7 +61,7 @@ public class ErrorCoder {
         private Render render;
         private String charset = StandardCharsets.UTF_8.displayName();
         {
-            paths.add("com.freetmp.errorcoder.mapper.jdk");
+            paths.add("com.freetmp.errorcoder.mapper");
         }
 
         public ErrorCoderBuilder paths(String... path){

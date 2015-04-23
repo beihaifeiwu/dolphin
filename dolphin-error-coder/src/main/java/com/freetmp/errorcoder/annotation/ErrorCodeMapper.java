@@ -1,5 +1,7 @@
 package com.freetmp.errorcoder.annotation;
 
+import com.freetmp.errorcoder.base.ErrorType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -14,5 +16,5 @@ public @interface ErrorCodeMapper {
 
     Class<? extends Throwable> value() default Throwable.class;
 
-    long code() default 20000L;
+    ErrorType type() default ErrorType.GENERAL_ERROR;
 }

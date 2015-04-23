@@ -1,8 +1,8 @@
 package com.freetmp.errorcoder.mapper;
 
-import com.freetmp.common.util.ClassUtils;
 import com.freetmp.errorcoder.base.ErrorCode;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.freetmp.errorcoder.base.ErrorType;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -23,12 +23,12 @@ public class AnnotationBasedCodeMapper implements Mapper {
 
     private final Class<? extends Throwable> clazz;
 
-    private long code;
+    private ErrorType type;
 
-    public AnnotationBasedCodeMapper(Method method, Object object, long code, Class<? extends Throwable> clazz){
+    public AnnotationBasedCodeMapper(Method method, Object object, ErrorType type, Class<? extends Throwable> clazz){
         this.method = method;
         this.object = object;
-        this.code = code;
+        this.type = type;
         this.clazz = clazz;
     }
 
@@ -37,6 +37,12 @@ public class AnnotationBasedCodeMapper implements Mapper {
             return throwable.getClass().getTypeName();
         }
         return throwable.getMessage();
+    }
+
+    public long determineCode(Throwable throwable){
+       int hashcode = new HashCodeBuilder(17, 37).append(throwable.getClass().getTypeName()).toHashCode();
+
+       return type.getHeader() | hashcode;
     }
 
     @Override public ErrorCode map(Throwable throwable) {
@@ -49,7 +55,7 @@ public class AnnotationBasedCodeMapper implements Mapper {
                 case 1:
                     return (ErrorCode) method.invoke(object,throwable);
                 case 2:
-                    return (ErrorCode) method.invoke(object,throwable,new ErrorCode(code,determineMessage(throwable)));
+                    return (ErrorCode) method.invoke(object,throwable,new ErrorCode(determineCode(throwable),determineMessage(throwable)));
             }
         } catch (Exception e) {
             log.error("error occurred when invoked the mapping method",e);
@@ -62,11 +68,12 @@ public class AnnotationBasedCodeMapper implements Mapper {
     }
 
     @Override public String toString() {
-        return new ToStringBuilder(this)
-                .append("method", method.getName())
-                .append("object", object.getClass().getName())
-                .append("clazz", clazz.getTypeName())
-                .append("code", code)
-                .toString();
+        final StringBuilder sb = new StringBuilder("AnnotationBasedCodeMapper{");
+        sb.append("method=").append(method);
+        sb.append(", object=").append(object);
+        sb.append(", clazz=").append(clazz);
+        sb.append(", type=").append(type);
+        sb.append('}');
+        return sb.toString();
     }
 }

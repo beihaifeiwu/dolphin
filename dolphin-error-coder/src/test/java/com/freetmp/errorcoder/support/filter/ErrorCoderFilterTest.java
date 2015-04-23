@@ -68,6 +68,10 @@ public class ErrorCoderFilterTest {
     @Test
     public void testFormat(){
         System.out.println(Long.parseLong("0000000001"));
-        System.out.println(String.format("%1$09d",1L));
+        System.out.println(String.format("%1$09d", 1L));
+        System.out.println(Long.MAX_VALUE);
+        System.out.println(0XFFL << 55);
+        System.out.println(Integer.MAX_VALUE);
+        System.out.println((long)Math.pow(10,11));
     }
 }
