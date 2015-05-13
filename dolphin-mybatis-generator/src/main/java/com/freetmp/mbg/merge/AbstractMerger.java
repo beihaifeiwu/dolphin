@@ -8,7 +8,7 @@ import com.freetmp.mbg.merge.expression.*;
 import com.freetmp.mbg.merge.parameter.MultiTypeParameterMerger;
 import com.freetmp.mbg.merge.parameter.ParameterMerger;
 import com.freetmp.mbg.merge.parameter.TypeParameterMerger;
-import com.freetmp.mbg.merge.statement.AssertStmtMerger;
+import com.freetmp.mbg.merge.statement.*;
 import com.freetmp.mbg.merge.type.*;
 import com.freetmp.mbg.merge.variable.VariableDeclaratorIdMerger;
 import com.freetmp.mbg.merge.variable.VariableDeclaratorMerger;
@@ -20,7 +20,7 @@ import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.stmt.AssertStmt;
+import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.VoidType;
@@ -108,6 +108,25 @@ public abstract class AbstractMerger<M> {
     // statement
     map.put(BlockStatement.class, new BlockCommentMerger());
     map.put(AssertStmt.class, new AssertStmtMerger());
+    map.put(BreakStmt.class, new BreakStmtMerger());
+    map.put(CatchClause.class, new CatchClauseMerger());
+    map.put(ContinueStmt.class, new ContinueStmtMerger());
+    map.put(DoStmt.class, new DoStmtMerger());
+    map.put(EmptyStmt.class, new EmptyStmtMerger());
+    map.put(ExplicitConstructorInvocationStmt.class, new ExplicitConstructorInvocationStmtMerger());
+    map.put(ExpressionStmt.class, new ExpressionStmtMerger());
+    map.put(ForeachStmt.class, new ForeachStmtMerger());
+    map.put(ForStmt.class, new ForStmtMerger());
+    map.put(IfStmt.class, new IfStmtMerger());
+    map.put(LabeledStmt.class, new LabeledStmtMerger());
+    map.put(ReturnStmt.class, new ReturnStmtMerger());
+    map.put(SwitchEntryStmt.class, new SwitchEntryStmtMerger());
+    map.put(SwitchStmt.class, new SwitchStmtMerger());
+    map.put(SynchronizedStmt.class, new SynchronizedStmtMerger());
+    map.put(ThrowStmt.class, new ThrowStmtMerger());
+    map.put(TryStmt.class, new TryStmtMerger());
+    map.put(TypeDeclarationStmt.class, new TypeDeclarationStmtMerger());
+    map.put(WhileStmt.class, new WhileStmtMerger());
 
     // type
     map.put(ClassOrInterfaceType.class, new ClassOrInterfaceTypeMerger());

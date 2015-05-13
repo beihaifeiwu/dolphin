@@ -1,0 +1,27 @@
+package com.freetmp.mbg.merge.statement;
+
+import com.freetmp.mbg.merge.AbstractMerger;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+
+/**
+ * Created by LiuPin on 2015/5/13.
+ */
+public class ExpressionStmtMerger extends AbstractMerger<ExpressionStmt> {
+
+  @Override public ExpressionStmt merge(ExpressionStmt first, ExpressionStmt second) {
+    ExpressionStmt es = new ExpressionStmt();
+
+    es.setComment(mergeSingle(first.getComment(),second.getComment()));
+    es.setExpression(mergeSingle(first.getExpression(),second.getExpression()));
+
+    return es;
+  }
+
+  @Override public boolean isEquals(ExpressionStmt first, ExpressionStmt second) {
+    if(first == second) return true;
+
+    if(!isEqualsUseMerger(first.getExpression(),second.getExpression())) return false;
+
+    return true;
+  }
+}
