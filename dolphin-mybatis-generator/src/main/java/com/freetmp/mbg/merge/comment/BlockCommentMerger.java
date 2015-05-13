@@ -9,14 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BlockCommentMerger extends AbstractMerger<BlockComment> {
 
-    private BlockCommentMerger(){}
-
-    static {
-        if(getMerger(BlockComment.class) == null) {
-            register(BlockComment.class, new BlockCommentMerger());
-        }
-    }
-
     @Override
     public BlockComment merge(BlockComment first, BlockComment second) {
         if(StringUtils.isBlank(first.getContent())) return second;

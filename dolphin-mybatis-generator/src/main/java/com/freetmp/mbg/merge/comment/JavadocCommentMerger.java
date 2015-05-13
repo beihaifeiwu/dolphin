@@ -8,14 +8,6 @@ import com.github.javaparser.ast.comments.JavadocComment;
  */
 public class JavadocCommentMerger extends AbstractMerger<JavadocComment> {
 
-    static {
-        if(getMerger(JavadocComment.class) == null){
-            register(JavadocComment.class,new JavadocCommentMerger());
-        }
-    }
-
-    private JavadocCommentMerger(){}
-
     @Override
     public JavadocComment merge(JavadocComment first, JavadocComment second) {
         if(first.getContent() == null) return second;

@@ -9,27 +9,23 @@ import com.github.javaparser.ast.type.PrimitiveType;
  */
 public class PrimitiveTypeMerger extends AbstractMerger<PrimitiveType> {
 
-    private PrimitiveTypeMerger(){}
+  @Override
+  public PrimitiveType merge(PrimitiveType first, PrimitiveType second) {
+    PrimitiveType pt = new PrimitiveType();
+    pt.setComment(mergeSingle(first.getComment(),second.getComment()));
+    pt.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
+    pt.setType(first.getType());
+    return first;
+  }
 
-    static {
-        if(getMerger(PrimitiveType.class) == null){
-            register(PrimitiveType.class,new PrimitiveTypeMerger());
-        }
-    }
+  @Override
+  public boolean isEquals(PrimitiveType first, PrimitiveType second) {
 
-    @Override
-    public PrimitiveType merge(PrimitiveType first, PrimitiveType second) {
-        return first;
-    }
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-    @Override
-    public boolean isEquals(PrimitiveType first, PrimitiveType second) {
+    if (!first.getType().equals(second.getType())) return false;
 
-        if(first == second) return true;
-        if(first == null || second == null) return false;
-
-        if(!first.getType().equals(second.getType())) return false;
-
-        return true;
-    }
+    return true;
+  }
 }

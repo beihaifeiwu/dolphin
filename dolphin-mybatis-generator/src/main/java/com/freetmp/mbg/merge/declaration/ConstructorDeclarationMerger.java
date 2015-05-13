@@ -9,43 +9,35 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ConstructorDeclarationMerger extends AbstractMerger<ConstructorDeclaration> {
 
-    private ConstructorDeclarationMerger(){}
+  @Override
+  public ConstructorDeclaration merge(ConstructorDeclaration first, ConstructorDeclaration second) {
 
-    static {
-        if(getMerger(ConstructorDeclaration.class) == null){
-            register(ConstructorDeclaration.class,new ConstructorDeclarationMerger());
-        }
-    }
+    ConstructorDeclaration cd = new ConstructorDeclaration();
 
-    @Override
-    public ConstructorDeclaration merge(ConstructorDeclaration first, ConstructorDeclaration second) {
+    cd.setName(first.getName());
+    cd.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
+    cd.setComment(mergeSingle(first.getComment(), second.getComment()));
+    cd.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
+    cd.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
+    cd.setParameters(mergeCollectionsInOrder(first.getParameters(), second.getParameters()));
+    cd.setTypeParameters(mergeCollectionsInOrder(first.getTypeParameters(), second.getTypeParameters()));
 
-        ConstructorDeclaration cd = new ConstructorDeclaration();
+    cd.setThrows(mergeListNoDuplicate(first.getThrows(), second.getThrows(), false));
+    cd.setBlock(mergeSingle(first.getBlock(), second.getBlock()));
+    return cd;
+  }
 
-        cd.setName(first.getName());
-        cd.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-        cd.setComment(mergeSingle(first.getComment(), second.getComment()));
-        cd.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
-        cd.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
-        cd.setParameters(mergeCollectionsInOrder(first.getParameters(), second.getParameters()));
-        cd.setTypeParameters(mergeCollectionsInOrder(first.getTypeParameters(),second.getTypeParameters()));
+  @Override
+  public boolean isEquals(ConstructorDeclaration first, ConstructorDeclaration second) {
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-        cd.setThrows(mergeListNoDuplicate(first.getThrows(),second.getThrows(),false));
-        cd.setBlock(mergeSingle(first.getBlock(),second.getBlock()));
-        return cd;
-    }
+    if (!StringUtils.equals(first.getName(), second.getName())) return false;
 
-    @Override
-    public boolean isEquals(ConstructorDeclaration first, ConstructorDeclaration second) {
-        if(first == second) return true;
-        if(first == null || second == null) return false;
+    if (!isParametersEquals(first.getParameters(), second.getParameters())) return false;
 
-        if(!StringUtils.equals(first.getName(),second.getName())) return false;
+    if (!isTypeParameterEquals(first.getTypeParameters(), second.getTypeParameters())) return false;
 
-        if(!isParametersEquals(first.getParameters(), second.getParameters())) return false;
-
-        if(!isTypeParameterEquals(first.getTypeParameters(),second.getTypeParameters())) return false;
-
-        return true;
-    }
+    return true;
+  }
 }

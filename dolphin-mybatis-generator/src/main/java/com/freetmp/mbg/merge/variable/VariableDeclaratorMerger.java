@@ -9,14 +9,6 @@ import com.github.javaparser.ast.body.VariableDeclaratorId;
  */
 public class VariableDeclaratorMerger extends AbstractMerger<VariableDeclarator> {
 
-    private VariableDeclaratorMerger(){}
-
-    static {
-        if(getMerger(VariableDeclarator.class) == null){
-            register(VariableDeclarator.class,new VariableDeclaratorMerger());
-        }
-    }
-
     @Override public VariableDeclarator merge(VariableDeclarator first, VariableDeclarator second) {
 
         if(first.getInit() == second.getInit()) return first;

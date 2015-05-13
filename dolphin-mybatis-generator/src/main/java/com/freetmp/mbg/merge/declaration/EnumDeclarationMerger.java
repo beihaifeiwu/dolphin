@@ -9,14 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EnumDeclarationMerger extends AbstractMerger<EnumDeclaration> {
 
-    private EnumDeclarationMerger(){}
-
-    static {
-        if(getMerger(EnumDeclaration.class) == null){
-            register(EnumDeclaration.class, new EnumDeclarationMerger());
-        }
-    }
-
     @Override
     public EnumDeclaration merge(EnumDeclaration first, EnumDeclaration second) {
 

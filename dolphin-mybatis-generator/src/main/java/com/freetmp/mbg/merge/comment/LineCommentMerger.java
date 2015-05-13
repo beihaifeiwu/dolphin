@@ -9,14 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class LineCommentMerger extends AbstractMerger<LineComment> {
 
-    private LineCommentMerger(){}
-
-    static {
-        if(getMerger(LineComment.class) == null){
-            register(LineComment.class,new LineCommentMerger());
-        }
-    }
-
     @Override
     public LineComment merge(LineComment first, LineComment second) {
         if(StringUtils.isBlank(first.getContent())) return second;

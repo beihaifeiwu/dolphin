@@ -12,14 +12,6 @@ import java.util.List;
  */
 public class MultiTypeParameterMerger extends AbstractMerger<MultiTypeParameter> {
 
-    private MultiTypeParameterMerger(){}
-
-    static {
-        if(getMerger(MultiTypeParameter.class) == null){
-            register(MultiTypeParameter.class,new MultiTypeParameterMerger());
-        }
-    }
-
     @Override
     public MultiTypeParameter merge(MultiTypeParameter first, MultiTypeParameter second) {
 

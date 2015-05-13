@@ -9,14 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class VariableDeclaratorIdMerger extends AbstractMerger<VariableDeclaratorId> {
 
-    private VariableDeclaratorIdMerger(){}
-
-    static {
-        if(getMerger(VariableDeclaratorId.class) == null){
-            register(VariableDeclaratorId.class,new VariableDeclaratorIdMerger());
-        }
-    }
-
     @Override
     public VariableDeclaratorId merge(VariableDeclaratorId first, VariableDeclaratorId second) {
         return first;

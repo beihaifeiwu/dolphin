@@ -9,31 +9,26 @@ import com.github.javaparser.ast.type.WildcardType;
  */
 public class WildcardTypeMerger extends AbstractMerger<WildcardType> {
 
-    private WildcardTypeMerger(){}
+  @Override
+  public WildcardType merge(WildcardType first, WildcardType second) {
+    WildcardType wt = new WildcardType();
+    wt.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
+    wt.setComment(mergeSingle(first.getComment(),second.getComment()));
+    wt.setExtends(mergeSingle(first.getExtends(),second.getExtends()));
+    wt.setSuper(mergeSingle(first.getSuper(),second.getSuper()));
+    return first;
+  }
 
-    static {
-        if(getMerger(WildcardType.class) == null){
-            register(WildcardType.class,new WildcardTypeMerger());
-        }
-    }
+  @Override
+  public boolean isEquals(WildcardType first, WildcardType second) {
 
-    @Override
-    public WildcardType merge(WildcardType first, WildcardType second) {
-        return first;
-    }
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-    @Override
-    public boolean isEquals(WildcardType first, WildcardType second) {
+    if (!isEqualsUseMerger(first.getExtends(), second.getExtends())) return false;
 
-        if(first == second) return true;
-        if(first == null || second == null) return false;
+    if (!isEqualsUseMerger(first.getSuper(), second.getSuper())) return false;
 
-        AbstractMerger<ReferenceType> merger = getMerger(ReferenceType.class);
-
-        if(!merger.isEquals(first.getExtends(),second.getExtends())) return false;
-
-        if(!merger.isEquals(first.getSuper(),second.getSuper())) return false;
-
-        return true;
-    }
+    return true;
+  }
 }

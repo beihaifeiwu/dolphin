@@ -1,10 +1,33 @@
 package com.freetmp.mbg.merge;
 
+import com.freetmp.mbg.merge.comment.BlockCommentMerger;
+import com.freetmp.mbg.merge.comment.JavadocCommentMerger;
+import com.freetmp.mbg.merge.comment.LineCommentMerger;
+import com.freetmp.mbg.merge.declaration.*;
+import com.freetmp.mbg.merge.expression.*;
+import com.freetmp.mbg.merge.parameter.MultiTypeParameterMerger;
+import com.freetmp.mbg.merge.parameter.ParameterMerger;
+import com.freetmp.mbg.merge.parameter.TypeParameterMerger;
+import com.freetmp.mbg.merge.statement.AssertStmtMerger;
+import com.freetmp.mbg.merge.type.*;
+import com.freetmp.mbg.merge.variable.VariableDeclaratorIdMerger;
+import com.freetmp.mbg.merge.variable.VariableDeclaratorMerger;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.TypeParameter;
-import com.github.javaparser.ast.body.BaseParameter;
-import com.github.javaparser.ast.body.ModifierSet;
+import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.BlockComment;
+import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.stmt.AssertStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.VoidType;
+import com.github.javaparser.ast.type.WildcardType;
+import jdk.nashorn.internal.ir.BlockStatement;
 
+import javax.lang.model.type.PrimitiveType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,312 +39,421 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractMerger<M> {
 
-    protected static ConcurrentHashMap<Class,AbstractMerger> map = new ConcurrentHashMap<>();
+  protected static ConcurrentHashMap<Class, AbstractMerger> map = new ConcurrentHashMap<>();
 
-    public <T> boolean isAllNull(T one, T two) {
-        return one == null ? two == null : false;
+  static {
+    // comment
+    map.put(BlockComment.class, new BlockCommentMerger());
+    map.put(JavadocComment.class, new JavadocCommentMerger());
+    map.put(LineComment.class, new LineCommentMerger());
+
+    // declaration
+    map.put(AnnotationDeclaration.class, new AnnotationDeclarationMerger());
+    map.put(AnnotationMemberDeclaration.class, new AnnotationDeclarationMerger());
+    map.put(BodyDeclaration.class, new BodyDeclarationMerger());
+    map.put(ClassOrInterfaceDeclaration.class, new ClassOrInterfaceDeclarationMerger());
+    map.put(ConstructorDeclaration.class, new ConstructorDeclarationMerger());
+    map.put(EmptyMemberDeclaration.class, new EmptyMemberDeclarationMerger());
+    map.put(EmptyTypeDeclaration.class, new EmptyTypeDeclarationMerger());
+    map.put(EnumConstantDeclaration.class, new EnumConstantDeclarationMerger());
+    map.put(EnumDeclaration.class, new EnumDeclarationMerger());
+    map.put(FieldDeclaration.class, new FieldDeclarationMerger());
+    map.put(InitializerDeclaration.class, new InitializerDeclarationMerger());
+    map.put(MethodDeclaration.class, new MethodDeclarationMerger());
+    map.put(PackageDeclaration.class, new PackageDeclarationMerger());
+
+    // expression
+    map.put(Expression.class, new ExpressionMerger());
+    map.put(MarkerAnnotationExpr.class, new MarkerAnnotationExprMerger());
+    map.put(NormalAnnotationExpr.class, new NormalAnnotationExprMerger());
+    map.put(SingleMemberAnnotationExpr.class, new SingleMemberAnnotationExprMerger());
+    map.put(ArrayAccessExpr.class,new ArrayAccessExprMerger());
+    map.put(ArrayCreationExpr.class, new ArrayAccessExprMerger());
+    map.put(ArrayInitializerExpr.class, new ArrayInitializerExprMerger());
+    map.put(AssignExpr.class, new AssignExprMerger());
+    map.put(BinaryExpr.class, new BinaryExprMerger());
+    map.put(BooleanLiteralExpr.class, new BooleanLiteralExprMerger());
+    map.put(CastExpr.class, new CastExprMerger());
+    map.put(CharLiteralExpr.class, new CharLiteralExprMerger());
+    map.put(ClassExpr.class, new ClassExprMerger());
+    map.put(ConditionalExpr.class, new ConditionalExprMerger());
+    map.put(DoubleLiteralExpr.class, new DoubleLiteralExprMerger());
+    map.put(EnclosedExpr.class, new EnclosedExprMerger());
+    map.put(FieldAccessExpr.class, new FieldAccessExprMerger());
+    map.put(InstanceOfExpr.class,new InstanceOfExprMerger());
+    map.put(IntegerLiteralExpr.class, new IntegerLiteralExprMerger());
+    map.put(IntegerLiteralMinValueExpr.class, new IntegerLiteralMinValueExprMerger());
+    map.put(LambdaExpr.class, new LambdaExprMerger());
+    map.put(LongLiteralExpr.class, new LongLiteralExprMerger());
+    map.put(LongLiteralMinValueExpr.class, new LongLiteralMinValueExprMerger());
+    map.put(MemberValuePair.class, new MemberValuePairMerger());
+    map.put(MethodCallExpr.class, new MethodCallExprMerger());
+    map.put(MethodReferenceExpr.class, new MethodReferenceExprMerger());
+    map.put(NameExpr.class, new NameExprMerger());
+    map.put(NullLiteralExpr.class, new NullLiteralExprMerger());
+    map.put(ObjectCreationExpr.class, new ObjectCreationExprMerger());
+    map.put(QualifiedNameExpr.class, new QualifiedNameExprMerger());
+    map.put(StringLiteralExpr.class, new StringLiteralExprMerger());
+    map.put(SuperExpr.class, new SuperExprMerger());
+    map.put(ThisExpr.class, new ThisExprMerger());
+    map.put(TypeExpr.class, new TypeExprMerger());
+    map.put(UnaryExpr.class, new UnaryExprMerger());
+    map.put(VariableDeclarationExpr.class, new VariableDeclaratorMerger());
+
+    // parameter
+    map.put(Parameter.class, new ParameterMerger());
+    map.put(MultiTypeParameter.class, new MultiTypeParameterMerger());
+    map.put(TypeParameter.class, new TypeParameterMerger());
+
+    // statement
+    map.put(BlockStatement.class, new BlockCommentMerger());
+    map.put(AssertStmt.class, new AssertStmtMerger());
+
+    // type
+    map.put(ClassOrInterfaceType.class, new ClassOrInterfaceTypeMerger());
+    map.put(PrimitiveType.class, new PrimitiveTypeMerger());
+    map.put(ReferenceType.class, new ReferenceTypeMerger());
+    map.put(VoidType.class, new VoidTypeMerger());
+    map.put(WildcardType.class, new WildcardTypeMerger());
+
+    //variable
+    map.put(VariableDeclaratorId.class, new VariableDeclaratorIdMerger());
+    map.put(VariableDeclarator.class, new VariableDeclaratorMerger());
+  }
+
+  public <T> boolean isAllNull(T one, T two) {
+    return one == null ? two == null : false;
+  }
+
+  public <T> boolean isAllNotNull(T one, T two) {
+    return one != null && two != null;
+  }
+
+  public <T> T findFirstNotNull(T... types) {
+    for (T type : types) {
+      if (type != null) return type;
+    }
+    return null;
+  }
+
+  public <T> int indexOf(int start, List<T> datas, T target) {
+    int index = -1;
+
+    for (int i = start; i < datas.size(); i++) {
+      if (datas.get(i).equals(target)) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T mergeSelective(T one, T two) {
+    T t = null;
+
+    if (isAllNull(one, two)) {
+      return t;
     }
 
-    public  <T> boolean isAllNotNull(T one, T two) {
-        return one != null && two != null;
+    t = findFirstNotNull(one, two);
+
+    return t;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends BaseParameter> boolean isParametersEquals(List<T> one, List<T> two) {
+
+    if (one == two) return true;
+    if (one == null || two == null) return false;
+
+    if (one.size() != two.size()) return false;
+
+    for (int i = 0; i < one.size(); i++) {
+
+      T o = one.get(i);
+      T t = two.get(i);
+
+      AbstractMerger merger = getMerger(o.getClass());
+      if (!merger.isEquals(o, t)) return false;
     }
 
-    public  <T> T findFirstNotNull(T... types) {
-        for (T type : types) {
-            if (type != null) return type;
+    return true;
+  }
+
+  public boolean isTypeParameterEquals(List<TypeParameter> first, List<TypeParameter> second) {
+
+    if (first == second) return true;
+    if (first == null || second == null) return false;
+
+    if (first.size() != second.size()) return false;
+
+    for (int i = 0; i < first.size(); i++) {
+      AbstractMerger<TypeParameter> merger = getMerger(TypeParameter.class);
+      if (!merger.isEquals(first.get(i), second.get(i))) return false;
+    }
+
+    return true;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Node> boolean isSmallerHasEqualsInBigger(List<T> first, List<T> second, boolean useOrigin) {
+
+    if (first == second) return true;
+    if (first == null || second == null) return true;
+
+    List<T> smaller = null;
+    List<T> bigger = null;
+
+    if (first.size() > second.size()) {
+      smaller = second;
+      bigger = first;
+    } else {
+      smaller = first;
+      bigger = second;
+    }
+
+    for (T st : smaller) {
+      if (useOrigin) {
+        if (!bigger.contains(st)) return false;
+      } else {
+        AbstractMerger merger = getMerger(st.getClass());
+        boolean found = false;
+        for (T bt : bigger) {
+          if (merger.isEquals(st, bt)) {
+            found = true;
+            break;
+          }
         }
-        return null;
+        if (!found) return false;
+      }
     }
 
-    public  <T> int indexOf(int start, List<T> datas, T target) {
-        int index = -1;
+    return true;
+  }
 
-        for (int i = start; i < datas.size(); i++) {
-            if (datas.get(i).equals(target)) {
-                index = i;
-                break;
-            }
+  public int mergeModifiers(int one, int two) {
+    return ModifierSet.addModifier(one, two);
+  }
+
+
+  @SuppressWarnings("unchecked")
+  public <T extends Node> List<T> mergeListNoDuplicate(List<T> one, List<T> two, boolean useMerger) {
+
+    if (one == two) return one;
+    if (one == null) return two;
+    if (two == null) return one;
+
+    List<T> results = new ArrayList<>();
+
+    if (useMerger) {
+
+      List<T> twoCopy = new ArrayList<>();
+      Collections.copy(twoCopy, two);
+
+      for (T ot : one) {
+        AbstractMerger merger = getMerger(ot.getClass());
+        T found = null;
+        for (T tt : twoCopy) {
+          if (ot.getClass().equals(tt.getClass()) && merger.isEquals(ot, tt)) {
+            found = tt;
+            break;
+          }
         }
-        return index;
-    }
-
-    @SuppressWarnings("unchecked")
-    public  <T> T mergeSelective(T one, T two) {
-        T t = null;
-
-        if (isAllNull(one, two)) {
-            return t;
-        }
-
-        t = findFirstNotNull(one, two);
-
-        return t;
-    }
-
-    @SuppressWarnings("unchecked")
-    public  <T extends BaseParameter> boolean isParametersEquals(List<T> one, List<T> two) {
-
-        if(one == two) return true;
-        if(one == null || two == null) return false;
-
-        if(one.size() != two.size()) return false;
-
-        for(int i = 0; i < one.size(); i++){
-
-            T o = one.get(i);
-            T t = two.get(i);
-
-            AbstractMerger merger = getMerger(o.getClass());
-            if(!merger.isEquals(o,t)) return false;
-        }
-
-        return true;
-    }
-
-    public boolean isTypeParameterEquals(List<TypeParameter> first, List<TypeParameter> second){
-
-        if(first == second) return true;
-        if(first == null || second == null) return false;
-
-        if(first.size() != second.size()) return false;
-
-        for(int i = 0; i < first.size(); i++){
-            AbstractMerger<TypeParameter> merger = getMerger(TypeParameter.class);
-            if(!merger.isEquals(first.get(i),second.get(i))) return false;
-        }
-
-        return true;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Node> boolean isSmallerHasEqualsInBigger(List<T> first, List<T> second, boolean useOrigin){
-
-        if(first == second) return true;
-        if(first == null || second == null) return true;
-
-        List<T> smaller = null;
-        List<T> bigger = null;
-
-        if(first.size() > second.size()){
-            smaller = second; bigger = first;
-        }else {
-            smaller = first; bigger = second;
-        }
-
-        for(T st : smaller){
-            if(useOrigin){
-                if(!bigger.contains(st)) return false;
-            }else {
-                AbstractMerger merger = getMerger(st.getClass());
-                boolean found = false;
-                for(T bt : bigger){
-                    if(merger.isEquals(st,bt)){
-                        found = true; break;
-                    }
-                }
-                if(!found) return false;
-            }
-        }
-
-        return true;
-    }
-
-    public  int mergeModifiers(int one, int two) {
-        return ModifierSet.addModifier(one, two);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public  <T extends Node> List<T> mergeListNoDuplicate(List<T> one, List<T> two, boolean useMerger) {
-
-        if(one == two) return one;
-        if(one == null) return two;
-        if(two == null) return one;
-
-        List<T> results = new ArrayList<>();
-
-        if(useMerger){
-
-            List<T> twoCopy = new ArrayList<>();
-            Collections.copy(twoCopy,two);
-
-            for(T ot : one){
-                AbstractMerger merger = getMerger(ot.getClass());
-                T found = null;
-                for(T tt : twoCopy){
-                    if(ot.getClass().equals(tt.getClass()) && merger.isEquals(ot,tt)){
-                        found = tt; break;
-                    }
-                }
-                if(found != null){
-                    twoCopy.remove(found);
-                    results.add((T) merger.merge(ot,found));
-                }else {
-                    results.add(ot);
-                }
-            }
-
-            results.addAll(twoCopy);
-
-        }else {
-            TreeSet<T> treeSet = new TreeSet<>();
-            treeSet.addAll(one);
-            treeSet.addAll(two);
-            results.addAll(treeSet);
-        }
-
-        return results;
-    }
-
-    @SuppressWarnings("unchecked")
-    public  <T> List<T> mergeListInOrder(List<T> one, List<T> two) {
-        List<T> results = new ArrayList<>();
-
-        if (isAllNull(one, two)) return null;
-
-        if (isAllNotNull(one, two)) {
-
-            int start = 0;
-            for (int i = 0; i < one.size(); i++) {
-                T t = one.get(i);
-                int index = indexOf(start, two, t);
-                if (index == -1 || index == start) {
-                    results.add(t);
-                    start += 1;
-                } else {
-
-                    results.addAll(two.subList(start, ++index));
-                    start = index;
-                }
-            }
-
-            if (start < two.size()) {
-                results.addAll(two.subList(start, two.size()));
-            }
-
+        if (found != null) {
+          twoCopy.remove(found);
+          results.add((T) merger.merge(ot, found));
         } else {
-            results.addAll(findFirstNotNull(one, two));
+          results.add(ot);
         }
+      }
 
-        return results;
+      results.addAll(twoCopy);
+
+    } else {
+      TreeSet<T> treeSet = new TreeSet<>();
+      treeSet.addAll(one);
+      treeSet.addAll(two);
+      results.addAll(treeSet);
     }
+
+    return results;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> List<T> mergeListInOrder(List<T> one, List<T> two) {
+    List<T> results = new ArrayList<>();
+
+    if (isAllNull(one, two)) return null;
+
+    if (isAllNotNull(one, two)) {
+
+      int start = 0;
+      for (int i = 0; i < one.size(); i++) {
+        T t = one.get(i);
+        int index = indexOf(start, two, t);
+        if (index == -1 || index == start) {
+          results.add(t);
+          start += 1;
+        } else {
+
+          results.addAll(two.subList(start, ++index));
+          start = index;
+        }
+      }
+
+      if (start < two.size()) {
+        results.addAll(two.subList(start, two.size()));
+      }
+
+    } else {
+      results.addAll(findFirstNotNull(one, two));
+    }
+
+    return results;
+  }
+
+  /**
+   * first check if mapper of the type T exist, if existed return it
+   * else check if mapper of the supper type exist, then return it
+   * ...
+   */
+  @SuppressWarnings("unchecked")
+  public static <T extends Node> AbstractMerger<T> getMerger(Class<T> clazz) {
+
+    AbstractMerger<T> merger = null;
+
+    Class<?> type = clazz;
+
+    while (merger == null && type != null) {
+      merger = map.get(type);
+      type = type.getSuperclass();
+    }
+
+    return merger;
+  }
+
+  protected static <T> void register(Class<T> clazz, AbstractMerger<T> abstractMerger) {
+    map.put(clazz, abstractMerger);
+  }
+
+
+  @SuppressWarnings("unchecked")
+  protected <T extends Node> List<T> mergeCollections(List<T> first, List<T> second) {
+
+    if (first == null) return second;
+    if (second == null) return first;
+
+    List<T> nodes = new ArrayList<>();
+
+    List<T> copies = new ArrayList<>();
+    copies.addAll(second);
+
+    for (T node : first) {
+
+      AbstractMerger merger = getMerger(node.getClass());
+
+      T found = null;
+
+      for (T anotherNode : second) {
+        if (node.getClass().equals(anotherNode.getClass())) {
+          if (merger.isEquals(node, anotherNode)) {
+            found = anotherNode;
+            break;
+          }
+        }
+      }
+
+      if (found != null) {
+        nodes.add((T) merger.merge(node, found));
+        copies.remove(found);
+      } else {
+        nodes.add(node);
+      }
+
+    }
+
+    if (!copies.isEmpty()) {
+      nodes.addAll(copies);
+    }
+
+    return nodes;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T extends Node> List<T> mergeCollectionsInOrder(List<T> first, List<T> second) {
+    if (first == null) return second;
+    if (second == null) return first;
+
+    List<T> nodes = new ArrayList<>();
+
+    int max = Math.max(first.size(), second.size());
+    for (int i = 0; i < max; i++) {
+      T f = i < first.size() ? first.get(i) : null;
+      T s = i < second.size() ? second.get(i) : null;
+      if (isAllNotNull(f, s)) {
+
+        AbstractMerger merger = getMerger(f.getClass());
+        nodes.add((T) merger.merge(f, s));
+
+      } else {
+        nodes.add(f != null ? f : s);
+      }
+    }
+
+    return nodes;
+  }
+
+
+  @SuppressWarnings("unchecked")
+  protected <T extends Node> T mergeSingle(T first, T second) {
 
     /**
-     * first check if mapper of the type T exist, if existed return it
-     * else check if mapper of the supper type exist, then return it
-     * ...
+     * ensure the parameter passed to the merge is either not null
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends Node> AbstractMerger<T> getMerger(Class<T> clazz){
+    if (first == null) return second;
+    if (second == null) return first;
 
-        AbstractMerger<T> merger = null;
+    if (first.getClass().equals(second.getClass())) {
 
-        Class<?> type = clazz;
+      AbstractMerger merger = getMerger(first.getClass());
 
-        while (merger == null && type != null){
-            merger = map.get(type);
-            type = type.getSuperclass();
-        }
-
-        return merger;
+      if (merger.isEquals(first, second)) {
+        return (T) merger.merge(first, second);
+      }
     }
 
-    protected static <T> void register(Class<T> clazz,AbstractMerger<T> abstractMerger){
-        map.put(clazz,abstractMerger);
+    return null;
+  }
+
+  @SuppressWarnings("unchecked") protected <T extends Node> boolean isEqualsUseMerger(T first, T second){
+
+    if(first == second) return true;
+    if(first == null || second == null) return false;
+
+    if(first.getClass().equals(second.getClass())){
+      AbstractMerger merger = getMerger(first.getClass());
+      return merger.isEquals(first,second);
     }
 
+    return false;
+  }
 
-    @SuppressWarnings("unchecked")
-    protected <T extends Node> List<T> mergeCollections(List<T> first, List<T> second){
+  protected <T extends Node> boolean isEqualsUseMerger(List<T> first, List<T> second){
+    if(first == second) return true;
+    if(first == null || second == null) return false;
+    if(first.size() != second.size()) return false;
 
-        if(first == null) return second;
-        if(second == null) return first;
-
-        List<T> nodes = new ArrayList<>();
-
-        List<T> copies = new ArrayList<>();
-        copies.addAll(second);
-
-        for(T node : first){
-
-            AbstractMerger merger = getMerger(node.getClass());
-
-            T found = null;
-
-            for(T anotherNode : second){
-                if(node.getClass().equals(anotherNode.getClass())){
-                    if (merger.isEquals(node,anotherNode)) {
-                        found = anotherNode;
-                        break;
-                    }
-                }
-            }
-
-            if(found != null){
-                nodes.add((T) merger.merge(node, found));
-                copies.remove(found);
-            }else {
-                nodes.add(node);
-            }
-
-        }
-
-        if(!copies.isEmpty()){
-            nodes.addAll(copies);
-        }
-
-        return nodes;
+    for(int i = 0; i < first.size(); i++){
+      if(!isEqualsUseMerger(first.get(i),second.get(i))){
+        return false;
+      }
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T extends Node> List<T> mergeCollectionsInOrder(List<T> first,List<T> second){
-        if(first == null) return second;
-        if(second == null) return first;
+    return true;
+  }
 
-        List<T> nodes = new ArrayList<>();
+  public abstract M merge(M first, M second);
 
-        int max = Math.max(first.size(),second.size());
-        for(int i = 0; i < max; i++){
-            T f = i < first.size() ? first.get(i) : null;
-            T s = i < second.size() ? second.get(i) : null;
-            if(isAllNotNull(f,s)){
-
-                AbstractMerger merger = getMerger(f.getClass());
-                nodes.add((T) merger.merge(f,s));
-
-            }else {
-                nodes.add(f != null ? f : s);
-            }
-        }
-
-        return nodes;
-    }
-
-
-    @SuppressWarnings("unchecked")
-    protected <T extends Node> T mergeSingle(T first, T second){
-
-        /**
-         * ensure the parameter passed to the merge is either not null
-         */
-        if(first == null) return second;
-        if(second == null) return first;
-
-        if(first.getClass().equals(second.getClass())) {
-
-            AbstractMerger merger = getMerger(first.getClass());
-
-            if (merger.isEquals(first, second)) {
-                return (T) merger.merge(first, second);
-            }
-        }else {
-            //TODO have no idea what to do
-        }
-
-        return null;
-    }
-
-    public abstract M merge(M first, M second);
-
-    public abstract boolean isEquals(M first, M second);
+  public abstract boolean isEquals(M first, M second);
 }

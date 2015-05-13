@@ -8,14 +8,6 @@ import com.github.javaparser.ast.body.EnumConstantDeclaration;
  */
 public class EnumConstantDeclarationMerger extends AbstractMerger<EnumConstantDeclaration> {
 
-    private EnumConstantDeclarationMerger(){}
-
-    static {
-        if(getMerger(EnumConstantDeclaration.class) == null){
-            register(EnumConstantDeclaration.class,new EnumConstantDeclarationMerger());
-        }
-    }
-
     @Override
     public EnumConstantDeclaration merge(EnumConstantDeclaration first, EnumConstantDeclaration second) {
 

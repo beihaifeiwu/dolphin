@@ -8,21 +8,22 @@ import com.github.javaparser.ast.body.EmptyTypeDeclaration;
  */
 public class EmptyTypeDeclarationMerger extends AbstractMerger<EmptyTypeDeclaration> {
 
-    private EmptyTypeDeclarationMerger(){}
+  @Override
+  public EmptyTypeDeclaration merge(EmptyTypeDeclaration first, EmptyTypeDeclaration second) {
+    EmptyTypeDeclaration etd = new EmptyTypeDeclaration();
 
-    static {
-        if(getMerger(EmptyTypeDeclaration.class) == null){
-            register(EmptyTypeDeclaration.class,new EmptyTypeDeclarationMerger());
-        }
-    }
+    etd.setJavaDoc(mergeSingle(first.getJavaDoc(),second.getJavaDoc()));
+    etd.setComment(mergeSingle(first.getComment(),second.getComment()));
+    etd.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
+    etd.setModifiers(mergeModifiers(first.getModifiers(),second.getModifiers()));
+    etd.setNameExpr(mergeSingle(first.getNameExpr(),second.getNameExpr()));
+    etd.setMembers(mergeCollections(first.getMembers(),second.getMembers()));
 
-    @Override
-    public EmptyTypeDeclaration merge(EmptyTypeDeclaration first, EmptyTypeDeclaration second) {
-        return first;
-    }
+    return etd;
+  }
 
-    @Override
-    public boolean isEquals(EmptyTypeDeclaration first, EmptyTypeDeclaration second) {
-        return true;
-    }
+  @Override
+  public boolean isEquals(EmptyTypeDeclaration first, EmptyTypeDeclaration second) {
+    return true;
+  }
 }

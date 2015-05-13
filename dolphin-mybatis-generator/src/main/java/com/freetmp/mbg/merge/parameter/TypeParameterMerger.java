@@ -12,14 +12,6 @@ import java.util.List;
  */
 public class TypeParameterMerger extends AbstractMerger<TypeParameter> {
 
-    static {
-        if(getMerger(TypeParameter.class) == null){
-            register(TypeParameter.class,new TypeParameterMerger());
-        }
-    }
-
-    private TypeParameterMerger(){}
-
     @Override
     public TypeParameter merge(TypeParameter first, TypeParameter second) {
 

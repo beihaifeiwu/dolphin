@@ -8,14 +8,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
  */
 public class FieldDeclarationMerger extends AbstractMerger<FieldDeclaration> {
 
-    private FieldDeclarationMerger(){}
-
-    static {
-        if(getMerger(FieldDeclaration.class) == null){
-            register(FieldDeclaration.class,new FieldDeclarationMerger());
-        }
-    }
-
     @Override public FieldDeclaration merge(FieldDeclaration first, FieldDeclaration second) {
 
         FieldDeclaration fd = new FieldDeclaration();

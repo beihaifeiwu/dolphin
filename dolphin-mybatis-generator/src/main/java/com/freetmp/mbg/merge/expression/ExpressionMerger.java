@@ -8,14 +8,6 @@ import com.github.javaparser.ast.expr.Expression;
  */
 public class ExpressionMerger extends AbstractMerger<Expression> {
 
-    private ExpressionMerger(){}
-
-    static {
-        if(getMerger(Expression.class) == null){
-            register(Expression.class,new ExpressionMerger());
-        }
-    }
-
     @Override public Expression merge(Expression first, Expression second) {
         return first;
     }

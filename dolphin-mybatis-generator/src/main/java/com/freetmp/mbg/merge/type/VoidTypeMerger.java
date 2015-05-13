@@ -8,22 +8,19 @@ import com.github.javaparser.ast.type.VoidType;
  */
 public class VoidTypeMerger extends AbstractMerger<VoidType> {
 
-    private VoidTypeMerger(){}
+  @Override
+  public VoidType merge(VoidType first, VoidType second) {
+    VoidType vt = new VoidType();
 
-    static {
-        if(getMerger(VoidType.class) == null){
-            register(VoidType.class,new VoidTypeMerger());
-        }
-    }
+    vt.setComment(mergeSingle(first.getComment(),second.getComment()));
+    vt.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
 
-    @Override
-    public VoidType merge(VoidType first, VoidType second) {
-        return first;
-    }
+    return vt;
+  }
 
-    @Override
-    public boolean isEquals(VoidType first, VoidType second) {
+  @Override
+  public boolean isEquals(VoidType first, VoidType second) {
 
-        return true;
-    }
+    return true;
+  }
 }

@@ -8,24 +8,16 @@ import com.github.javaparser.ast.body.BodyDeclaration;
  */
 public class BodyDeclarationMerger extends AbstractMerger<BodyDeclaration> {
 
-    private BodyDeclarationMerger(){}
+  @Override
+  public BodyDeclaration merge(BodyDeclaration first, BodyDeclaration second) {
+    return null;
+  }
 
-    static {
-        if(getMerger(BodyDeclaration.class) == null){
-            register(BodyDeclaration.class,new BodyDeclarationMerger());
-        }
-    }
-
-    @Override
-    public BodyDeclaration merge(BodyDeclaration first, BodyDeclaration second) {
-        return null;
-    }
-
-    /**
-     * Without further information, we can do nothing
-     */
-    @Override
-    public boolean isEquals(BodyDeclaration first, BodyDeclaration second) {
-        return false;
-    }
+  /**
+   * Without further information, we can do nothing
+   */
+  @Override
+  public boolean isEquals(BodyDeclaration first, BodyDeclaration second) {
+    return false;
+  }
 }

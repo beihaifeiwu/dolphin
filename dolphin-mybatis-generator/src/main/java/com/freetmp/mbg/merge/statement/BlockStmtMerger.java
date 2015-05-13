@@ -8,14 +8,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
  */
 public class BlockStmtMerger extends AbstractMerger<BlockStmt> {
 
-    private BlockStmtMerger(){}
-
-    static {
-        if(getMerger(BlockStmt.class) == null){
-            register(BlockStmt.class,new BlockStmtMerger());
-        }
-    }
-
     @Override
     public BlockStmt merge(BlockStmt first, BlockStmt second) {
         return first.getStmts().size() >= second.getStmts().size() ? first : second;

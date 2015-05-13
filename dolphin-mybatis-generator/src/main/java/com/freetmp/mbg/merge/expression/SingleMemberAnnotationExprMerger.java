@@ -8,25 +8,21 @@ import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
  */
 public class SingleMemberAnnotationExprMerger extends AbstractMerger<SingleMemberAnnotationExpr> {
 
-    private SingleMemberAnnotationExprMerger(){}
+  @Override
+  public SingleMemberAnnotationExpr merge(SingleMemberAnnotationExpr first, SingleMemberAnnotationExpr second) {
+    SingleMemberAnnotationExpr smae = new SingleMemberAnnotationExpr();
+    smae.setComment(mergeSingle(first.getComment(),second.getComment()));
+    smae.setName(mergeSingle(first.getName(),second.getName()));
+    smae.setMemberValue(mergeSingle(first.getMemberValue(),second.getMemberValue()));
+    return smae;
+  }
 
-    static {
-        if(getMerger(SingleMemberAnnotationExpr.class) == null){
-            register(SingleMemberAnnotationExpr.class,new SingleMemberAnnotationExprMerger());
-        }
-    }
+  @Override
+  public boolean isEquals(SingleMemberAnnotationExpr first, SingleMemberAnnotationExpr second) {
 
-    @Override
-    public SingleMemberAnnotationExpr merge(SingleMemberAnnotationExpr first, SingleMemberAnnotationExpr second) {
-        return first;
-    }
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-    @Override
-    public boolean isEquals(SingleMemberAnnotationExpr first, SingleMemberAnnotationExpr second) {
-
-        if(first == second) return true;
-        if(first == null || second == null) return false;
-
-        return first.getName().equals(second.getName()) && first.getMemberValue().equals(second.getMemberValue());
-    }
+    return first.getName().equals(second.getName()) && first.getMemberValue().equals(second.getMemberValue());
+  }
 }

@@ -8,14 +8,6 @@ import com.github.javaparser.ast.body.InitializerDeclaration;
  */
 public class InitializerDeclarationMerger extends AbstractMerger<InitializerDeclaration> {
 
-    private InitializerDeclarationMerger(){}
-
-    static {
-        if(getMerger(InitializerDeclaration.class) == null){
-            register(InitializerDeclaration.class,new InitializerDeclarationMerger());
-        }
-    }
-
     @Override public InitializerDeclaration merge(InitializerDeclaration first, InitializerDeclaration second) {
 
         InitializerDeclaration id = new InitializerDeclaration();

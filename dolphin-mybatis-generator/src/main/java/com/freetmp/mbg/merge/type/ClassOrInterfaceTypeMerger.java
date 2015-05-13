@@ -12,14 +12,6 @@ import java.util.List;
  */
 public class ClassOrInterfaceTypeMerger extends AbstractMerger<ClassOrInterfaceType> {
 
-    private ClassOrInterfaceTypeMerger(){}
-
-    static {
-        if(getMerger(ClassOrInterfaceType.class) == null){
-            register(ClassOrInterfaceType.class,new ClassOrInterfaceTypeMerger());
-        }
-    }
-
     @Override
     public ClassOrInterfaceType merge(ClassOrInterfaceType first, ClassOrInterfaceType second) {
 

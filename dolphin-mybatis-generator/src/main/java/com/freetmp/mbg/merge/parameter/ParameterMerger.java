@@ -9,14 +9,6 @@ import com.github.javaparser.ast.body.VariableDeclaratorId;
  */
 public class ParameterMerger extends AbstractMerger<Parameter> {
 
-    private ParameterMerger(){}
-
-    static {
-        if(getMerger(Parameter.class) == null){
-            register(Parameter.class,new ParameterMerger());
-        }
-    }
-
     @Override
     public Parameter merge(Parameter first, Parameter second) {
 

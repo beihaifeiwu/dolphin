@@ -8,45 +8,37 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
  */
 public class ClassOrInterfaceDeclarationMerger extends AbstractMerger<ClassOrInterfaceDeclaration> {
 
-    private ClassOrInterfaceDeclarationMerger(){}
+  @Override
+  public ClassOrInterfaceDeclaration merge(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
 
-    static {
-        if(getMerger(ClassOrInterfaceDeclaration.class) == null){
-            register(ClassOrInterfaceDeclaration.class,new ClassOrInterfaceDeclarationMerger());
-        }
-    }
+    if (first.isInterface() != second.isInterface()) return null;
 
-    @Override
-    public ClassOrInterfaceDeclaration merge(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
+    ClassOrInterfaceDeclaration declaration = new ClassOrInterfaceDeclaration();
 
-        if(first.isInterface() != second.isInterface()) return null;
+    declaration.setInterface(first.isInterface());
+    declaration.setName(first.getName());
 
-        ClassOrInterfaceDeclaration declaration = new ClassOrInterfaceDeclaration();
+    declaration.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
+    declaration.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
+    declaration.setComment(mergeSingle(first.getComment(), second.getComment()));
+    declaration.setTypeParameters(mergeCollections(first.getTypeParameters(), second.getTypeParameters()));
 
-        declaration.setInterface(first.isInterface());
-        declaration.setName(first.getName());
+    declaration.setImplements(mergeCollections(first.getImplements(), second.getImplements()));
+    declaration.setExtends(mergeCollections(first.getExtends(), second.getExtends()));
 
-        declaration.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
-        declaration.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-        declaration.setComment(mergeSingle(first.getComment(), second.getComment()));
-        declaration.setTypeParameters(mergeCollections(first.getTypeParameters(), second.getTypeParameters()));
+    declaration.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
+    declaration.setMembers(mergeCollections(first.getMembers(), second.getMembers()));
 
-        declaration.setImplements(mergeCollections(first.getImplements(), second.getImplements()));
-        declaration.setExtends(mergeCollections(first.getExtends(), second.getExtends()));
+    return declaration;
+  }
 
-        declaration.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
-        declaration.setMembers(mergeCollections(first.getMembers(), second.getMembers()));
+  @Override
+  public boolean isEquals(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-        return declaration;
-    }
+    if (first.getName().equals(second.getName())) return true;
 
-    @Override
-    public boolean isEquals(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
-        if(first == second) return true;
-        if(first == null || second == null) return false;
-
-        if(first.getName().equals(second.getName())) return true;
-
-        return false;
-    }
+    return false;
+  }
 }

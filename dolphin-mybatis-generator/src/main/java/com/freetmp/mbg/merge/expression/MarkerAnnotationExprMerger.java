@@ -8,25 +8,22 @@ import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
  */
 public class MarkerAnnotationExprMerger extends AbstractMerger<MarkerAnnotationExpr> {
 
-    private MarkerAnnotationExprMerger(){}
+  @Override
+  public MarkerAnnotationExpr merge(MarkerAnnotationExpr first, MarkerAnnotationExpr second) {
+    MarkerAnnotationExpr mae = new MarkerAnnotationExpr();
 
-    static {
-        if(getMerger(MarkerAnnotationExpr.class) == null){
-            register(MarkerAnnotationExpr.class,new MarkerAnnotationExprMerger());
-        }
-    }
+    mae.setComment(mergeSingle(first.getComment(),second.getComment()));
+    mae.setName(mergeSingle(first.getName(),second.getName()));
 
-    @Override
-    public MarkerAnnotationExpr merge(MarkerAnnotationExpr first, MarkerAnnotationExpr second) {
-        return first;
-    }
+    return mae;
+  }
 
-    @Override
-    public boolean isEquals(MarkerAnnotationExpr first, MarkerAnnotationExpr second) {
+  @Override
+  public boolean isEquals(MarkerAnnotationExpr first, MarkerAnnotationExpr second) {
 
-        if(first == second) return true;
-        if(first == null || second == null) return false;
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-        return first.getName().equals(second.getName());
-    }
+    return first.getName().equals(second.getName());
+  }
 }

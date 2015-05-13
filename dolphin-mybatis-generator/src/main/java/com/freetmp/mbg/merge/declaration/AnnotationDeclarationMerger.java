@@ -9,34 +9,26 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class AnnotationDeclarationMerger extends AbstractMerger<AnnotationDeclaration> {
 
-    private AnnotationDeclarationMerger(){}
+  @Override
+  public AnnotationDeclaration merge(AnnotationDeclaration first, AnnotationDeclaration second) {
 
-    static {
-        if(getMerger(AnnotationDeclaration.class) == null){
-            register(AnnotationDeclaration.class,new AnnotationDeclarationMerger());
-        }
-    }
+    AnnotationDeclaration ad = new AnnotationDeclaration();
+    ad.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
+    ad.setComment(mergeSingle(first.getComment(), second.getComment()));
 
-    @Override
-    public AnnotationDeclaration merge(AnnotationDeclaration first, AnnotationDeclaration second) {
+    ad.setMembers(mergeCollections(first.getMembers(), second.getMembers()));
+    ad.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
+    ad.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
 
-        AnnotationDeclaration ad = new AnnotationDeclaration();
-        ad.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-        ad.setComment(mergeSingle(first.getComment(), second.getComment()));
+    return ad;
+  }
 
-        ad.setMembers(mergeCollections(first.getMembers(), second.getMembers()));
-        ad.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
-        ad.setModifiers(mergeModifiers(first.getModifiers(),second.getModifiers()));
+  @Override
+  public boolean isEquals(AnnotationDeclaration first, AnnotationDeclaration second) {
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-        return ad;
-    }
-
-    @Override
-    public boolean isEquals(AnnotationDeclaration first, AnnotationDeclaration second) {
-        if(first == second) return true;
-        if(first == null || second == null) return false;
-
-        return StringUtils.equals(first.getName(),second.getName());
-    }
+    return StringUtils.equals(first.getName(), second.getName());
+  }
 
 }

@@ -9,14 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MethodDeclarationMerger extends AbstractMerger<MethodDeclaration> {
 
-    private MethodDeclarationMerger(){}
-
-    static {
-        if(getMerger(MethodDeclaration.class) == null){
-            register(MethodDeclaration.class,new MethodDeclarationMerger());
-        }
-    }
-
     @Override public MethodDeclaration merge(MethodDeclaration first, MethodDeclaration second) {
 
         MethodDeclaration md = new MethodDeclaration();
