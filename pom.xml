@@ -276,6 +276,7 @@
         <module>dolphin-querydsl</module>
         <module>dolphin-error-coder</module>
         <module>dolphin-common</module>
+        <module>dolphin-web-login</module>
     </modules>
 
 
