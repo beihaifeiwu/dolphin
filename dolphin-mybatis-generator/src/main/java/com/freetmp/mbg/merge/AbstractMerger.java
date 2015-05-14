@@ -374,7 +374,7 @@ public abstract class AbstractMerger<M> {
 
       T found = null;
 
-      for (T anotherNode : second) {
+      for (T anotherNode : copies) {
         if (node.getClass().equals(anotherNode.getClass())) {
           if (merger.isEquals(node, anotherNode)) {
             found = anotherNode;
