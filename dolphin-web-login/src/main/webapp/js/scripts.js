@@ -28,6 +28,8 @@ jQuery(document).ready(function() {
         $(this).parent().find('.error').fadeOut('fast');
     });
 
+    $("#captcha").val("");
+
     $("#captcha_img").click(function(){
         $(this).attr("src",$(this).attr("src") + "?time=" + new Date());
     });
