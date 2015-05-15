@@ -1,50 +1,42 @@
 package com.freetmp.mbg.shellcallback;
 
-import com.freetmp.mbg.merge.JavaSourceUtils;
-import com.github.javaparser.ast.CompilationUnit;
-import org.apache.commons.io.FileUtils;
+import com.freetmp.mbg.merge.CompilationUnitMerger;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
 
 /*
  * Created by pin on 2015/2/7.
  */
 public class MergeSupportedShellCallback extends DefaultShellCallback {
 
-    static final Logger LOGGER = LoggerFactory.getLogger(MergeSupportedShellCallback.class);
+  static final Logger LOGGER = LoggerFactory.getLogger(MergeSupportedShellCallback.class);
 
-    /*
-     * @param overwrite if true overwrite the existed file
-     */
-    public MergeSupportedShellCallback(boolean overwrite) {
-        super(overwrite);
+  /*
+   * @param overwrite if true overwrite the existed file
+   */
+  public MergeSupportedShellCallback(boolean overwrite) {
+    super(overwrite);
+  }
+
+  @Override
+  public boolean isMergeSupported() {
+    return true;
+  }
+
+  @Override
+  public String mergeJavaFile(String newFileSource, String existingFileFullPath, String[] javadocTags, String fileEncoding) throws ShellException {
+    String mergedFileSource = newFileSource;
+    LOGGER.info("merge java source file for {}", existingFileFullPath);
+    try {
+      mergedFileSource =  CompilationUnitMerger.merge(newFileSource,existingFileFullPath);
+    } catch (Exception e) {
+      LOGGER.info("java source merge failed: {}", e);
+      throw new ShellException(e);
     }
 
-    @Override
-    public boolean isMergeSupported() {
-        return true;
-    }
-
-    @Override
-    public String mergeJavaFile(String newFileSource, String existingFileFullPath, String[] javadocTags, String fileEncoding) throws ShellException {
-        String mergedFileSource = newFileSource;
-        LOGGER.info("merge java source file for {}",existingFileFullPath);
-        try {
-            CompilationUnit source = JavaSourceUtils.generateAst(newFileSource);
-            CompilationUnit destination = JavaSourceUtils.generateAst(FileUtils.readFileToString(new File(existingFileFullPath),fileEncoding));
-            if(destination != null && source != null) {
-                mergedFileSource = JavaSourceUtils.mergeContent(source, destination);
-            }
-        } catch (Exception e) {
-            LOGGER.info("java source merge failed: {}",e);
-            throw new ShellException(e);
-        }
-
-        return mergedFileSource;
-    }
+    return mergedFileSource;
+  }
 
 }
