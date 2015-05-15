@@ -18,7 +18,7 @@ public class AstTest {
 
     @Test
     public void testFileComment() throws ParseException {
-        String source = "/*                                                                          \n" +
+        String source = "/**                                                                         \n" +
                 " * Copyright 2015-2015 the original author or authors.                         \n" +
                 " *                                                                           \n" +
                 " *       HaHa,I have the right to do anything!                               \n" +

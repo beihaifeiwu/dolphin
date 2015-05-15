@@ -51,7 +51,7 @@ public class BatchInsertPlugin extends PluginAdapter {
         answer.addAttribute(new Attribute("parameterType", parameterType.getFullyQualifiedName()));
 
 // 批处理中无法主键生成
-/*        GeneratedKey gk = introspectedTable.getGeneratedKey();
+/**       GeneratedKey gk = introspectedTable.getGeneratedKey();
         if (gk != null) {
             IntrospectedColumn introspectedColumn = introspectedTable.getColumn(gk.getColumn());
             // if the column is null, then it's a configuration error. The

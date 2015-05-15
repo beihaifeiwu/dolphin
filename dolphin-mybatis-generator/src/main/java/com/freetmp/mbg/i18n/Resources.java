@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
  */
 public class Resources {
 
-    /* The wrapped resource bundle. */
+    /**The wrapped resource bundle. */
     protected final ResourceBundle resource;
 
     /*
