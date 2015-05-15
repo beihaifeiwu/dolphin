@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.DoubleLiteralExpr;
  */
 public class DoubleLiteralExprMerger extends AbstractMerger<DoubleLiteralExpr> {
 
-  @Override public DoubleLiteralExpr merge(DoubleLiteralExpr first, DoubleLiteralExpr second) {
+  @Override public DoubleLiteralExpr doMerge(DoubleLiteralExpr first, DoubleLiteralExpr second) {
     DoubleLiteralExpr dle = new DoubleLiteralExpr();
 
-    dle.setComment(mergeSingle(first.getComment(),second.getComment()));
     dle.setValue(first.getValue());
 
     return dle;
   }
 
-  @Override public boolean isEquals(DoubleLiteralExpr first, DoubleLiteralExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(DoubleLiteralExpr first, DoubleLiteralExpr second) {
 
     if(!first.getValue().equals(second.getValue())) return false;
 

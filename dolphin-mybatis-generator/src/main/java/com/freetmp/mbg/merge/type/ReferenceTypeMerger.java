@@ -13,11 +13,10 @@ import java.util.List;
 public class ReferenceTypeMerger extends AbstractMerger<ReferenceType> {
 
   @Override
-  public ReferenceType merge(ReferenceType first, ReferenceType second) {
+  public ReferenceType doMerge(ReferenceType first, ReferenceType second) {
 
     ReferenceType rf = new ReferenceType();
     rf.setArrayCount(first.getArrayCount());
-    rf.setComment(mergeSingle(first.getComment(), second.getComment()));
     rf.setType(first.getType());
     rf.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
 
@@ -47,10 +46,7 @@ public class ReferenceTypeMerger extends AbstractMerger<ReferenceType> {
 
   @SuppressWarnings("unchecked")
   @Override
-  public boolean isEquals(ReferenceType first, ReferenceType second) {
-
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(ReferenceType first, ReferenceType second) {
 
     if (first.getArrayCount() != second.getArrayCount()) return false;
 

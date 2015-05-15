@@ -13,17 +13,8 @@ import java.io.StringReader;
  */
 public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
 
-  private CompilationUnitMerger() {
-  }
-
-  static {
-    if (getMerger(CompilationUnit.class) == null) {
-      register(CompilationUnit.class, new CompilationUnitMerger());
-    }
-  }
-
   @Override
-  public CompilationUnit merge(CompilationUnit first, CompilationUnit second) {
+  public CompilationUnit doMerge(CompilationUnit first, CompilationUnit second) {
 
     CompilationUnit unit = new CompilationUnit();
 
@@ -37,7 +28,7 @@ public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
   }
 
   @Override
-  public boolean isEquals(CompilationUnit first, CompilationUnit second) {
+  public boolean doIsEquals(CompilationUnit first, CompilationUnit second) {
 
     boolean equals = false;
 

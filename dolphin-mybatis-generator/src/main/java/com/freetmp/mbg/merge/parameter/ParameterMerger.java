@@ -10,7 +10,7 @@ import com.github.javaparser.ast.body.VariableDeclaratorId;
 public class ParameterMerger extends AbstractMerger<Parameter> {
 
     @Override
-    public Parameter merge(Parameter first, Parameter second) {
+    public Parameter doMerge(Parameter first, Parameter second) {
 
         Parameter parameter = new Parameter();
 
@@ -25,11 +25,7 @@ public class ParameterMerger extends AbstractMerger<Parameter> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean isEquals(Parameter first, Parameter second) {
-
-        if(first == second) return true;
-
-        if(!isAllNotNull(first,second)) return false;
+    public boolean doIsEquals(Parameter first, Parameter second) {
 
         if(first.isVarArgs() != second.isVarArgs()) return false;
 

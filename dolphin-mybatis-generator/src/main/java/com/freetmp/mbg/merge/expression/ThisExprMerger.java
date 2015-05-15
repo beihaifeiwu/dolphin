@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.ThisExpr;
  */
 public class ThisExprMerger extends AbstractMerger<ThisExpr> {
 
-  @Override public ThisExpr merge(ThisExpr first, ThisExpr second) {
+  @Override public ThisExpr doMerge(ThisExpr first, ThisExpr second) {
     ThisExpr te = new ThisExpr();
 
-    te.setComment(mergeSingle(first.getComment(),second.getComment()));
     te.setClassExpr(mergeSingle(first.getClassExpr(),second.getClassExpr()));
 
     return te;
   }
 
-  @Override public boolean isEquals(ThisExpr first, ThisExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(ThisExpr first, ThisExpr second) {
 
     if(!isEqualsUseMerger(first.getClassExpr(),second.getClassExpr())) return false;
 

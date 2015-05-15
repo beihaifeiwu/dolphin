@@ -8,16 +8,14 @@ import com.github.javaparser.ast.stmt.CatchClause;
  */
 public class CatchClauseMerger extends AbstractMerger<CatchClause> {
 
-  @Override public CatchClause merge(CatchClause first, CatchClause second) {
+  @Override public CatchClause doMerge(CatchClause first, CatchClause second) {
     CatchClause cc = new CatchClause();
-    cc.setComment(mergeSingle(first.getComment(),second.getComment()));
     cc.setCatchBlock(mergeSingle(first.getCatchBlock(),second.getCatchBlock()));
     cc.setExcept(mergeSingle(first.getExcept(),second.getExcept()));
     return cc;
   }
 
-  @Override public boolean isEquals(CatchClause first, CatchClause second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(CatchClause first, CatchClause second) {
 
     if(!isEqualsUseMerger(first.getExcept(),second.getExcept())) return false;
     if(!isEqualsUseMerger(first.getCatchBlock(),second.getCatchBlock())) return false;

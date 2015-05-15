@@ -8,18 +8,16 @@ import com.github.javaparser.ast.expr.UnaryExpr;
  */
 public class UnaryExprMerger extends AbstractMerger<UnaryExpr> {
 
-  @Override public UnaryExpr merge(UnaryExpr first, UnaryExpr second) {
+  @Override public UnaryExpr doMerge(UnaryExpr first, UnaryExpr second) {
     UnaryExpr ue = new UnaryExpr();
 
-    ue.setComment(mergeSingle(first.getComment(),second.getComment()));
     ue.setExpr(mergeSingle(first.getExpr(),second.getExpr()));
     ue.setOperator(first.getOperator());
 
     return ue;
   }
 
-  @Override public boolean isEquals(UnaryExpr first, UnaryExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(UnaryExpr first, UnaryExpr second) {
 
     if(!first.getOperator().equals(second.getOperator())) return false;
     if(!isEqualsUseMerger(first.getExpr(),second.getExpr())) return false;

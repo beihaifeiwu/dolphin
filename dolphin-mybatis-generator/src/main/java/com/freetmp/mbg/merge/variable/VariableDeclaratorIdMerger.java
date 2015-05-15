@@ -10,16 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 public class VariableDeclaratorIdMerger extends AbstractMerger<VariableDeclaratorId> {
 
     @Override
-    public VariableDeclaratorId merge(VariableDeclaratorId first, VariableDeclaratorId second) {
+    public VariableDeclaratorId doMerge(VariableDeclaratorId first, VariableDeclaratorId second) {
         return first;
     }
 
     @Override
-    public boolean isEquals(VariableDeclaratorId first, VariableDeclaratorId second) {
-
-        if(first == second) return true;
-
-        if(!isAllNotNull(first,second)) return false;
+    public boolean doIsEquals(VariableDeclaratorId first, VariableDeclaratorId second) {
 
         if(!StringUtils.equals(first.getName(),second.getName())) return false;
 

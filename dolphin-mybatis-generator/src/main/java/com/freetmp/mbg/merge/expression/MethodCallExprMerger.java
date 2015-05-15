@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
  */
 public class MethodCallExprMerger extends AbstractMerger<MethodCallExpr> {
 
-  @Override public MethodCallExpr merge(MethodCallExpr first, MethodCallExpr second) {
+  @Override public MethodCallExpr doMerge(MethodCallExpr first, MethodCallExpr second) {
     MethodCallExpr mce = new MethodCallExpr();
 
-    mce.setComment(mergeSingle(first.getComment(),second.getComment()));
     mce.setNameExpr(mergeSingle(first.getNameExpr(),second.getNameExpr()));
     mce.setArgs(mergeCollectionsInOrder(first.getArgs(),second.getArgs()));
     mce.setScope(mergeSingle(first.getScope(),second.getScope()));
@@ -20,8 +19,7 @@ public class MethodCallExprMerger extends AbstractMerger<MethodCallExpr> {
     return mce;
   }
 
-  @Override public boolean isEquals(MethodCallExpr first, MethodCallExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(MethodCallExpr first, MethodCallExpr second) {
 
     if(!isEqualsUseMerger(first.getNameExpr(),second.getNameExpr())) return false;
     if(!isEqualsUseMerger(first.getTypeArgs(),second.getTypeArgs())) return false;

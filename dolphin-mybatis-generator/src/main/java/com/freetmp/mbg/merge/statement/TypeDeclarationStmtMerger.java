@@ -8,15 +8,13 @@ import com.github.javaparser.ast.stmt.TypeDeclarationStmt;
  */
 public class TypeDeclarationStmtMerger extends AbstractMerger<TypeDeclarationStmt> {
 
-  @Override public TypeDeclarationStmt merge(TypeDeclarationStmt first, TypeDeclarationStmt second) {
+  @Override public TypeDeclarationStmt doMerge(TypeDeclarationStmt first, TypeDeclarationStmt second) {
     TypeDeclarationStmt tds = new TypeDeclarationStmt();
-    tds.setComment(mergeSingle(first.getComment(),second.getComment()));
     tds.setTypeDeclaration(mergeSingle(first.getTypeDeclaration(),second.getTypeDeclaration()));
     return tds;
   }
 
-  @Override public boolean isEquals(TypeDeclarationStmt first, TypeDeclarationStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(TypeDeclarationStmt first, TypeDeclarationStmt second) {
 
     if(!isEqualsUseMerger(first.getTypeDeclaration(),second.getTypeDeclaration())) return false;
 

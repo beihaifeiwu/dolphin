@@ -8,17 +8,16 @@ import com.github.javaparser.ast.body.EmptyMemberDeclaration;
  */
 public class EmptyMemberDeclarationMerger extends AbstractMerger<EmptyMemberDeclaration> {
 
-  @Override public EmptyMemberDeclaration merge(EmptyMemberDeclaration first, EmptyMemberDeclaration second) {
+  @Override public EmptyMemberDeclaration doMerge(EmptyMemberDeclaration first, EmptyMemberDeclaration second) {
     EmptyMemberDeclaration emd = new EmptyMemberDeclaration();
 
-    emd.setComment(mergeSingle(first.getComment(),second.getComment()));
     emd.setJavaDoc(mergeSingle(first.getJavaDoc(),second.getJavaDoc()));
     emd.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
 
     return emd;
   }
 
-  @Override public boolean isEquals(EmptyMemberDeclaration first, EmptyMemberDeclaration second) {
+  @Override public boolean doIsEquals(EmptyMemberDeclaration first, EmptyMemberDeclaration second) {
     return true;
   }
 }

@@ -13,11 +13,10 @@ import java.util.List;
 public class ClassOrInterfaceTypeMerger extends AbstractMerger<ClassOrInterfaceType> {
 
     @Override
-    public ClassOrInterfaceType merge(ClassOrInterfaceType first, ClassOrInterfaceType second) {
+    public ClassOrInterfaceType doMerge(ClassOrInterfaceType first, ClassOrInterfaceType second) {
 
         ClassOrInterfaceType cift = new ClassOrInterfaceType();
 
-        cift.setComment(mergeSingle(first.getComment(), second.getComment()));
         cift.setName(first.getName());
         cift.setScope(first.getScope());
         cift.setTypeArgs(first.getTypeArgs());
@@ -29,11 +28,7 @@ public class ClassOrInterfaceTypeMerger extends AbstractMerger<ClassOrInterfaceT
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean isEquals(ClassOrInterfaceType first, ClassOrInterfaceType second) {
-
-        if(first == second) return true;
-
-        if(!isAllNotNull(first,second)) return false;
+    public boolean doIsEquals(ClassOrInterfaceType first, ClassOrInterfaceType second) {
 
         if(!StringUtils.equals(first.getName(),second.getName())) return false;
 

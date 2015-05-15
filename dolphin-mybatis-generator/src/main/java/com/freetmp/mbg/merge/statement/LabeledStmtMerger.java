@@ -8,17 +8,15 @@ import com.github.javaparser.ast.stmt.LabeledStmt;
  */
 public class LabeledStmtMerger extends AbstractMerger<LabeledStmt> {
 
-  @Override public LabeledStmt merge(LabeledStmt first, LabeledStmt second) {
+  @Override public LabeledStmt doMerge(LabeledStmt first, LabeledStmt second) {
     LabeledStmt ls = new LabeledStmt();
-    ls.setComment(mergeSingle(first.getComment(),second.getComment()));
     ls.setLabel(first.getLabel());
     ls.setStmt(mergeSingle(first.getStmt(),second.getStmt()));
 
     return ls;
   }
 
-  @Override public boolean isEquals(LabeledStmt first, LabeledStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(LabeledStmt first, LabeledStmt second) {
 
     if(!first.getLabel().equals(second.getLabel())) return false;
     if(!isEqualsUseMerger(first.getStmt(),second.getStmt())) return false;

@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.NameExpr;
  */
 public class NameExprMerger extends AbstractMerger<NameExpr> {
 
-  @Override public NameExpr merge(NameExpr first, NameExpr second) {
+  @Override public NameExpr doMerge(NameExpr first, NameExpr second) {
     NameExpr ne = new NameExpr();
 
-    ne.setComment(mergeSingle(first.getComment(),second.getComment()));
     ne.setName(first.getName());
 
     return ne;
   }
 
-  @Override public boolean isEquals(NameExpr first, NameExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(NameExpr first, NameExpr second) {
 
     if(!first.getName().equals(second.getName())) return false;
 

@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
  */
 public class FieldAccessExprMerger extends AbstractMerger<FieldAccessExpr> {
 
-  @Override public FieldAccessExpr merge(FieldAccessExpr first, FieldAccessExpr second) {
+  @Override public FieldAccessExpr doMerge(FieldAccessExpr first, FieldAccessExpr second) {
     FieldAccessExpr fae = new FieldAccessExpr();
 
-    fae.setComment(mergeSingle(first.getComment(),second.getComment()));
     fae.setFieldExpr(mergeSingle(first.getFieldExpr(),second.getFieldExpr()));
     fae.setScope(mergeSingle(first.getScope(),second.getScope()));
     fae.setTypeArgs(mergeCollections(first.getTypeArgs(),second.getTypeArgs()));
@@ -19,8 +18,7 @@ public class FieldAccessExprMerger extends AbstractMerger<FieldAccessExpr> {
     return fae;
   }
 
-  @Override public boolean isEquals(FieldAccessExpr first, FieldAccessExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(FieldAccessExpr first, FieldAccessExpr second) {
 
     if(!isEqualsUseMerger(first.getScope(), second.getScope())) return false;
     if(!isEqualsUseMerger(first.getTypeArgs(),second.getTypeArgs())) return false;

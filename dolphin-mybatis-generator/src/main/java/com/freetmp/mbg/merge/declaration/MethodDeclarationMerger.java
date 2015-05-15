@@ -12,14 +12,13 @@ import java.util.List;
  */
 public class MethodDeclarationMerger extends AbstractMerger<MethodDeclaration> {
 
-  @Override public MethodDeclaration merge(MethodDeclaration first, MethodDeclaration second) {
+  @Override public MethodDeclaration doMerge(MethodDeclaration first, MethodDeclaration second) {
 
     MethodDeclaration md = new MethodDeclaration();
     md.setName(first.getName());
     md.setType(mergeSingle(first.getType(), second.getType()));
     md.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
     md.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
-    md.setComment(mergeSingle(first.getComment(), second.getComment()));
 
     md.setDefault(first.isDefault() || second.isDefault());
     md.setArrayCount(Math.max(first.getArrayCount(), second.getArrayCount()));
@@ -32,20 +31,12 @@ public class MethodDeclarationMerger extends AbstractMerger<MethodDeclaration> {
 
     md.setBody(mergeSingle(first.getBody(), second.getBody()));
 
-    List<Comment> list = mergeCollections(first.getOrphanComments(),second.getOrphanComments());
-    for(Comment comment : list){
-      md.addOrphanComment(comment);
-    }
-
     return md;
   }
 
-  @Override public boolean isEquals(MethodDeclaration first, MethodDeclaration second) {
+  @Override public boolean doIsEquals(MethodDeclaration first, MethodDeclaration second) {
 
-    if (first == second) return true;
-    if (first == null || second == null) return false;
-
-    if (StringUtils.equals(first.getName(), second.getName())) return false;
+    if (!StringUtils.equals(first.getName(), second.getName())) return false;
 
     if (!isParametersEquals(first.getParameters(), second.getParameters())) return false;
 

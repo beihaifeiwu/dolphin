@@ -8,15 +8,13 @@ import com.github.javaparser.ast.stmt.ContinueStmt;
  */
 public class ContinueStmtMerger extends AbstractMerger<ContinueStmt> {
 
-  @Override public ContinueStmt merge(ContinueStmt first, ContinueStmt second) {
+  @Override public ContinueStmt doMerge(ContinueStmt first, ContinueStmt second) {
     ContinueStmt cs = new ContinueStmt();
-    cs.setComment(mergeSingle(first.getComment(),second.getComment()));
     cs.setId(first.getId());
     return cs;
   }
 
-  @Override public boolean isEquals(ContinueStmt first, ContinueStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(ContinueStmt first, ContinueStmt second) {
     if(!first.getId().equals(second.getId())) return false;
     return true;
   }

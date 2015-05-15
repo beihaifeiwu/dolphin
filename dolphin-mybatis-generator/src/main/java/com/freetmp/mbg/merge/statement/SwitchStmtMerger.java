@@ -8,16 +8,14 @@ import com.github.javaparser.ast.stmt.SwitchStmt;
  */
 public class SwitchStmtMerger extends AbstractMerger<SwitchStmt> {
 
-  @Override public SwitchStmt merge(SwitchStmt first, SwitchStmt second) {
+  @Override public SwitchStmt doMerge(SwitchStmt first, SwitchStmt second) {
     SwitchStmt ss = new SwitchStmt();
-    ss.setComment(mergeSingle(first.getComment(),second.getComment()));
     ss.setEntries(mergeCollections(first.getEntries(),second.getEntries()));
     ss.setSelector(mergeSingle(first.getSelector(),second.getSelector()));
     return ss;
   }
 
-  @Override public boolean isEquals(SwitchStmt first, SwitchStmt second) {
-    if(first == second) return false;
+  @Override public boolean doIsEquals(SwitchStmt first, SwitchStmt second) {
 
     if(!isEqualsUseMerger(first.getSelector(),second.getSelector())) return false;
     if(!isEqualsUseMerger(first.getEntries(),second.getEntries())) return false;

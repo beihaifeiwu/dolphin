@@ -8,10 +8,9 @@ import com.github.javaparser.ast.stmt.IfStmt;
  */
 public class IfStmtMerger extends AbstractMerger<IfStmt> {
 
-  @Override public IfStmt merge(IfStmt first, IfStmt second) {
+  @Override public IfStmt doMerge(IfStmt first, IfStmt second) {
     IfStmt is = new IfStmt();
 
-    is.setComment(mergeSingle(first.getComment(),second.getComment()));
     is.setCondition(mergeSingle(first.getCondition(),second.getCondition()));
     is.setElseStmt(mergeSingle(first.getElseStmt(),second.getElseStmt()));
     is.setThenStmt(mergeSingle(first.getThenStmt(),second.getThenStmt()));
@@ -19,8 +18,7 @@ public class IfStmtMerger extends AbstractMerger<IfStmt> {
     return is;
   }
 
-  @Override public boolean isEquals(IfStmt first, IfStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(IfStmt first, IfStmt second) {
 
     if(!isEqualsUseMerger(first.getCondition(),second.getCondition())) return false;
     if(!isEqualsUseMerger(first.getElseStmt(),second.getElseStmt())) return false;

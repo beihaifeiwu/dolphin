@@ -10,12 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 public class AnnotationDeclarationMerger extends AbstractMerger<AnnotationDeclaration> {
 
   @Override
-  public AnnotationDeclaration merge(AnnotationDeclaration first, AnnotationDeclaration second) {
+  public AnnotationDeclaration doMerge(AnnotationDeclaration first, AnnotationDeclaration second) {
 
     AnnotationDeclaration ad = new AnnotationDeclaration();
-    ad.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-    ad.setComment(mergeSingle(first.getComment(), second.getComment()));
 
+    ad.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
     ad.setMembers(mergeCollections(first.getMembers(), second.getMembers()));
     ad.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
     ad.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
@@ -24,9 +23,7 @@ public class AnnotationDeclarationMerger extends AbstractMerger<AnnotationDeclar
   }
 
   @Override
-  public boolean isEquals(AnnotationDeclaration first, AnnotationDeclaration second) {
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(AnnotationDeclaration first, AnnotationDeclaration second) {
 
     return StringUtils.equals(first.getName(), second.getName());
   }

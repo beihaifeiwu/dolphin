@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
  */
 public class ObjectCreationExprMerger extends AbstractMerger<ObjectCreationExpr> {
 
-  @Override public ObjectCreationExpr merge(ObjectCreationExpr first, ObjectCreationExpr second) {
+  @Override public ObjectCreationExpr doMerge(ObjectCreationExpr first, ObjectCreationExpr second) {
     ObjectCreationExpr oce = new ObjectCreationExpr();
 
-    oce.setComment(mergeSingle(first.getComment(),second.getComment()));
     oce.setScope(mergeSingle(first.getScope(),second.getScope()));
     oce.setType(mergeSingle(first.getType(),second.getType()));
     oce.setTypeArgs(mergeCollectionsInOrder(first.getTypeArgs(),second.getTypeArgs()));
@@ -21,8 +20,7 @@ public class ObjectCreationExprMerger extends AbstractMerger<ObjectCreationExpr>
     return oce;
   }
 
-  @Override public boolean isEquals(ObjectCreationExpr first, ObjectCreationExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(ObjectCreationExpr first, ObjectCreationExpr second) {
 
     if(!isEqualsUseMerger(first.getScope(),second.getScope())) return false;
     if(!isEqualsUseMerger(first.getType(),second.getType())) return false;

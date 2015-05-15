@@ -10,20 +10,16 @@ import com.github.javaparser.ast.type.WildcardType;
 public class WildcardTypeMerger extends AbstractMerger<WildcardType> {
 
   @Override
-  public WildcardType merge(WildcardType first, WildcardType second) {
+  public WildcardType doMerge(WildcardType first, WildcardType second) {
     WildcardType wt = new WildcardType();
     wt.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
-    wt.setComment(mergeSingle(first.getComment(),second.getComment()));
     wt.setExtends(mergeSingle(first.getExtends(),second.getExtends()));
     wt.setSuper(mergeSingle(first.getSuper(),second.getSuper()));
     return first;
   }
 
   @Override
-  public boolean isEquals(WildcardType first, WildcardType second) {
-
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(WildcardType first, WildcardType second) {
 
     if (!isEqualsUseMerger(first.getExtends(), second.getExtends())) return false;
 

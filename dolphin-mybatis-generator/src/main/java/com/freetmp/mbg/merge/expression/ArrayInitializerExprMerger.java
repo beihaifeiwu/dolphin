@@ -8,16 +8,13 @@ import com.github.javaparser.ast.expr.ArrayInitializerExpr;
  */
 public class ArrayInitializerExprMerger extends AbstractMerger<ArrayInitializerExpr> {
 
-  @Override public ArrayInitializerExpr merge(ArrayInitializerExpr first, ArrayInitializerExpr second) {
+  @Override public ArrayInitializerExpr doMerge(ArrayInitializerExpr first, ArrayInitializerExpr second) {
     ArrayInitializerExpr aie = new ArrayInitializerExpr();
-    aie.setComment(mergeSingle(first.getComment(),second.getComment()));
     aie.setValues(mergeCollections(first.getValues(),second.getValues()));
     return aie;
   }
 
-  @Override public boolean isEquals(ArrayInitializerExpr first, ArrayInitializerExpr second) {
-    if(first == second) return true;
-
+  @Override public boolean doIsEquals(ArrayInitializerExpr first, ArrayInitializerExpr second) {
     if(!isEqualsUseMerger(first.getValues(),second.getValues())) return false;
 
     return true;

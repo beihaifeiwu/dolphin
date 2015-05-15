@@ -8,18 +8,16 @@ import com.github.javaparser.ast.expr.InstanceOfExpr;
  */
 public class InstanceOfExprMerger extends AbstractMerger<InstanceOfExpr> {
 
-  @Override public InstanceOfExpr merge(InstanceOfExpr first, InstanceOfExpr second) {
+  @Override public InstanceOfExpr doMerge(InstanceOfExpr first, InstanceOfExpr second) {
     InstanceOfExpr ioe = new InstanceOfExpr();
 
-    ioe.setComment(mergeSingle(first.getComment(),second.getComment()));
     ioe.setExpr(mergeSingle(first.getExpr(),second.getExpr()));
     ioe.setType(mergeSingle(first.getType(),second.getType()));
 
     return ioe;
   }
 
-  @Override public boolean isEquals(InstanceOfExpr first, InstanceOfExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(InstanceOfExpr first, InstanceOfExpr second) {
 
     if(!isEqualsUseMerger(first.getType(),second.getType())) return false;
     if(!isEqualsUseMerger(first.getExpr(),second.getExpr())) return false;

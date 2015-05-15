@@ -8,9 +8,8 @@ import com.github.javaparser.ast.stmt.TryStmt;
  */
 public class TryStmtMerger extends AbstractMerger<TryStmt> {
 
-  @Override public TryStmt merge(TryStmt first, TryStmt second) {
+  @Override public TryStmt doMerge(TryStmt first, TryStmt second) {
     TryStmt ts = new TryStmt();
-    ts.setComment(mergeSingle(first.getComment(),second.getComment()));
     ts.setResources(mergeCollectionsInOrder(first.getResources(),second.getResources()));
     ts.setCatchs(mergeCollectionsInOrder(first.getCatchs(),second.getCatchs()));
     ts.setTryBlock(mergeSingle(first.getTryBlock(),second.getTryBlock()));
@@ -18,8 +17,7 @@ public class TryStmtMerger extends AbstractMerger<TryStmt> {
     return ts;
   }
 
-  @Override public boolean isEquals(TryStmt first, TryStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(TryStmt first, TryStmt second) {
     if(!isEqualsUseMerger(first.getResources(),second.getResources())) return false;
     if(!isEqualsUseMerger(first.getCatchs(),second.getCatchs())) return false;
 

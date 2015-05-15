@@ -8,9 +8,8 @@ import com.github.javaparser.ast.stmt.ForStmt;
  */
 public class ForStmtMerger extends AbstractMerger<ForStmt> {
 
-  @Override public ForStmt merge(ForStmt first, ForStmt second) {
+  @Override public ForStmt doMerge(ForStmt first, ForStmt second) {
     ForStmt fs = new ForStmt();
-    fs.setComment(mergeSingle(first.getComment(),second.getComment()));
     fs.setBody(mergeSingle(first.getBody(), second.getBody()));
     fs.setUpdate(mergeCollectionsInOrder(first.getUpdate(), second.getUpdate()));
     fs.setCompare(mergeSingle(first.getCompare(), second.getCompare()));
@@ -19,8 +18,7 @@ public class ForStmtMerger extends AbstractMerger<ForStmt> {
     return fs;
   }
 
-  @Override public boolean isEquals(ForStmt first, ForStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(ForStmt first, ForStmt second) {
 
     if(!isEqualsUseMerger(first.getInit(),second.getInit())) return false;
     if(!isEqualsUseMerger(first.getCompare(),second.getCompare())) return false;

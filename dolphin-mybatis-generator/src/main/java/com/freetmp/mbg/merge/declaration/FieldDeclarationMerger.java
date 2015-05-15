@@ -8,10 +8,9 @@ import com.github.javaparser.ast.body.FieldDeclaration;
  */
 public class FieldDeclarationMerger extends AbstractMerger<FieldDeclaration> {
 
-    @Override public FieldDeclaration merge(FieldDeclaration first, FieldDeclaration second) {
+    @Override public FieldDeclaration doMerge(FieldDeclaration first, FieldDeclaration second) {
 
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setComment(mergeSingle(first.getComment(),second.getComment()));
         fd.setJavaDoc(mergeSingle(first.getJavaDoc(),second.getJavaDoc()));
         fd.setType(mergeSingle(first.getType(),second.getType()));
         fd.setModifiers(mergeModifiers(first.getModifiers(),second.getModifiers()));
@@ -21,10 +20,7 @@ public class FieldDeclarationMerger extends AbstractMerger<FieldDeclaration> {
         return fd;
     }
 
-    @Override public boolean isEquals(FieldDeclaration first, FieldDeclaration second) {
-
-        if(first == second) return true;
-        if(first == null || second == null) return false;
+    @Override public boolean doIsEquals(FieldDeclaration first, FieldDeclaration second) {
 
         if(!isSmallerHasEqualsInBigger(first.getVariables(),second.getVariables(),false)) return false;
 

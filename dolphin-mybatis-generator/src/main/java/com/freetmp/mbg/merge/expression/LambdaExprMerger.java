@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.LambdaExpr;
  */
 public class LambdaExprMerger extends AbstractMerger<LambdaExpr> {
 
-  @Override public LambdaExpr merge(LambdaExpr first, LambdaExpr second) {
+  @Override public LambdaExpr doMerge(LambdaExpr first, LambdaExpr second) {
     LambdaExpr le = new LambdaExpr();
 
-    le.setComment(mergeSingle(first.getComment(),second.getComment()));
     le.setBody(mergeSingle(first.getBody(),second.getBody()));
     le.setParameters(mergeCollectionsInOrder(first.getParameters(),second.getParameters()));
     le.setParametersEnclosed(first.isParametersEnclosed());
@@ -19,8 +18,7 @@ public class LambdaExprMerger extends AbstractMerger<LambdaExpr> {
     return le;
   }
 
-  @Override public boolean isEquals(LambdaExpr first, LambdaExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(LambdaExpr first, LambdaExpr second) {
 
     if(first.isParametersEnclosed() != second.isParametersEnclosed()) return false;
     if(!isEqualsUseMerger(first.getParameters(),second.getParameters())) return false;

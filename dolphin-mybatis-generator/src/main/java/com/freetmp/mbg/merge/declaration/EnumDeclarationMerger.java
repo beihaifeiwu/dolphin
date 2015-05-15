@@ -10,13 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 public class EnumDeclarationMerger extends AbstractMerger<EnumDeclaration> {
 
     @Override
-    public EnumDeclaration merge(EnumDeclaration first, EnumDeclaration second) {
+    public EnumDeclaration doMerge(EnumDeclaration first, EnumDeclaration second) {
 
         EnumDeclaration ed = new EnumDeclaration();
 
         ed.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
         ed.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-        ed.setComment(mergeSingle(first.getComment(), second.getComment()));
         ed.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
 
         ed.setImplements(mergeCollections(first.getImplements(), second.getImplements()));
@@ -29,9 +28,7 @@ public class EnumDeclarationMerger extends AbstractMerger<EnumDeclaration> {
     }
 
     @Override
-    public boolean isEquals(EnumDeclaration first, EnumDeclaration second) {
-        if(first == second) return true;
-        if(first == null || second == null) return false;
+    public boolean doIsEquals(EnumDeclaration first, EnumDeclaration second) {
 
         return StringUtils.equals(first.getName(),second.getName());
     }

@@ -9,9 +9,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 public class ClassOrInterfaceDeclarationMerger extends AbstractMerger<ClassOrInterfaceDeclaration> {
 
   @Override
-  public ClassOrInterfaceDeclaration merge(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
-
-    if (first.isInterface() != second.isInterface()) return null;
+  public ClassOrInterfaceDeclaration doMerge(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
 
     ClassOrInterfaceDeclaration declaration = new ClassOrInterfaceDeclaration();
 
@@ -20,7 +18,6 @@ public class ClassOrInterfaceDeclarationMerger extends AbstractMerger<ClassOrInt
 
     declaration.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
     declaration.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-    declaration.setComment(mergeSingle(first.getComment(), second.getComment()));
     declaration.setTypeParameters(mergeCollections(first.getTypeParameters(), second.getTypeParameters()));
 
     declaration.setImplements(mergeCollections(first.getImplements(), second.getImplements()));
@@ -33,9 +30,7 @@ public class ClassOrInterfaceDeclarationMerger extends AbstractMerger<ClassOrInt
   }
 
   @Override
-  public boolean isEquals(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(ClassOrInterfaceDeclaration first, ClassOrInterfaceDeclaration second) {
 
     if (first.getName().equals(second.getName())) return true;
 

@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
  */
 public class LongLiteralExprMerger extends AbstractMerger<LongLiteralExpr> {
 
-  @Override public LongLiteralExpr merge(LongLiteralExpr first, LongLiteralExpr second) {
+  @Override public LongLiteralExpr doMerge(LongLiteralExpr first, LongLiteralExpr second) {
     LongLiteralExpr lle = new LongLiteralExpr();
 
-    lle.setComment(mergeSingle(first.getComment(),second.getComment()));
     lle.setValue(first.getValue());
 
     return lle;
   }
 
-  @Override public boolean isEquals(LongLiteralExpr first, LongLiteralExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(LongLiteralExpr first, LongLiteralExpr second) {
 
     if(!first.getValue().equals(second.getValue())) return false;
 

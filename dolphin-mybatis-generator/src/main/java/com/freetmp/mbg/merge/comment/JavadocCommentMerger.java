@@ -8,20 +8,21 @@ import com.github.javaparser.ast.comments.JavadocComment;
  */
 public class JavadocCommentMerger extends AbstractMerger<JavadocComment> {
 
-    @Override
-    public JavadocComment merge(JavadocComment first, JavadocComment second) {
-        if(first.getContent() == null) return second;
-        if(second.getContent() == null) return first;
+  @Override
+  public JavadocComment doMerge(JavadocComment first, JavadocComment second) {
+    JavadocComment comment = new JavadocComment();
 
-        if(first.getContent().length() > second.getContent().length()){
-            return first;
-        }else {
-            return second;
-        }
+    if(first.getContent().length() > second.getContent().length()){
+      comment.setContent(first.getContent());
+    }else {
+      comment.setContent(second.getContent());
     }
 
-    @Override
-    public boolean isEquals(JavadocComment first, JavadocComment second) {
-        return true;
-    }
+    return comment;
+  }
+
+  @Override
+  public boolean doIsEquals(JavadocComment first, JavadocComment second) {
+    return true;
+  }
 }

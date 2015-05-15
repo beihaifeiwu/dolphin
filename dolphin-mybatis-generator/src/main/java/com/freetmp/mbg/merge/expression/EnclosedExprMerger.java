@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
  */
 public class EnclosedExprMerger extends AbstractMerger<EnclosedExpr> {
 
-  @Override public EnclosedExpr merge(EnclosedExpr first, EnclosedExpr second) {
+  @Override public EnclosedExpr doMerge(EnclosedExpr first, EnclosedExpr second) {
     EnclosedExpr ee = new EnclosedExpr();
 
-    ee.setComment(mergeSingle(first.getComment(),second.getComment()));
     ee.setInner(mergeSingle(first.getInner(),second.getInner()));
 
     return ee;
   }
 
-  @Override public boolean isEquals(EnclosedExpr first, EnclosedExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(EnclosedExpr first, EnclosedExpr second) {
 
     if(!isEqualsUseMerger(first.getInner(),second.getInner())) return false;
 

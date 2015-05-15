@@ -8,15 +8,13 @@ import com.github.javaparser.ast.stmt.ThrowStmt;
  */
 public class ThrowStmtMerger extends AbstractMerger<ThrowStmt> {
 
-  @Override public ThrowStmt merge(ThrowStmt first, ThrowStmt second) {
+  @Override public ThrowStmt doMerge(ThrowStmt first, ThrowStmt second) {
     ThrowStmt ts = new ThrowStmt();
-    ts.setComment(mergeSingle(first.getComment(),second.getComment()));
     ts.setExpr(mergeSingle(first.getExpr(),second.getExpr()));
     return ts;
   }
 
-  @Override public boolean isEquals(ThrowStmt first, ThrowStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(ThrowStmt first, ThrowStmt second) {
     if(!isEqualsUseMerger(first.getExpr(),second.getExpr())) return false;
     return true;
   }

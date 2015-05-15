@@ -12,22 +12,19 @@ import com.freetmp.mbg.merge.statement.*;
 import com.freetmp.mbg.merge.type.*;
 import com.freetmp.mbg.merge.variable.VariableDeclaratorIdMerger;
 import com.freetmp.mbg.merge.variable.VariableDeclaratorMerger;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.TypeParameter;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
+import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.ReferenceType;
-import com.github.javaparser.ast.type.VoidType;
-import com.github.javaparser.ast.type.WildcardType;
-import jdk.nashorn.internal.ir.BlockStatement;
+import com.github.javaparser.ast.type.*;
 
-import javax.lang.model.type.PrimitiveType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by LiuPin on 2015/3/27.
  */
-public abstract class AbstractMerger<M> {
+public abstract class AbstractMerger<M extends Node> {
 
   protected static ConcurrentHashMap<Class, AbstractMerger> map = new ConcurrentHashMap<>();
 
@@ -98,7 +95,7 @@ public abstract class AbstractMerger<M> {
     map.put(ThisExpr.class, new ThisExprMerger());
     map.put(TypeExpr.class, new TypeExprMerger());
     map.put(UnaryExpr.class, new UnaryExprMerger());
-    map.put(VariableDeclarationExpr.class, new VariableDeclaratorMerger());
+    map.put(VariableDeclarationExpr.class, new VariableDeclarationExprMerger());
 
     // parameter
     map.put(Parameter.class, new ParameterMerger());
@@ -106,7 +103,7 @@ public abstract class AbstractMerger<M> {
     map.put(TypeParameter.class, new TypeParameterMerger());
 
     // statement
-    map.put(BlockStatement.class, new BlockCommentMerger());
+    map.put(BlockStmt.class, new BlockStmtMerger());
     map.put(AssertStmt.class, new AssertStmtMerger());
     map.put(BreakStmt.class, new BreakStmtMerger());
     map.put(CatchClause.class, new CatchClauseMerger());
@@ -138,6 +135,9 @@ public abstract class AbstractMerger<M> {
     //variable
     map.put(VariableDeclaratorId.class, new VariableDeclaratorIdMerger());
     map.put(VariableDeclarator.class, new VariableDeclaratorMerger());
+
+    // compile unit
+    map.put(CompilationUnit.class, new CompilationUnitMerger());
   }
 
   public <T> boolean isAllNull(T one, T two) {
@@ -352,7 +352,7 @@ public abstract class AbstractMerger<M> {
     return merger;
   }
 
-  protected static <T> void register(Class<T> clazz, AbstractMerger<T> abstractMerger) {
+  protected static <T extends Node> void register(Class<T> clazz, AbstractMerger<T> abstractMerger) {
     map.put(clazz, abstractMerger);
   }
 
@@ -472,7 +472,32 @@ public abstract class AbstractMerger<M> {
     return true;
   }
 
-  public abstract M merge(M first, M second);
+  protected <T extends Node> void mergeOrphanComments(T first, T second, T third){
+    List<Comment> comments = mergeCollections(first.getOrphanComments(),second.getOrphanComments());
+    if(comments != null && !comments.isEmpty()){
+      for(Comment comment : comments){
+        third.addOrphanComment(comment);
+      }
+    }
+  }
 
-  public abstract boolean isEquals(M first, M second);
+  public abstract M doMerge(M first,M second);
+
+  public M merge(M first, M second){
+    if(first == null) return second;
+    if(second == null) return first;
+
+    M m = doMerge(first,second);
+    m.setComment(mergeSingle(first.getComment(),second.getComment()));
+    mergeOrphanComments(first, second, m);
+    return m;
+  }
+
+  public abstract boolean doIsEquals(M first, M second);
+
+  public boolean isEquals(M first, M second){
+    if (first == second) return true;
+    if (first == null || second == null) return false;
+    return doIsEquals(first,second);
+  }
 }

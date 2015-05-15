@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
  */
 public class BooleanLiteralExprMerger extends AbstractMerger<BooleanLiteralExpr> {
 
-  @Override public BooleanLiteralExpr merge(BooleanLiteralExpr first, BooleanLiteralExpr second) {
+  @Override public BooleanLiteralExpr doMerge(BooleanLiteralExpr first, BooleanLiteralExpr second) {
     BooleanLiteralExpr ble = new BooleanLiteralExpr();
 
-    ble.setComment(mergeSingle(first.getComment(),second.getComment()));
     ble.setValue(first.getValue());
 
     return ble;
   }
 
-  @Override public boolean isEquals(BooleanLiteralExpr first, BooleanLiteralExpr second) {
-    if (first == second) return true;
+  @Override public boolean doIsEquals(BooleanLiteralExpr first, BooleanLiteralExpr second) {
 
     if(first.getValue() != second.getValue()) return false;
 

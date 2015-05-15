@@ -9,15 +9,15 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 public class BodyDeclarationMerger extends AbstractMerger<BodyDeclaration> {
 
   @Override
-  public BodyDeclaration merge(BodyDeclaration first, BodyDeclaration second) {
-    return null;
+  public BodyDeclaration doMerge(BodyDeclaration first, BodyDeclaration second) {
+    return first;
   }
 
   /**
    * Without further information, we can do nothing
    */
   @Override
-  public boolean isEquals(BodyDeclaration first, BodyDeclaration second) {
-    return false;
+  public boolean doIsEquals(BodyDeclaration first, BodyDeclaration second) {
+    return first.equals(second);
   }
 }

@@ -9,7 +9,7 @@ import com.github.javaparser.ast.comments.LineComment;
 public class LineCommentMerger extends AbstractMerger<LineComment> {
 
   @Override
-  public LineComment merge(LineComment first, LineComment second) {
+  public LineComment doMerge(LineComment first, LineComment second) {
     LineComment comment = new LineComment();
     comment.setComment(mergeSingle(first.getComment(),second.getComment()));
     comment.setContent(first.getContent());
@@ -17,8 +17,7 @@ public class LineCommentMerger extends AbstractMerger<LineComment> {
   }
 
   @Override
-  public boolean isEquals(LineComment first, LineComment second) {
-    if(first == second) return true;
+  public boolean doIsEquals(LineComment first, LineComment second) {
     if(!first.getContent().equals(second.getContent())) return false;
     return true;
   }

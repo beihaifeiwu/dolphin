@@ -13,11 +13,10 @@ import java.util.List;
 public class TypeParameterMerger extends AbstractMerger<TypeParameter> {
 
     @Override
-    public TypeParameter merge(TypeParameter first, TypeParameter second) {
+    public TypeParameter doMerge(TypeParameter first, TypeParameter second) {
 
         TypeParameter tp = new TypeParameter();
         tp.setName(first.getName());
-        tp.setComment(mergeSingle(first.getComment(), second.getComment()));
         tp.setTypeBound(first.getTypeBound());
         tp.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
 
@@ -25,11 +24,7 @@ public class TypeParameterMerger extends AbstractMerger<TypeParameter> {
     }
 
     @Override
-    public boolean isEquals(TypeParameter first, TypeParameter second) {
-
-        if(first == second) return true;
-
-        if(!isAllNotNull(first,second)) return false;
+    public boolean doIsEquals(TypeParameter first, TypeParameter second) {
 
         if(!StringUtils.equals(first.getName(),second.getName())) return false;
 

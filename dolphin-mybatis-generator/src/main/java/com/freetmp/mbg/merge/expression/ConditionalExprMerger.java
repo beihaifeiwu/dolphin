@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.ConditionalExpr;
  */
 public class ConditionalExprMerger extends AbstractMerger<ConditionalExpr> {
 
-  @Override public ConditionalExpr merge(ConditionalExpr first, ConditionalExpr second) {
+  @Override public ConditionalExpr doMerge(ConditionalExpr first, ConditionalExpr second) {
     ConditionalExpr ce = new ConditionalExpr();
 
-    ce.setComment(mergeSingle(first.getComment(),second.getComment()));
     ce.setCondition(mergeSingle(first.getCondition(),second.getCondition()));
     ce.setElseExpr(mergeSingle(first.getElseExpr(),second.getElseExpr()));
     ce.setThenExpr(mergeSingle(first.getThenExpr(),second.getThenExpr()));
@@ -19,8 +18,7 @@ public class ConditionalExprMerger extends AbstractMerger<ConditionalExpr> {
     return ce;
   }
 
-  @Override public boolean isEquals(ConditionalExpr first, ConditionalExpr second) {
-    if (first == second) return true;
+  @Override public boolean doIsEquals(ConditionalExpr first, ConditionalExpr second) {
 
     if(!isEqualsUseMerger(first.getCondition(),second.getCondition())) return false;
     if(!isEqualsUseMerger(first.getElseExpr(), second.getElseExpr())) return false;

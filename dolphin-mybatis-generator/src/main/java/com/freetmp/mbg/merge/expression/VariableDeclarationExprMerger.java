@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
  */
 public class VariableDeclarationExprMerger extends AbstractMerger<VariableDeclarationExpr> {
 
-  @Override public VariableDeclarationExpr merge(VariableDeclarationExpr first, VariableDeclarationExpr second) {
+  @Override public VariableDeclarationExpr doMerge(VariableDeclarationExpr first, VariableDeclarationExpr second) {
     VariableDeclarationExpr vde = new VariableDeclarationExpr();
 
-    vde.setComment(mergeSingle(first.getComment(),second.getComment()));
     vde.setType(mergeSingle(first.getType(),second.getType()));
     vde.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
     vde.setModifiers(mergeModifiers(first.getModifiers(),second.getModifiers()));
@@ -20,8 +19,7 @@ public class VariableDeclarationExprMerger extends AbstractMerger<VariableDeclar
     return vde;
   }
 
-  @Override public boolean isEquals(VariableDeclarationExpr first, VariableDeclarationExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(VariableDeclarationExpr first, VariableDeclarationExpr second) {
 
     if(!isEqualsUseMerger(first.getType(),second.getType())) return false;
     if(!isEqualsUseMerger(first.getVars(),second.getVars())) return false;

@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
  */
 public class MethodReferenceExprMerger extends AbstractMerger<MethodReferenceExpr> {
 
-  @Override public MethodReferenceExpr merge(MethodReferenceExpr first, MethodReferenceExpr second) {
+  @Override public MethodReferenceExpr doMerge(MethodReferenceExpr first, MethodReferenceExpr second) {
     MethodReferenceExpr mre = new MethodReferenceExpr();
 
-    mre.setComment(mergeSingle(first.getComment(),second.getComment()));
     mre.setScope(mergeSingle(first.getScope(),second.getScope()));
     mre.setIdentifier(first.getIdentifier());
     mre.setTypeParameters(mergeCollectionsInOrder(first.getTypeParameters(),second.getTypeParameters()));
@@ -19,8 +18,7 @@ public class MethodReferenceExprMerger extends AbstractMerger<MethodReferenceExp
     return mre;
   }
 
-  @Override public boolean isEquals(MethodReferenceExpr first, MethodReferenceExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(MethodReferenceExpr first, MethodReferenceExpr second) {
 
     if(!first.getIdentifier().equals(second.getIdentifier())) return false;
     if(!isEqualsUseMerger(first.getScope(), second.getScope())) return false;

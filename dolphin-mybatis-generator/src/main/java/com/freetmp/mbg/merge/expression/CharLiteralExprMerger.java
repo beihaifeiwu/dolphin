@@ -8,16 +8,13 @@ import com.github.javaparser.ast.expr.CharLiteralExpr;
  */
 public class CharLiteralExprMerger extends AbstractMerger<CharLiteralExpr> {
 
-  @Override public CharLiteralExpr merge(CharLiteralExpr first, CharLiteralExpr second) {
+  @Override public CharLiteralExpr doMerge(CharLiteralExpr first, CharLiteralExpr second) {
     CharLiteralExpr cle = new CharLiteralExpr();
-    cle.setComment(mergeSingle(first.getComment(),second.getComment()));
     cle.setValue(first.getValue());
     return cle;
   }
 
-  @Override public boolean isEquals(CharLiteralExpr first, CharLiteralExpr second) {
-    if(first == second) return true;
-
+  @Override public boolean doIsEquals(CharLiteralExpr first, CharLiteralExpr second) {
     if(!first.getValue().equals(second.getValue())) return false;
 
     return true;

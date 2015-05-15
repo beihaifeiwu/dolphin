@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 public class BlockCommentMerger extends AbstractMerger<BlockComment> {
 
     @Override
-    public BlockComment merge(BlockComment first, BlockComment second) {
+    public BlockComment doMerge(BlockComment first, BlockComment second) {
         if(StringUtils.isBlank(first.getContent())) return second;
         if(StringUtils.isBlank(second.getContent())) return first;
 
@@ -21,7 +21,7 @@ public class BlockCommentMerger extends AbstractMerger<BlockComment> {
     }
 
     @Override
-    public boolean isEquals(BlockComment first, BlockComment second) {
+    public boolean doIsEquals(BlockComment first, BlockComment second) {
         return true;
     }
 }

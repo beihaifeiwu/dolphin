@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.AssignExpr;
  */
 public class AssignExprMerger extends AbstractMerger<AssignExpr> {
 
-  @Override public AssignExpr merge(AssignExpr first, AssignExpr second) {
+  @Override public AssignExpr doMerge(AssignExpr first, AssignExpr second) {
     AssignExpr ae = new AssignExpr();
 
-    ae.setComment(mergeSingle(first.getComment(),second.getComment()));
     ae.setOperator(first.getOperator());
     ae.setTarget(mergeSingle(first.getTarget(),second.getTarget()));
     ae.setValue(mergeSingle(first.getValue(),second.getValue()));
@@ -19,8 +18,7 @@ public class AssignExprMerger extends AbstractMerger<AssignExpr> {
     return ae;
   }
 
-  @Override public boolean isEquals(AssignExpr first, AssignExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(AssignExpr first, AssignExpr second) {
 
     if(!isEqualsUseMerger(first.getTarget(),second.getTarget())) return false;
     if(!isEqualsUseMerger(first.getValue(),second.getValue())) return false;

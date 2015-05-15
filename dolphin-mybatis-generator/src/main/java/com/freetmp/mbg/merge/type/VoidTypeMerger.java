@@ -9,17 +9,16 @@ import com.github.javaparser.ast.type.VoidType;
 public class VoidTypeMerger extends AbstractMerger<VoidType> {
 
   @Override
-  public VoidType merge(VoidType first, VoidType second) {
+  public VoidType doMerge(VoidType first, VoidType second) {
     VoidType vt = new VoidType();
 
-    vt.setComment(mergeSingle(first.getComment(),second.getComment()));
     vt.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
 
     return vt;
   }
 
   @Override
-  public boolean isEquals(VoidType first, VoidType second) {
+  public boolean doIsEquals(VoidType first, VoidType second) {
 
     return true;
   }

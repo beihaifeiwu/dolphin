@@ -8,9 +8,8 @@ import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
  */
 public class ExplicitConstructorInvocationStmtMerger extends AbstractMerger<ExplicitConstructorInvocationStmt> {
 
-  @Override public ExplicitConstructorInvocationStmt merge(ExplicitConstructorInvocationStmt first, ExplicitConstructorInvocationStmt second) {
+  @Override public ExplicitConstructorInvocationStmt doMerge(ExplicitConstructorInvocationStmt first, ExplicitConstructorInvocationStmt second) {
     ExplicitConstructorInvocationStmt ecis = new ExplicitConstructorInvocationStmt();
-    ecis.setComment(mergeSingle(first.getComment(),second.getComment()));
     ecis.setArgs(mergeCollectionsInOrder(first.getArgs(),second.getArgs()));
     ecis.setTypeArgs(mergeCollectionsInOrder(first.getTypeArgs(),second.getTypeArgs()));
     ecis.setExpr(mergeSingle(first.getExpr(),second.getExpr()));
@@ -18,8 +17,7 @@ public class ExplicitConstructorInvocationStmtMerger extends AbstractMerger<Expl
     return ecis;
   }
 
-  @Override public boolean isEquals(ExplicitConstructorInvocationStmt first, ExplicitConstructorInvocationStmt second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(ExplicitConstructorInvocationStmt first, ExplicitConstructorInvocationStmt second) {
 
     if(!isEqualsUseMerger(first.getExpr(),second.getExpr())) return false;
     if(!isEqualsUseMerger(first.getTypeArgs(),second.getTypeArgs())) return false;

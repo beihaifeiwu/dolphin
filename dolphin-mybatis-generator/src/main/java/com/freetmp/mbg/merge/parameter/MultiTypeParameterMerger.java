@@ -13,26 +13,21 @@ import java.util.List;
 public class MultiTypeParameterMerger extends AbstractMerger<MultiTypeParameter> {
 
     @Override
-    public MultiTypeParameter merge(MultiTypeParameter first, MultiTypeParameter second) {
+    public MultiTypeParameter doMerge(MultiTypeParameter first, MultiTypeParameter second) {
 
         MultiTypeParameter mtp = new MultiTypeParameter();
 
         mtp.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
         mtp.setId(first.getId());
-        mtp.setComment(mergeSingle(first.getComment(), second.getComment()));
         mtp.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
         mtp.setTypes(first.getTypes());
 
-        return null;
+        return mtp;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean isEquals(MultiTypeParameter first, MultiTypeParameter second) {
-
-        if(first == second) return true;
-
-        if(!isAllNotNull(first,second)) return false;
+    public boolean doIsEquals(MultiTypeParameter first, MultiTypeParameter second) {
 
         if(!getMerger(VariableDeclaratorId.class).isEquals(first.getId(),second.getId())) return false;
 

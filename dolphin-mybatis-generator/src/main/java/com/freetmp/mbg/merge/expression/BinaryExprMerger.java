@@ -8,10 +8,9 @@ import com.github.javaparser.ast.expr.BinaryExpr;
  */
 public class BinaryExprMerger extends AbstractMerger<BinaryExpr> {
 
-  @Override public BinaryExpr merge(BinaryExpr first, BinaryExpr second) {
+  @Override public BinaryExpr doMerge(BinaryExpr first, BinaryExpr second) {
     BinaryExpr be = new BinaryExpr();
 
-    be.setComment(mergeSingle(first.getComment(),second.getComment()));
     be.setOperator(first.getOperator());
     be.setLeft(mergeSingle(first.getLeft(),second.getLeft()));
     be.setRight(mergeSingle(first.getRight(),second.getRight()));
@@ -19,8 +18,7 @@ public class BinaryExprMerger extends AbstractMerger<BinaryExpr> {
     return be;
   }
 
-  @Override public boolean isEquals(BinaryExpr first, BinaryExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(BinaryExpr first, BinaryExpr second) {
 
     if(!isEqualsUseMerger(first.getLeft(),second.getRight())) return false;
     if(!isEqualsUseMerger(first.getRight(),second.getRight())) return false;

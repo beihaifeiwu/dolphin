@@ -12,10 +12,9 @@ import java.util.List;
 public class NormalAnnotationExprMerger extends AbstractMerger<NormalAnnotationExpr> {
 
   @Override
-  public NormalAnnotationExpr merge(NormalAnnotationExpr first, NormalAnnotationExpr second) {
+  public NormalAnnotationExpr doMerge(NormalAnnotationExpr first, NormalAnnotationExpr second) {
     NormalAnnotationExpr nae = new NormalAnnotationExpr();
 
-    nae.setComment(mergeSingle(first.getComment(),second.getComment()));
     nae.setPairs(mergeCollections(first.getPairs(),second.getPairs()));
     nae.setName(mergeSingle(first.getName(),second.getName()));
 
@@ -28,10 +27,7 @@ public class NormalAnnotationExprMerger extends AbstractMerger<NormalAnnotationE
    * if their size is not the same and the less one is all matched in the more one return true
    */
   @Override
-  public boolean isEquals(NormalAnnotationExpr first, NormalAnnotationExpr second) {
-
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(NormalAnnotationExpr first, NormalAnnotationExpr second) {
 
     boolean equals = true;
 

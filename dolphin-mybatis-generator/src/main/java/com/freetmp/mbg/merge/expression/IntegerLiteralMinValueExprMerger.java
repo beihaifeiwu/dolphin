@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.IntegerLiteralMinValueExpr;
  */
 public class IntegerLiteralMinValueExprMerger extends AbstractMerger<IntegerLiteralMinValueExpr> {
 
-  @Override public IntegerLiteralMinValueExpr merge(IntegerLiteralMinValueExpr first, IntegerLiteralMinValueExpr second) {
+  @Override public IntegerLiteralMinValueExpr doMerge(IntegerLiteralMinValueExpr first, IntegerLiteralMinValueExpr second) {
     IntegerLiteralMinValueExpr ilmve = new IntegerLiteralMinValueExpr();
 
-    ilmve.setComment(mergeSingle(first.getComment(),second.getComment()));
     ilmve.setValue(first.getValue());
 
     return ilmve;
   }
 
-  @Override public boolean isEquals(IntegerLiteralMinValueExpr first, IntegerLiteralMinValueExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(IntegerLiteralMinValueExpr first, IntegerLiteralMinValueExpr second) {
 
     if(!first.getValue().equals(second.getValue())) return false;
 

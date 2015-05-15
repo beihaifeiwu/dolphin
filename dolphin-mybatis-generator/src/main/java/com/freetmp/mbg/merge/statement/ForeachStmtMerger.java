@@ -8,17 +8,15 @@ import com.github.javaparser.ast.stmt.ForeachStmt;
  */
 public class ForeachStmtMerger extends AbstractMerger<ForeachStmt> {
 
-  @Override public ForeachStmt merge(ForeachStmt first, ForeachStmt second) {
+  @Override public ForeachStmt doMerge(ForeachStmt first, ForeachStmt second) {
     ForeachStmt fs = new ForeachStmt();
-    fs.setComment(mergeSingle(first.getComment(),second.getComment()));
     fs.setBody(mergeSingle(first.getBody(),second.getBody()));
     fs.setIterable(mergeSingle(first.getIterable(),second.getIterable()));
     fs.setVariable(mergeSingle(first.getVariable(),second.getVariable()));
     return fs;
   }
 
-  @Override public boolean isEquals(ForeachStmt first, ForeachStmt second) {
-    if (first == second) return true;
+  @Override public boolean doIsEquals(ForeachStmt first, ForeachStmt second) {
 
     if (!isEqualsUseMerger(first.getVariable(), second.getVariable())) return false;
     if (!isEqualsUseMerger(first.getIterable(), second.getIterable())) return false;

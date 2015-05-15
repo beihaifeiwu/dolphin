@@ -9,9 +9,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class BlockStmtMerger extends AbstractMerger<BlockStmt> {
 
   @Override
-  public BlockStmt merge(BlockStmt first, BlockStmt second) {
+  public BlockStmt doMerge(BlockStmt first, BlockStmt second) {
     BlockStmt bs = new BlockStmt();
-    bs.setComment(mergeSingle(first.getComment(),second.getComment()));
     bs.setStmts(mergeCollectionsInOrder(first.getStmts(),second.getStmts()));
     return bs;
   }
@@ -20,7 +19,7 @@ public class BlockStmtMerger extends AbstractMerger<BlockStmt> {
    * Unless we dig into the method inner code or there is nothing we can dos
    */
   @Override
-  public boolean isEquals(BlockStmt first, BlockStmt second) {
+  public boolean doIsEquals(BlockStmt first, BlockStmt second) {
 
     return true;
   }

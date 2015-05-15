@@ -10,13 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 public class ConstructorDeclarationMerger extends AbstractMerger<ConstructorDeclaration> {
 
   @Override
-  public ConstructorDeclaration merge(ConstructorDeclaration first, ConstructorDeclaration second) {
+  public ConstructorDeclaration doMerge(ConstructorDeclaration first, ConstructorDeclaration second) {
 
     ConstructorDeclaration cd = new ConstructorDeclaration();
 
     cd.setName(first.getName());
     cd.setJavaDoc(mergeSingle(first.getJavaDoc(), second.getJavaDoc()));
-    cd.setComment(mergeSingle(first.getComment(), second.getComment()));
     cd.setModifiers(mergeModifiers(first.getModifiers(), second.getModifiers()));
     cd.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
     cd.setParameters(mergeCollectionsInOrder(first.getParameters(), second.getParameters()));
@@ -28,9 +27,7 @@ public class ConstructorDeclarationMerger extends AbstractMerger<ConstructorDecl
   }
 
   @Override
-  public boolean isEquals(ConstructorDeclaration first, ConstructorDeclaration second) {
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(ConstructorDeclaration first, ConstructorDeclaration second) {
 
     if (!StringUtils.equals(first.getName(), second.getName())) return false;
 

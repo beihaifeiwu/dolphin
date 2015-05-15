@@ -8,17 +8,15 @@ import com.github.javaparser.ast.expr.SuperExpr;
  */
 public class SuperExprMerger extends AbstractMerger<SuperExpr> {
 
-  @Override public SuperExpr merge(SuperExpr first, SuperExpr second) {
+  @Override public SuperExpr doMerge(SuperExpr first, SuperExpr second) {
     SuperExpr se = new SuperExpr();
 
-    se.setComment(mergeSingle(first.getComment(),second.getComment()));
     se.setClassExpr(mergeSingle(first.getClassExpr(),second.getClassExpr()));
 
     return se;
   }
 
-  @Override public boolean isEquals(SuperExpr first, SuperExpr second) {
-    if(first == second) return true;
+  @Override public boolean doIsEquals(SuperExpr first, SuperExpr second) {
 
     if(!isEqualsUseMerger(first.getClassExpr(),second.getClassExpr())) return false;
 

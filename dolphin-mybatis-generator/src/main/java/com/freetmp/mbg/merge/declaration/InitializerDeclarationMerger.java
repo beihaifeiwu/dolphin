@@ -8,12 +8,11 @@ import com.github.javaparser.ast.body.InitializerDeclaration;
  */
 public class InitializerDeclarationMerger extends AbstractMerger<InitializerDeclaration> {
 
-    @Override public InitializerDeclaration merge(InitializerDeclaration first, InitializerDeclaration second) {
+    @Override public InitializerDeclaration doMerge(InitializerDeclaration first, InitializerDeclaration second) {
 
         InitializerDeclaration id = new InitializerDeclaration();
 
         id.setJavaDoc(mergeSingle(first.getJavaDoc(),second.getJavaDoc()));
-        id.setComment(mergeSingle(first.getComment(),second.getComment()));
         id.setStatic(first.isStatic());
         id.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
         id.setBlock(mergeSingle(first.getBlock(),second.getBlock()));
@@ -21,10 +20,7 @@ public class InitializerDeclarationMerger extends AbstractMerger<InitializerDecl
         return id;
     }
 
-    @Override public boolean isEquals(InitializerDeclaration first, InitializerDeclaration second) {
-
-        if(first == second) return true;
-        if(first == null || second == null) return false;
+    @Override public boolean doIsEquals(InitializerDeclaration first, InitializerDeclaration second) {
 
         if(first.isStatic() != second.isStatic()) return false;
 

@@ -10,19 +10,15 @@ import com.github.javaparser.ast.type.PrimitiveType;
 public class PrimitiveTypeMerger extends AbstractMerger<PrimitiveType> {
 
   @Override
-  public PrimitiveType merge(PrimitiveType first, PrimitiveType second) {
+  public PrimitiveType doMerge(PrimitiveType first, PrimitiveType second) {
     PrimitiveType pt = new PrimitiveType();
-    pt.setComment(mergeSingle(first.getComment(),second.getComment()));
     pt.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
     pt.setType(first.getType());
     return first;
   }
 
   @Override
-  public boolean isEquals(PrimitiveType first, PrimitiveType second) {
-
-    if (first == second) return true;
-    if (first == null || second == null) return false;
+  public boolean doIsEquals(PrimitiveType first, PrimitiveType second) {
 
     if (!first.getType().equals(second.getType())) return false;
 
