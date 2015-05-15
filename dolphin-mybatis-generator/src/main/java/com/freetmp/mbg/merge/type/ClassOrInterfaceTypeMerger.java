@@ -38,12 +38,12 @@ public class ClassOrInterfaceTypeMerger extends AbstractMerger<ClassOrInterfaceT
 
         if(firstTypeArgs == secondTypeArgs) return true;
 
-        if(firstTypeArgs != null || secondTypeArgs != null) return false;
+        if(firstTypeArgs == null || secondTypeArgs == null) return false;
 
         for(int i = 0; i < firstTypeArgs.size(); i++){
             Type ft = firstTypeArgs.get(i);
             Type st = secondTypeArgs.get(i);
-            if(ft.getClass().equals(second.getClass())) {
+            if(ft.getClass().equals(st.getClass())) {
                 AbstractMerger merger = getMerger(ft.getClass());
                 if(!merger.isEquals(ft,st)) return false;
             }else {

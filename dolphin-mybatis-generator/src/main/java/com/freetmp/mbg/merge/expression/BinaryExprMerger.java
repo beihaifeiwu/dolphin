@@ -20,7 +20,7 @@ public class BinaryExprMerger extends AbstractMerger<BinaryExpr> {
 
   @Override public boolean doIsEquals(BinaryExpr first, BinaryExpr second) {
 
-    if(!isEqualsUseMerger(first.getLeft(),second.getRight())) return false;
+    if(!isEqualsUseMerger(first.getLeft(),second.getLeft())) return false;
     if(!isEqualsUseMerger(first.getRight(),second.getRight())) return false;
     if(!first.getOperator().equals(second.getOperator())) return false;
 

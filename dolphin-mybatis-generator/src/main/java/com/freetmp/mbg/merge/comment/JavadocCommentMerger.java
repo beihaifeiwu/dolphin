@@ -14,8 +14,10 @@ public class JavadocCommentMerger extends AbstractMerger<JavadocComment> {
 
     if(first.getContent().length() > second.getContent().length()){
       comment.setContent(first.getContent());
+      copyPosition(first,comment);
     }else {
       comment.setContent(second.getContent());
+      copyPosition(second,comment);
     }
 
     return comment;
@@ -23,6 +25,6 @@ public class JavadocCommentMerger extends AbstractMerger<JavadocComment> {
 
   @Override
   public boolean doIsEquals(JavadocComment first, JavadocComment second) {
-    return true;
+    return similarity(first.getContent(), second.getContent()) > 0.9d;
   }
 }

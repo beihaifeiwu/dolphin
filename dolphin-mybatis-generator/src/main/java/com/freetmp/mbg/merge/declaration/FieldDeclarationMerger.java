@@ -14,7 +14,7 @@ public class FieldDeclarationMerger extends AbstractMerger<FieldDeclaration> {
         fd.setJavaDoc(mergeSingle(first.getJavaDoc(),second.getJavaDoc()));
         fd.setType(mergeSingle(first.getType(),second.getType()));
         fd.setModifiers(mergeModifiers(first.getModifiers(),second.getModifiers()));
-
+        fd.setAnnotations(mergeCollections(first.getAnnotations(),second.getAnnotations()));
         fd.setVariables(mergeListNoDuplicate(first.getVariables(),second.getVariables(),true));
 
         return fd;

@@ -75,6 +75,13 @@
             <version>${javaparser.version}</version>
         </dependency>
 
+        <!-- Java String Similarity -->
+        <dependency>
+            <groupId>info.debatty</groupId>
+            <artifactId>java-string-similarity</artifactId>
+            <version>0.10</version>
+        </dependency>
+
         <!-- JavaGenerator -->
         <dependency>
             <groupId>com.squareup</groupId>

@@ -11,14 +11,13 @@ public class LineCommentMerger extends AbstractMerger<LineComment> {
   @Override
   public LineComment doMerge(LineComment first, LineComment second) {
     LineComment comment = new LineComment();
-    comment.setComment(mergeSingle(first.getComment(),second.getComment()));
     comment.setContent(first.getContent());
+    copyPosition(first,comment);
     return comment;
   }
 
   @Override
   public boolean doIsEquals(LineComment first, LineComment second) {
-    if(!first.getContent().equals(second.getContent())) return false;
-    return true;
+    return similarity(first.getContent(),second.getContent()) > 0.9d;
   }
 }

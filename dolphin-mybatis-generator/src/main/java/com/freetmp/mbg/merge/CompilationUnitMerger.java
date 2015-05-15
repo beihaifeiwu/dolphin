@@ -57,6 +57,8 @@ public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
    * @return
    */
   public static String merge(String first, String second) throws ParseException {
+    JavaParser.setDoNotAssignCommentsPreceedingEmptyLines(false);
+
     CompilationUnit cu1 = JavaParser.parse(new StringReader(first), true);
     CompilationUnit cu2 = JavaParser.parse(new StringReader(second), true);
     AbstractMerger<CompilationUnit> merger = AbstractMerger.getMerger(CompilationUnit.class);

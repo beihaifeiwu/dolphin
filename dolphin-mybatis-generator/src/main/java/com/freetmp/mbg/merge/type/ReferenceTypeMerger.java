@@ -21,13 +21,15 @@ public class ReferenceTypeMerger extends AbstractMerger<ReferenceType> {
     rf.setAnnotations(mergeCollections(first.getAnnotations(), second.getAnnotations()));
 
     List<List<AnnotationExpr>> lists = null;
-    if (first.getArraysAnnotations() == null || first.getArraysAnnotations().isEmpty()) lists = second.getArraysAnnotations();
-    if (second.getArraysAnnotations() == null || second.getArraysAnnotations().isEmpty()) lists = first.getArraysAnnotations();
+    if (first.getArraysAnnotations() == null) lists = second.getArraysAnnotations();
+    if (second.getArraysAnnotations() == null) lists = first.getArraysAnnotations();
 
-    if (lists == null) {
+    if (lists == null && (first.getArraysAnnotations() != null && second.getArraysAnnotations() != null)) {
+      lists = new ArrayList<>();
+
       List<List<AnnotationExpr>> faas = first.getArraysAnnotations();
       List<List<AnnotationExpr>> saas = second.getArraysAnnotations();
-      lists = new ArrayList<>();
+
       int size = faas.size() > saas.size() ? faas.size() : saas.size();
       for (int i = 0; i < size; i++) {
         List<AnnotationExpr> faa = i < faas.size() ? faas.get(i) : null;

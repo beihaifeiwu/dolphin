@@ -12,10 +12,7 @@ import com.freetmp.mbg.merge.statement.*;
 import com.freetmp.mbg.merge.type.*;
 import com.freetmp.mbg.merge.variable.VariableDeclaratorIdMerger;
 import com.freetmp.mbg.merge.variable.VariableDeclaratorMerger;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.PackageDeclaration;
-import com.github.javaparser.ast.TypeParameter;
+import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
@@ -24,9 +21,9 @@ import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.*;
+import info.debatty.java.stringsimilarity.Levenshtein;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +55,7 @@ public abstract class AbstractMerger<M extends Node> {
     map.put(InitializerDeclaration.class, new InitializerDeclarationMerger());
     map.put(MethodDeclaration.class, new MethodDeclarationMerger());
     map.put(PackageDeclaration.class, new PackageDeclarationMerger());
+    map.put(ImportDeclaration.class, new ImportDeclarationMerger());
 
     // expression
     map.put(Expression.class, new ExpressionMerger());
@@ -139,6 +137,8 @@ public abstract class AbstractMerger<M extends Node> {
     // compile unit
     map.put(CompilationUnit.class, new CompilationUnitMerger());
   }
+
+  protected static Levenshtein levenshtein = new Levenshtein();
 
   public <T> boolean isAllNull(T one, T two) {
     return one == null ? two == null : false;
@@ -268,7 +268,7 @@ public abstract class AbstractMerger<M extends Node> {
     if (useMerger) {
 
       List<T> twoCopy = new ArrayList<>();
-      Collections.copy(twoCopy, two);
+      twoCopy.addAll(two);
 
       for (T ot : one) {
         AbstractMerger merger = getMerger(ot.getClass());
@@ -479,6 +479,18 @@ public abstract class AbstractMerger<M extends Node> {
         third.addOrphanComment(comment);
       }
     }
+  }
+
+  protected double similarity(String first, String second){
+    if(first == null || second == null) return 0d;
+    return levenshtein.similarity(first,second);
+  }
+
+  protected <T extends Node> void copyPosition(T source, T dest){
+    dest.setBeginColumn(source.getBeginColumn());
+    dest.setBeginLine(source.getBeginLine());
+    dest.setEndColumn(source.getEndColumn());
+    dest.setEndLine(source.getEndLine());
   }
 
   public abstract M doMerge(M first,M second);
