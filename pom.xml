@@ -2,277 +2,276 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.freetmp</groupId>
-    <artifactId>dolphin-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0</version>
+  <groupId>com.freetmp</groupId>
+  <artifactId>dolphin-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0</version>
 
+  <name>dolphin</name>
+  <description>The Dolphin Project is aim to accumulate the repeat problem solution and make it recycle</description>
+  <url>https://github.com/beihaifeiwu/dolphin</url>
+
+  <organization>
     <name>dolphin</name>
-    <description>The Dolphin Project is aim to accumulate the repeat problem solution and make it recycle</description>
+    <url>https://github.com/beihaifeiwu/</url>
+  </organization>
+
+  <!-- 开发人员信息 -->
+  <developers>
+    <developer>
+      <name>beihaifeiwu</name>
+      <email>liuhuizhang@foxmail.com</email>
+      <url>https://github.com/beihaifeiwu/</url>
+      <roles>
+        <role>software engineer</role>
+      </roles>
+      <timezone>8</timezone>
+    </developer>
+  </developers>
+
+  <!-- 许可证 -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <!-- 问题反馈信息 -->
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/beihaifeiwu/dolphin/issues</url>
+  </issueManagement>
+
+  <!-- 分发管理 -->
+  <distributionManagement>
+    <!-- mvn site:deploy 部署的位置-->
+    <site>
+      <id>local</id>
+      <name>filesystem</name>
+      <!-- 修改到磁盘的相应位置 -->
+      <url>file:D:\target\site</url>
+    </site>
+
+    <snapshotRepository>
+      <id>oss</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+
+    <repository>
+      <id>oss</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+  </distributionManagement>
+
+  <!-- 版本控制信息 -->
+  <scm>
     <url>https://github.com/beihaifeiwu/dolphin</url>
+    <connection>scm:git:git://github.com/beihaifeiwu/dolphin.git</connection>
+    <developerConnection>scm:git:git://github.com/beihaifeiwu/dolphin.git</developerConnection>
+  </scm>
 
-    <organization>
-        <name>dolphin</name>
-        <url>https://github.com/beihaifeiwu/</url>
-    </organization>
 
-    <!-- 开发人员信息 -->
-    <developers>
-        <developer>
-            <name>beihaifeiwu</name>
-            <email>liuhuizhang@foxmail.com</email>
-            <url>https://github.com/beihaifeiwu/</url>
-            <roles>
-                <role>software engineer</role>
-            </roles>
-            <timezone>8</timezone>
-        </developer>
-    </developers>
+  <properties>
 
-    <!-- 许可证 -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
+    <!-- 主要依赖库的版本定义 -->
+    <commons.lang3.version>3.3.2</commons.lang3.version>
+    <commons.io.version>2.4</commons.io.version>
+    <commons.codec.version>1.10</commons.codec.version>
+    <guava.version>18.0</guava.version>
+    <junit.version>4.12</junit.version>
+    <java.version>1.8</java.version>
+    <version.javadoc>8</version.javadoc>
+    <assertj-core.version>2.0.0</assertj-core.version>
+    <aspectj.version>1.8.5</aspectj.version>
+    <slf4j.version>1.7.10</slf4j.version>
+    <mockito.version>1.10.19</mockito.version>
 
-    <!-- 问题反馈信息 -->
-    <issueManagement>
-        <system>Github</system>
-        <url>https://github.com/beihaifeiwu/dolphin/issues</url>
-    </issueManagement>
+    <!-- Plugin属性定义 -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.maven-compiler-plugin>3.2</version.maven-compiler-plugin>
+    <version.maven-source-plugin>2.4</version.maven-source-plugin>
+    <version.maven-javadoc-plugin>2.10.1</version.maven-javadoc-plugin>
+    <version.maven-gpg-plugin>1.5</version.maven-gpg-plugin>
 
-    <!-- 分发管理 -->
-    <distributionManagement>
-        <!-- mvn site:deploy 部署的位置-->
-        <site>
-            <id>local</id>
-            <name>filesystem</name>
-            <!-- 修改到磁盘的相应位置 -->
-            <url>file:D:\target\site</url>
-        </site>
+    <!-- 项目属性 -->
+    <dolphin.version>1.0-SNAPSHOT</dolphin.version>
+  </properties>
 
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- 日志组件 -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Apache commons -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons.lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons.codec.version}</version>
+      </dependency>
+
+      <!-- Google Guava -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <!-- AspectJ AOP -->
+      <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>${aspectj.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Test -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj-core.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- 子模块依赖管理 -->
+
+      <dependency>
+        <groupId>com.freetmp</groupId>
+        <artifactId>dolphin-spring-batch</artifactId>
+        <version>${dolphin.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.freetmp</groupId>
+        <artifactId>dolphin-querydsl</artifactId>
+        <version>${dolphin.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.freetmp</groupId>
+        <artifactId>dolphin-common</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${version.maven-source-plugin}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <attach>true</attach>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${version.maven-javadoc-plugin}</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <failOnError>false</failOnError>
+              <links>
+                <link>http://docs.oracle.com/javase/${version.javadoc}/docs/api</link>
+              </links>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${version.maven-gpg-plugin}</version>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <distributionManagement>
         <snapshotRepository>
-            <id>oss</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <id>oss</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
-
         <repository>
-            <id>oss</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+          <id>oss</id>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </distributionManagement>
+      </distributionManagement>
+    </profile>
+  </profiles>
 
-    <!-- 版本控制信息 -->
-    <scm>
-        <url>https://github.com/beihaifeiwu/dolphin</url>
-        <connection>scm:git:git://github.com/beihaifeiwu/dolphin.git</connection>
-        <developerConnection>scm:git:git://github.com/beihaifeiwu/dolphin.git</developerConnection>
-    </scm>
-
-
-
-    <properties>
-
-        <!-- 主要依赖库的版本定义 -->
-        <commons.lang3.version>3.3.2</commons.lang3.version>
-        <commons.io.version>2.4</commons.io.version>
-        <commons.codec.version>1.10</commons.codec.version>
-        <guava.version>18.0</guava.version>
-        <junit.version>4.12</junit.version>
-        <java.version>1.8</java.version>
-        <version.javadoc>8</version.javadoc>
-        <assertj-core.version>2.0.0</assertj-core.version>
-        <aspectj.version>1.8.5</aspectj.version>
-        <slf4j.version>1.7.10</slf4j.version>
-        <mockito.version>1.10.19</mockito.version>
-
-        <!-- Plugin属性定义 -->
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.maven-compiler-plugin>3.2</version.maven-compiler-plugin>
-        <version.maven-source-plugin>2.4</version.maven-source-plugin>
-        <version.maven-javadoc-plugin>2.10.1</version.maven-javadoc-plugin>
-        <version.maven-gpg-plugin>1.5</version.maven-gpg-plugin>
-
-        <!-- 项目属性 -->
-        <dolphin.version>1.0-SNAPSHOT</dolphin.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- 日志组件 -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- Apache commons -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons.lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons.codec.version}</version>
-            </dependency>
-
-            <!-- Google Guava -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-
-            <!-- AspectJ AOP -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectj.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!-- Test -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj-core.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- 子模块依赖管理 -->
-
-            <dependency>
-                <groupId>com.freetmp</groupId>
-                <artifactId>dolphin-spring-batch</artifactId>
-                <version>${dolphin.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.freetmp</groupId>
-                <artifactId>dolphin-querydsl</artifactId>
-                <version>${dolphin.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.freetmp</groupId>
-                <artifactId>dolphin-common</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>${version.maven-source-plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <attach>true</attach>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${version.maven-javadoc-plugin}</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                            <links>
-                                <link>http://docs.oracle.com/javase/${version.javadoc}/docs/api</link>
-                            </links>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${version.maven-gpg-plugin}</version>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
-    <modules>
-        <module>dolphin-mybatis-generator</module>
-        <module>xmbg-maven-plugin</module>
-        <module>dolphin-spring-batch</module>
-        <module>dolphin-querydsl</module>
-        <module>dolphin-error-coder</module>
-        <module>dolphin-common</module>
-        <module>dolphin-web-login</module>
-    </modules>
+  <modules>
+    <module>dolphin-mybatis-generator</module>
+    <module>xmbg-maven-plugin</module>
+    <module>dolphin-spring-batch</module>
+    <module>dolphin-querydsl</module>
+    <module>dolphin-error-coder</module>
+    <module>dolphin-common</module>
+    <module>dolphin-web-login</module>
+  </modules>
 
 
 </project>

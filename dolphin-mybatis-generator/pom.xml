@@ -2,188 +2,188 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dolphin-parent</artifactId>
-        <groupId>com.freetmp</groupId>
-        <version>1.0.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>dolphin-mybatis-generator</artifactId>
+  <parent>
+    <artifactId>dolphin-parent</artifactId>
+    <groupId>com.freetmp</groupId>
     <version>1.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <dom4j.version>1.6.1</dom4j.version>
-        <geolatte.version>0.15</geolatte.version>
-        <postgis.version>1.3.3</postgis.version>
-        <postgresql.version>9.4-1201-jdbc41</postgresql.version>
-        <mybatis.version>3.2.8</mybatis.version>
-        <mybatis.generator.version>1.3.2</mybatis.generator.version>
-        <javaparser.version>2.0.0</javaparser.version>
-        <javapoet.version>1.0.0</javapoet.version>
-        <roaster.version>2.13.0.Final</roaster.version>
-    </properties>
+  <artifactId>dolphin-mybatis-generator</artifactId>
+  <version>1.0.0</version>
 
-    <dependencies>
+  <properties>
+    <dom4j.version>1.6.1</dom4j.version>
+    <geolatte.version>0.15</geolatte.version>
+    <postgis.version>1.3.3</postgis.version>
+    <postgresql.version>9.4-1201-jdbc41</postgresql.version>
+    <mybatis.version>3.2.8</mybatis.version>
+    <mybatis.generator.version>1.3.2</mybatis.generator.version>
+    <javaparser.version>2.0.0</javaparser.version>
+    <javapoet.version>1.0.0</javapoet.version>
+    <roaster.version>2.13.0.Final</roaster.version>
+  </properties>
 
-        <!-- Apache Commons 工具类库 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
+  <dependencies>
 
-        <!-- Google Guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
+    <!-- Apache Commons 工具类库 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
-        <!-- Test -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
+    <!-- Google Guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
 
-        <!-- MBG 核心包 -->
-        <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
-            <version>${mybatis.generator.version}</version>
-        </dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-        <!-- MyBatis支持 -->
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
-        </dependency>
+    <!-- MBG 核心包 -->
+    <dependency>
+      <groupId>org.mybatis.generator</groupId>
+      <artifactId>mybatis-generator-core</artifactId>
+      <version>${mybatis.generator.version}</version>
+    </dependency>
 
-        <!-- JavaParser -->
-        <dependency>
-            <groupId>com.github.javaparser</groupId>
-            <artifactId>javaparser-core</artifactId>
-            <version>${javaparser.version}</version>
-        </dependency>
+    <!-- MyBatis支持 -->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>${mybatis.version}</version>
+    </dependency>
 
-        <!-- Java String Similarity -->
-        <dependency>
-            <groupId>info.debatty</groupId>
-            <artifactId>java-string-similarity</artifactId>
-            <version>0.10</version>
-        </dependency>
+    <!-- JavaParser -->
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>${javaparser.version}</version>
+    </dependency>
 
-        <!-- JavaGenerator -->
-        <dependency>
-            <groupId>com.squareup</groupId>
-            <artifactId>javapoet</artifactId>
-            <version>${javapoet.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <!-- Java String Similarity -->
+    <dependency>
+      <groupId>info.debatty</groupId>
+      <artifactId>java-string-similarity</artifactId>
+      <version>0.10</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.jboss.forge.roaster</groupId>
-            <artifactId>roaster-api</artifactId>
-            <version>${roaster.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.forge.roaster</groupId>
-            <artifactId>roaster-jdt</artifactId>
-            <version>${roaster.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <!-- JavaGenerator -->
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>${javapoet.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-        <!-- Test -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-core</artifactId>
-            <version>1.0-groovy-2.4</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.jboss.forge.roaster</groupId>
+      <artifactId>roaster-api</artifactId>
+      <version>${roaster.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge.roaster</groupId>
+      <artifactId>roaster-jdt</artifactId>
+      <version>${roaster.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-        <!-- dom4j xml解析支持 -->
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
-        </dependency>
+    <!-- Test -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <version>1.0-groovy-2.4</version>
+      <scope>test</scope>
+    </dependency>
 
-        <!-- 地理信息支持 -->
-        <dependency>
-            <groupId>org.geolatte</groupId>
-            <artifactId>geolatte-geom</artifactId>
-            <version>${geolatte.version}</version>
-        </dependency>
+    <!-- dom4j xml解析支持 -->
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>${dom4j.version}</version>
+    </dependency>
 
-        <!-- PostGis jdbc driver -->
-        <dependency>
-            <groupId>org.postgis</groupId>
-            <artifactId>postgis-jdbc</artifactId>
-            <version>${postgis.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <!-- 需要排除桩代码否则运行会出问题 -->
-                <exclusion>
-                    <groupId>org.postgis</groupId>
-                    <artifactId>postgis-stubs</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-            <scope>provided</scope>
-        </dependency>
+    <!-- 地理信息支持 -->
+    <dependency>
+      <groupId>org.geolatte</groupId>
+      <artifactId>geolatte-geom</artifactId>
+      <version>${geolatte.version}</version>
+    </dependency>
 
-    </dependencies>
+    <!-- PostGis jdbc driver -->
+    <dependency>
+      <groupId>org.postgis</groupId>
+      <artifactId>postgis-jdbc</artifactId>
+      <version>${postgis.version}</version>
+      <scope>provided</scope>
+      <exclusions>
+        <!-- 需要排除桩代码否则运行会出问题 -->
+        <exclusion>
+          <groupId>org.postgis</groupId>
+          <artifactId>postgis-stubs</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql.version}</version>
+      <scope>provided</scope>
+    </dependency>
 
-    <build>
-        <plugins>
-            <!-- Mandatory plugins for using Spock -->
-            <plugin>
-                <!-- The gmavenplus plugin is used to compile Groovy code. To learn more about this plugin,
-                visit https://github.com/groovy/GMavenPlus/wiki -->
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Optional plugins for using Spock -->
-            <!-- Only required if names of spec classes don't match default Surefire patterns (`*Test` etc.) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <useFile>false</useFile>
-                    <includes>
-                        <include>**/*Spec.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Mandatory plugins for using Spock -->
+      <plugin>
+        <!-- The gmavenplus plugin is used to compile Groovy code. To learn more about this plugin,
+        visit https://github.com/groovy/GMavenPlus/wiki -->
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Optional plugins for using Spock -->
+      <!-- Only required if names of spec classes don't match default Surefire patterns (`*Test` etc.) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <useFile>false</useFile>
+          <includes>
+            <include>**/*Spec.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

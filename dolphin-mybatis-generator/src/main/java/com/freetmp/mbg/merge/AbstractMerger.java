@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by LiuPin on 2015/3/27.
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractMerger<M extends Node> {
 
   protected static ConcurrentHashMap<Class, AbstractMerger> map = new ConcurrentHashMap<>();
@@ -167,7 +168,6 @@ public abstract class AbstractMerger<M extends Node> {
     return index;
   }
 
-  @SuppressWarnings("unchecked")
   public <T> T mergeSelective(T one, T two) {
     T t = null;
 
@@ -180,7 +180,6 @@ public abstract class AbstractMerger<M extends Node> {
     return t;
   }
 
-  @SuppressWarnings("unchecked")
   public <T extends BaseParameter> boolean isParametersEquals(List<T> one, List<T> two) {
 
     if (one == two) return true;
@@ -215,7 +214,6 @@ public abstract class AbstractMerger<M extends Node> {
     return true;
   }
 
-  @SuppressWarnings("unchecked")
   public <T extends Node> boolean isSmallerHasEqualsInBigger(List<T> first, List<T> second, boolean useOrigin) {
 
     if (first == second) return true;
@@ -255,8 +253,6 @@ public abstract class AbstractMerger<M extends Node> {
     return ModifierSet.addModifier(one, two);
   }
 
-
-  @SuppressWarnings("unchecked")
   public <T extends Node> List<T> mergeListNoDuplicate(List<T> one, List<T> two, boolean useMerger) {
 
     if (one == two) return one;
@@ -299,7 +295,6 @@ public abstract class AbstractMerger<M extends Node> {
     return results;
   }
 
-  @SuppressWarnings("unchecked")
   public <T> List<T> mergeListInOrder(List<T> one, List<T> two) {
     List<T> results = new ArrayList<>();
 
@@ -337,7 +332,6 @@ public abstract class AbstractMerger<M extends Node> {
    * else check if mapper of the supper type exist, then return it
    * ...
    */
-  @SuppressWarnings("unchecked")
   public static <T extends Node> AbstractMerger<T> getMerger(Class<T> clazz) {
 
     AbstractMerger<T> merger = null;
@@ -357,7 +351,6 @@ public abstract class AbstractMerger<M extends Node> {
   }
 
 
-  @SuppressWarnings("unchecked")
   protected <T extends Node> List<T> mergeCollections(List<T> first, List<T> second) {
 
     if (first == null) return second;
@@ -399,7 +392,6 @@ public abstract class AbstractMerger<M extends Node> {
     return nodes;
   }
 
-  @SuppressWarnings("unchecked")
   protected <T extends Node> List<T> mergeCollectionsInOrder(List<T> first, List<T> second) {
     if (first == null) return second;
     if (second == null) return first;
@@ -424,7 +416,6 @@ public abstract class AbstractMerger<M extends Node> {
   }
 
 
-  @SuppressWarnings("unchecked")
   protected <T extends Node> T mergeSingle(T first, T second) {
 
     /**
@@ -445,7 +436,7 @@ public abstract class AbstractMerger<M extends Node> {
     return null;
   }
 
-  @SuppressWarnings("unchecked") protected <T extends Node> boolean isEqualsUseMerger(T first, T second){
+  protected <T extends Node> boolean isEqualsUseMerger(T first, T second){
 
     if(first == second) return true;
     if(first == null || second == null) return false;
