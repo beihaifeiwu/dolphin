@@ -175,11 +175,6 @@
             </dependency>
 
             <!-- 子模块依赖管理 -->
-            <dependency>
-                <groupId>com.freetmp</groupId>
-                <artifactId>dolphin-mybatis-generator</artifactId>
-                <version>0.0.2</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.freetmp</groupId>

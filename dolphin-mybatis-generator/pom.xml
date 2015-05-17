@@ -10,13 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dolphin-mybatis-generator</artifactId>
-    <version>0.0.2</version>
+    <version>1.0.0</version>
 
     <properties>
         <dom4j.version>1.6.1</dom4j.version>
-        <geolatte.version>0.14</geolatte.version>
+        <geolatte.version>0.15</geolatte.version>
         <postgis.version>1.3.3</postgis.version>
-        <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+        <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <mybatis.version>3.2.8</mybatis.version>
         <mybatis.generator.version>1.3.2</mybatis.generator.version>
         <javaparser.version>2.0.0</javaparser.version>
