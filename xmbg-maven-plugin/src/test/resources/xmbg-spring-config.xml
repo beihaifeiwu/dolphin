@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+         http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+
+  <!-- 配置事务管理器 -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"></property>
+  </bean>
+
+  <!-- 开启注解事务驱动 -->
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <!-- 开启MyBatis注解支持 -->
+  <mybatis-spring:scan base-package="com.freetmp.xmbg.test.mapper" />
+
+  <!--创建sqlSessionFactory -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="configLocation" value="classpath:SqlMapConfig.xml" />
+    <property name="dataSource" ref="dataSource" />
+    <property name="mapperLocations">
+      <array>
+        <value>classpath*:com/freetmp/xmbg/test/mapper/*.xml</value>
+      </array>
+    </property>
+  </bean>
+
+  <bean id="log-filter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
+    <property name="statementExecutableSqlLogEnable" value="true" />
+  </bean>
+
+  <!-- 数据源配置 -->
+  <beans profile="mysql">
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+      <property name="url" value="jdbc:mysql://localhost/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8"></property>
+      <property name="username" value="root"></property>
+      <property name="password" value=""></property>
+      <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+
+      <property name="poolPreparedStatements" value="true"></property>
+      <property name="maxPoolPreparedStatementPerConnectionSize" value="50"></property>
+
+      <property name="filters" value="slf4j"></property>
+    </bean>
+  </beans>
+
+</beans>
