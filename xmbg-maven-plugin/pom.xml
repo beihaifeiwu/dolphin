@@ -35,7 +35,6 @@
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
 
-
     <!-- Maven project object model -->
     <dependency>
       <groupId>org.apache.maven</groupId>

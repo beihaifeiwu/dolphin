@@ -29,6 +29,10 @@
     </property>
   </bean>
 
+  <bean id="log-filter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
+    <property name="statementExecutableSqlLogEnable" value="true" />
+  </bean>
+
   <!-- 数据源配置 -->
   <beans profile="mysql">
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
@@ -39,6 +43,8 @@
 
       <property name="poolPreparedStatements" value="true"></property>
       <property name="maxPoolPreparedStatementPerConnectionSize" value="50"></property>
+
+      <property name="filters" value="slf4j"></property>
     </bean>
   </beans>
 
