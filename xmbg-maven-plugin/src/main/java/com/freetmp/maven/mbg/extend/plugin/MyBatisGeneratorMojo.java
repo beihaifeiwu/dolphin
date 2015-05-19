@@ -6,6 +6,7 @@ import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
 import com.freetmp.mbg.plugin.geom.PostgisGeoPlugin;
 import com.freetmp.mbg.plugin.page.*;
+import com.freetmp.mbg.plugin.upsert.UpsertPlugin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;

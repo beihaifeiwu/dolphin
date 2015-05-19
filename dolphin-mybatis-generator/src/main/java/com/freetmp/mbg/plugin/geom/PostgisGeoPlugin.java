@@ -1,6 +1,6 @@
 package com.freetmp.mbg.plugin.geom;
 
-import com.freetmp.mbg.plugin.UpsertPlugin;
+import com.freetmp.mbg.plugin.upsert.UpsertPlugin;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;

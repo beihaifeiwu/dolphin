@@ -1,21 +1,52 @@
-drop table if exists ss_task;
-drop table if exists ss_user;
+/*
+Navicat MySQL Data Transfer
 
-create table ss_task (
-	id bigint auto_increment,
-	title varchar(128) not null,
-	description varchar(255),
-	user_id bigint not null,
-    primary key (id)
-) engine=InnoDB;
+Source Server         : localhost_3306
+Source Server Version : 50619
+Source Host           : localhost:3306
+Source Database       : xmbg_test
 
-create table ss_user (
-	id bigint auto_increment,
-	login_name varchar(64) not null unique,
-	name varchar(64) not null,
-	password varchar(255) not null,
-	salt varchar(64) not null,
-	roles varchar(255),
-	register_date timestamp not null default 0,
-	primary key (id)
-) engine=InnoDB;
+Target Server Type    : MYSQL
+Target Server Version : 50619
+File Encoding         : 65001
+
+Date: 2015-05-19 11:42:33
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `task`
+-- ----------------------------
+DROP TABLE IF EXISTS `task`;
+CREATE TABLE `task` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(128) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `user_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of task
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `user`
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `login_name` varchar(64) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `salt` varchar(64) NOT NULL,
+  `roles` varchar(255) DEFAULT NULL,
+  `register_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_name` (`login_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
