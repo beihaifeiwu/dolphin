@@ -47,9 +47,9 @@
     </javaClientGenerator>
 
     <!--对应数据库表 mysql可以加入主键自增 字段命名 忽略某字段等 -->
-    <table tableName="user" domainObjectName="User"></table>
+    <table tableName="user" domainObjectName="User" delimitIdentifiers="true" delimitAllColumns="true"></table>
 
-    <table tableName="task" domainObjectName="Task"></table>
+    <table tableName="task" domainObjectName="Task" delimitIdentifiers="true" delimitAllColumns="true"></table>
 
   </context>
 

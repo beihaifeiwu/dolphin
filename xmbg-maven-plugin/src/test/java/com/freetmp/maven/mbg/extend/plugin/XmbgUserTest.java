@@ -233,8 +233,8 @@ public class XmbgUserTest extends XmbgBaseTest {
   public void testBatchUpdate(){
     // update with all field non null
     List<User> list = new ArrayList<>();
-    list.add(1,buildUser(1L));
-    list.add(2,buildUser(2L));
+    list.add(buildUser(1L));
+    list.add(buildUser(2L));
 
     int rows = mapper.batchUpdate(list);
 
