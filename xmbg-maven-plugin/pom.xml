@@ -17,7 +17,7 @@
     <surefire.version>2.18.1</surefire.version>
     <spring.version>4.1.6.RELEASE</spring.version>
     <mybatis.version>3.2.8</mybatis.version>
-    <mysql.version>5.1.30</mysql.version>
+    <mysql.version>5.1.35</mysql.version>
     <postgis.version>1.3.3</postgis.version>
     <postgresql.version>9.3-1102-jdbc41</postgresql.version>
   </properties>
