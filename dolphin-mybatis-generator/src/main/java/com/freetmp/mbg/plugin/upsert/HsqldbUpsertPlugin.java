@@ -14,9 +14,9 @@ public class HsqldbUpsertPlugin extends UpsertPlugin {
   @Override protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("merge into ", introspectedTable,parent);
     generateTextBlock(" using (values ",parent);
-    generateRecordFieldsSeparateByComma(PROPERTY_PREFIX,introspectedTable.getAllColumns(),parent);
+    generateParametersSeparateByCommaWithIfNullCheck(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
     generateTextBlock(" ) temp ",parent);
-    generateInsertColumnsWithParenthesis(introspectedTable.getAllColumns(),parent);
+    generateActualColumnNamesWithParenthesisAndIfNullCheck(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
     generateTextBlock(" on ( ",parent);
 
     XmlElement include = new XmlElement("include");
@@ -26,7 +26,13 @@ public class HsqldbUpsertPlugin extends UpsertPlugin {
     generateTextBlock(" ) ",parent);
 
     generateTextBlock(" when matched then update set ", parent);
+    generateCopyForSetByPrefixWithIfNullCheck(PROPERTY_PREFIX,
+        introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime(),"temp.",introspectedTable,parent);
 
+    generateTextBlock(" when not matched then insert ", parent);
+    generateActualColumnNamesWithParenthesisAndIfNullCheck(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
+    generateTextBlock(" values ", parent);
+    generateActualColumnNamesWithParenthesisAndIfNullCheck(PROPERTY_PREFIX,"temp.",introspectedTable.getAllColumns(),parent);
   }
 
   @Override protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
@@ -50,9 +56,12 @@ public class HsqldbUpsertPlugin extends UpsertPlugin {
       foreach.addElement(isEqualElement);
 
       sb.setLength(0);
-      sb.append(MyBatis3FormattingUtilities.getAliasedEscapedColumnName(introspectedColumn));
+
+      String columnName = MyBatis3FormattingUtilities.getAliasedEscapedColumnName(introspectedColumn);
+
+      sb.append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + "." + columnName);
       sb.append(" = ");
-      sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, "record."));
+      sb.append("temp." + columnName);
 
       isEqualElement.addElement(new TextElement(sb.toString()));
     }
@@ -60,5 +69,31 @@ public class HsqldbUpsertPlugin extends UpsertPlugin {
     sql.addElement(foreach);
 
     return sql;
+  }
+
+  protected void generateCopyForSetByPrefixWithIfNullCheck(String fieldPrefix, String leftPrefix, String rightPrefix, IntrospectedTable introspectedTable, XmlElement dynamicElement) {
+    XmlElement trimElement = new XmlElement("trim");
+    trimElement.addAttribute(new Attribute("suffixOverrides",","));
+
+    StringBuilder sb = new StringBuilder();
+    for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
+      XmlElement isNotNullElement = new XmlElement("if");
+      sb.setLength(0);
+      sb.append(introspectedColumn.getJavaProperty(fieldPrefix));
+      sb.append(" != null");
+      isNotNullElement.addAttribute(new Attribute("test", sb.toString()));
+      trimElement.addElement(isNotNullElement);
+
+      sb.setLength(0);
+      String columnName = MyBatis3FormattingUtilities.getAliasedEscapedColumnName(introspectedColumn);
+      sb.append(leftPrefix + columnName);
+      sb.append(" = ");
+      sb.append(rightPrefix + columnName);
+      sb.append(',');
+
+      isNotNullElement.addElement(new TextElement(sb.toString()));
+    }
+
+    dynamicElement.addElement(trimElement);
   }
 }

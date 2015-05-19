@@ -12,12 +12,12 @@ public class SQLServerUpsertPlugin extends UpsertPlugin {
   protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("update ", introspectedTable,parent);
     generateTextBlock(" set ",parent);
-    generateRecordFieldForSetWithIfNullCheck(PROPERTY_PREFIX,introspectedTable,parent);
+    generateParameterForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable, parent);
     parent.addElement(checkArrayWhere(introspectedTable));
     generateTextBlock(" if @@ROWCOUNT = 0 ",parent);
     generateTextBlockAppendTableName(" insert into ", introspectedTable,parent);
-    generateInsertColumnsWithParenthesis(introspectedTable.getAllColumns(),parent);
+    generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
     generateTextBlock(" values ", parent);
-    generateRecordFieldsSeparateByCommaWithParenthesis(PROPERTY_PREFIX,introspectedTable.getAllColumns(),parent);
+    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
   }
 }

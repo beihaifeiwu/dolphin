@@ -1,10 +1,8 @@
 package com.freetmp.mbg.plugin.page;
 
-import com.freetmp.mbg.plugin.AbstractPlugin;
-import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
+import com.freetmp.mbg.plugin.AbstractXmbgPlugin;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.*;
 
 import java.util.List;
@@ -14,7 +12,7 @@ import java.util.List;
  * 使用统一的数据模型：offset 当前页离开始记录的偏移，limit 当前页的记录数限制
  * Created by LiuPin on 2015/1/30.
  */
-public abstract class AbstractPaginationPlugin extends AbstractPlugin {
+public abstract class AbstractPaginationPlugin extends AbstractXmbgPlugin {
     
     public static final String LIMIT_NAME = "limit";
     public static final String OFFSET_NAME = "offset";

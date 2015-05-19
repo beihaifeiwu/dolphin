@@ -19,13 +19,13 @@ public class OracleUpsertPlugin extends UpsertPlugin {
     generateTextBlock(" ) ", parent);
     generateTextBlock(" when matched then ",parent);
     generateTextBlock("  update set ", parent);
-    generateRecordFieldForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable,parent);
+    generateParameterForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable, parent);
 
     generateTextBlock(" when not matched then ",parent);
     generateTextBlock("  insert ",parent);
-    generateInsertColumnsWithParenthesis(introspectedTable.getAllColumns(),parent);
+    generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
     generateTextBlock("  values ",parent);
-    generateRecordFieldsSeparateByCommaWithParenthesis(PROPERTY_PREFIX,introspectedTable.getAllColumns(),parent);
+    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
 
   }
 }

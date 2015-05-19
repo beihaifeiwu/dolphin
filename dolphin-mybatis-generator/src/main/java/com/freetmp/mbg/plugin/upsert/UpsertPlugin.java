@@ -1,6 +1,6 @@
 package com.freetmp.mbg.plugin.upsert;
 
-import com.freetmp.mbg.plugin.AbstractPlugin;
+import com.freetmp.mbg.plugin.AbstractXmbgPlugin;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.*;
@@ -18,7 +18,7 @@ import java.util.TreeSet;
  * 存在即更新否则插入方法生成插件
  * @author Pin Liu
  */
-public class UpsertPlugin extends AbstractPlugin {
+public class UpsertPlugin extends AbstractXmbgPlugin {
 
   public static final String UPSERT = "upsert";
 
@@ -129,7 +129,7 @@ public class UpsertPlugin extends AbstractPlugin {
     XmlElement dynamicElement = new XmlElement("set");
     parent.addElement(dynamicElement);
 
-    generateRecordFieldForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable, dynamicElement);
+    generateParameterForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable, dynamicElement);
 
     XmlElement where = checkArrayWhere(introspectedTable);
     parent.addElement(where);
@@ -140,12 +140,12 @@ public class UpsertPlugin extends AbstractPlugin {
 
     List<IntrospectedColumn> nonPkColumn = introspectedTable.getNonPrimaryKeyColumns();
 
-    generateInsertColumnsWithParenthesis(nonPkColumn,parent);
+    generateActualColumnNamesWithParenthesis(nonPkColumn, parent);
 
 
     generateTextBlock(" select ", parent);
 
-    generateRecordFieldsSeparateByComma(PROPERTY_PREFIX, nonPkColumn, parent);
+    generateParametersSeparateByComma(PROPERTY_PREFIX, nonPkColumn, parent);
 
     generateTextBlockAppendTableName(" where not exists ( select 1 from ",introspectedTable,parent);
 
