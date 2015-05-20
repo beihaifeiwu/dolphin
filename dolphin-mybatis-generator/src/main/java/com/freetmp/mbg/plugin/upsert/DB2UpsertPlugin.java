@@ -20,7 +20,7 @@ public class DB2UpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock(" on ", parent);
 
     XmlElement include = new XmlElement("include");
-    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
+    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_CONDITIONS));
     parent.addElement(include);
 
     generateTextBlock(" when matched then update set ", parent);
@@ -41,7 +41,7 @@ public class DB2UpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock(" on ", parent);
 
     XmlElement include = new XmlElement("include");
-    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
+    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_CONDITIONS));
     parent.addElement(include);
 
     generateTextBlock(" when matched then update set ", parent);
@@ -56,7 +56,7 @@ public class DB2UpsertPlugin extends AbstractUpsertPlugin {
 
   @Override protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
     XmlElement sql = new XmlElement("sql");
-    sql.addAttribute(new Attribute("id", IDENTIFIERS_ARRAY_WHERE));
+    sql.addAttribute(new Attribute("id", IDENTIFIERS_ARRAY_CONDITIONS));
 
     XmlElement foreach = new XmlElement("foreach");
     foreach.addAttribute(new Attribute("collection", "array"));

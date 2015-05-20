@@ -3,7 +3,6 @@ package com.freetmp.mbg.plugin;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -84,8 +83,16 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
   }
 
   protected void generateParametersSeparateByComma(String fieldPrefix,boolean ifNullCheck, List<IntrospectedColumn> columns, XmlElement parent) {
+    generateParametersSeparateByComma(fieldPrefix,ifNullCheck,false,columns,parent);
+  }
+
+  protected void generateParametersSeparateByComma(String fieldPrefix,boolean ifNullCheck,boolean withParenthesis, List<IntrospectedColumn> columns, XmlElement parent) {
     XmlElement trimElement = new XmlElement("trim");
     trimElement.addAttribute(new Attribute("suffixOverrides",","));
+    if(withParenthesis){
+      trimElement.addAttribute(new Attribute("prefix","("));
+      trimElement.addAttribute(new Attribute("suffix",")"));
+    }
 
     StringBuilder sb = new StringBuilder();
     for (IntrospectedColumn introspectedColumn : columns) {
@@ -107,11 +114,7 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
   }
 
   protected void generateParametersSeparateByCommaWithParenthesis(String fieldPrefix,boolean ifNullCheck, List<IntrospectedColumn> columns, XmlElement parent) {
-    generateTextBlock(" ( ", parent);
-
-    generateParametersSeparateByComma(fieldPrefix,ifNullCheck,columns,parent);
-
-    generateTextBlock(" ) ", parent);
+    generateParametersSeparateByComma(fieldPrefix,ifNullCheck,true,columns,parent);
   }
 
   protected void generateActualColumnNamesWithParenthesis(List<IntrospectedColumn> columns, XmlElement parent){
@@ -128,8 +131,6 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     trimElement.addAttribute(new Attribute("prefix","("));
     trimElement.addAttribute(new Attribute("suffix",")"));
 
-    generateTextBlock(" ( ", parent);
-
     StringBuilder sb = new StringBuilder();
     for (IntrospectedColumn introspectedColumn : columns) {
       sb.setLength(0);
@@ -140,8 +141,6 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     }
 
     parent.addElement(trimElement);
-
-    generateTextBlock(" ) ", parent);
   }
 
   protected boolean checkIfColumnIsPK(IntrospectedColumn column){

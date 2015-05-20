@@ -13,16 +13,14 @@ public class OracleUpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock(" using dual on ( ", parent);
 
     XmlElement include = new XmlElement("include");
-    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
+    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_CONDITIONS));
     parent.addElement(include);
 
     generateTextBlock(" ) ", parent);
-    generateTextBlock(" when matched then ", parent);
-    generateTextBlock("  update set ", parent);
+    generateTextBlock(" when matched then update set", parent);
     generateParameterForSet(PROPERTY_PREFIX, introspectedTable, parent);
 
-    generateTextBlock(" when not matched then ", parent);
-    generateTextBlock("  insert ", parent);
+    generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
     generateTextBlock("  values ", parent);
     generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
@@ -34,16 +32,14 @@ public class OracleUpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock(" using dual on ( ", parent);
 
     XmlElement include = new XmlElement("include");
-    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
+    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_CONDITIONS));
     parent.addElement(include);
 
     generateTextBlock(" ) ", parent);
-    generateTextBlock(" when matched then ", parent);
-    generateTextBlock("  update set ", parent);
+    generateTextBlock(" when matched then update set ", parent);
     generateParameterForSet(PROPERTY_PREFIX, true, introspectedTable, parent);
 
-    generateTextBlock(" when not matched then ", parent);
-    generateTextBlock("  insert ", parent);
+    generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
     generateTextBlock("  values ", parent);
     generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);

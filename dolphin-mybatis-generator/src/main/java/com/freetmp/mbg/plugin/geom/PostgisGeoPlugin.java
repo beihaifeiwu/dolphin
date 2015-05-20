@@ -108,7 +108,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 				case "sql":
 					if(containsAttribute(xe, "id", introspectedTable.getBaseColumnListId())){
 						checkAndReplaceOutput(columns,xe);						
-					}else if(containsAttribute(xe, "id", AbstractUpsertPlugin.IDENTIFIERS_ARRAY_WHERE)){
+					}else if(containsAttribute(xe, "id", AbstractUpsertPlugin.IDENTIFIERS_ARRAY_CONDITIONS)){
 						checkAndReplaceInput(columns, xe);
 					}
 					break;

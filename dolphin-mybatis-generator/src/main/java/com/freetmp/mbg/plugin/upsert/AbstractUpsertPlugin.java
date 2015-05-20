@@ -12,7 +12,6 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
-import java.lang.reflect.*;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,7 +28,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
   public static final String BATCH_UPSERT = "batchUpsert";
   public static final String BATCH_UPSERT_SELECTIVE = "batchUpsertSelective";
 
-  public static final String IDENTIFIERS_ARRAY_WHERE = "Identifiers_Array_Where";
+  public static final String IDENTIFIERS_ARRAY_CONDITIONS = "Identifiers_Array_Conditions";
 
   public static final String PROPERTY_PREFIX = "record.";
 
@@ -82,10 +81,10 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     /*-----------------------------添加批量upsertSelective的接口方法--------------------------------------*/
     Method batchUpsertSelective = new Method(BATCH_UPSERT_SELECTIVE);
     batchUpsertSelective.setReturnType(FullyQualifiedJavaType.getIntInstance());
-    batchUpsert.addParameter(new Parameter(list, "list", "@Param(\"records\")"));
+    batchUpsertSelective.addParameter(new Parameter(list, "list", "@Param(\"records\")"));
     batchUpsertSelective.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
 
-    interfaze.addMethod(batchUpsert);
+    interfaze.addMethod(batchUpsertSelective);
 
     interfaze.addImportedTypes(importedTypes);
     return true;
@@ -161,7 +160,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     foreach.addAttribute(new Attribute("index", "index"));
     foreach.addAttribute(new Attribute("separator", " ; "));
 
-    generateSqlMapContent(introspectedTable, foreach);
+    generateSqlMapContentSelective(introspectedTable, foreach);
     update.addElement(foreach);
 
     document.getRootElement().addElement(update);
@@ -182,7 +181,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     XmlElement where = new XmlElement("where");
 
     XmlElement include = new XmlElement("include");
-    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
+    include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_CONDITIONS));
 
     where.addElement(include);
 
@@ -196,7 +195,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
   protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
 
     XmlElement sql = new XmlElement("sql");
-    sql.addAttribute(new Attribute("id", IDENTIFIERS_ARRAY_WHERE));
+    sql.addAttribute(new Attribute("id", IDENTIFIERS_ARRAY_CONDITIONS));
 
     XmlElement foreach = new XmlElement("foreach");
     foreach.addAttribute(new Attribute("collection", "array"));
