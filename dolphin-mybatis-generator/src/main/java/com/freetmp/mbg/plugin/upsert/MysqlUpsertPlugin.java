@@ -13,29 +13,19 @@ public class MySqlUpsertPlugin extends AbstractUpsertPlugin {
   protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
 
     generateTextBlockAppendTableName("insert into ",introspectedTable,parent);
-
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
-
     generateTextBlock("values ",parent);
-
     generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
-
     generateTextBlock("on duplicate key update ",parent);
-
     generateParameterForSet(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
   }
 
   @Override protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("insert into ",introspectedTable,parent);
-
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
-
     generateTextBlock("values ",parent);
-
     generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
-
     generateTextBlock("on duplicate key update ",parent);
-
     generateParameterForSet(PROPERTY_PREFIX,true, introspectedTable.getAllColumns(), parent);
   }
 }
