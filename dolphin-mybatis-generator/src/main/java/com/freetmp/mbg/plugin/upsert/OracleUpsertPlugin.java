@@ -18,7 +18,7 @@ public class OracleUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock(" ) ", parent);
     generateTextBlock(" when matched then update set", parent);
-    generateParameterForSet(PROPERTY_PREFIX, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
 
     generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
@@ -37,7 +37,7 @@ public class OracleUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock(" ) ", parent);
     generateTextBlock(" when matched then update set ", parent);
-    generateParameterForSet(PROPERTY_PREFIX, true, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
 
     generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);

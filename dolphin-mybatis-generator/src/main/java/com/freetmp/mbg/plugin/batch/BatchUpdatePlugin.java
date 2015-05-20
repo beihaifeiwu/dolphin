@@ -1,5 +1,6 @@
 package com.freetmp.mbg.plugin.batch;
 
+import com.freetmp.mbg.plugin.AbstractXmbgPlugin;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -12,100 +13,65 @@ import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
 import java.util.List;
 
-/*
+/**
  * 批量更新生成插件
  * @author Pin Liu
  */
-public class BatchUpdatePlugin extends PluginAdapter {
-	
-	public static final String BATCH_UPDATE = "batchUpdate";
-	
-	public static final String PROPERTY_PREFIX = "item.";
+public class BatchUpdatePlugin extends AbstractXmbgPlugin {
 
-	@Override
-	public boolean validate(List<String> warnings) {
-		return true;
-	}
+  public static final String BATCH_UPDATE = "batchUpdate";
 
-	@Override
-	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		String objectName = introspectedTable.getTableConfiguration().getDomainObjectName();
-		Method method = new Method(BATCH_UPDATE);
-		FullyQualifiedJavaType type = new FullyQualifiedJavaType("java.util.List<"+objectName+">");
-		method.addParameter(new Parameter(type, "list"));
-		method.setReturnType(FullyQualifiedJavaType.getIntInstance());
-		interfaze.addMethod(method);		
-		return true;
-	}
+  public static final String PROPERTY_PREFIX = "item.";
+
+  @Override
+  public boolean validate(List<String> warnings) {
+    return true;
+  }
+
+  @Override
+  public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+    String objectName = introspectedTable.getTableConfiguration().getDomainObjectName();
+    Method method = new Method(BATCH_UPDATE);
+    FullyQualifiedJavaType type = new FullyQualifiedJavaType("java.util.List<" + objectName + ">");
+    method.addParameter(new Parameter(type, "list"));
+    method.setReturnType(FullyQualifiedJavaType.getIntInstance());
+    interfaze.addMethod(method);
+    return true;
+  }
 
 
-	@Override
-	public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-		
-        XmlElement update = new XmlElement("update"); 
-        update.addAttribute(new Attribute("id", BATCH_UPDATE)); 
+  @Override
+  public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
 
-        String parameterType = "java.util.List";
+    XmlElement update = new XmlElement("update");
+    update.addAttribute(new Attribute("id", BATCH_UPDATE));
 
-        update.addAttribute(new Attribute("parameterType",parameterType));
+    String parameterType = "java.util.List";
 
-        context.getCommentGenerator().addComment(update);
-        
-        XmlElement foreach = new XmlElement("foreach");
-        foreach.addAttribute(new Attribute("collection", "list"));
-        foreach.addAttribute(new Attribute("item", "item"));
-        foreach.addAttribute(new Attribute("index", "index"));
-        foreach.addAttribute(new Attribute("separator", ";"));
+    update.addAttribute(new Attribute("parameterType", parameterType));
 
-        StringBuilder sb = new StringBuilder();
+    context.getCommentGenerator().addComment(update);
 
-        sb.append("update "); //$NON-NLS-1$
-        sb.append(introspectedTable.getFullyQualifiedTableNameAtRuntime());
-        foreach.addElement(new TextElement(sb.toString()));
+    XmlElement foreach = new XmlElement("foreach");
+    foreach.addAttribute(new Attribute("collection", "list"));
+    foreach.addAttribute(new Attribute("item", "item"));
+    foreach.addAttribute(new Attribute("index", "index"));
+    foreach.addAttribute(new Attribute("separator", ";"));
 
-        XmlElement dynamicElement = new XmlElement("set"); //$NON-NLS-1$
-        foreach.addElement(dynamicElement);
+    generateTextBlockAppendTableName(" update ",introspectedTable,foreach);
 
-        for (IntrospectedColumn introspectedColumn : introspectedTable.getNonPrimaryKeyColumns()) {
-            XmlElement isNotNullElement = new XmlElement("if"); 
-            sb.setLength(0);
-            sb.append(introspectedColumn.getJavaProperty(PROPERTY_PREFIX));
-            sb.append(" != null");
-            isNotNullElement.addAttribute(new Attribute("test", sb.toString())); //$NON-NLS-1$
-            dynamicElement.addElement(isNotNullElement);
+    XmlElement dynamicElement = new XmlElement("set"); //$NON-NLS-1$
+    generateParameterForSet(PROPERTY_PREFIX,true,introspectedTable.getNonPrimaryKeyColumns(),dynamicElement);
 
-            sb.setLength(0);
-            sb.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-            sb.append(" = ");
-            sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn,PROPERTY_PREFIX));
-            sb.append(',');
+    foreach.addElement(dynamicElement);
+    generateWhereConditions(PROPERTY_PREFIX,introspectedTable.getPrimaryKeyColumns(),foreach);
 
-            isNotNullElement.addElement(new TextElement(sb.toString()));
-        }
+    update.addElement(foreach);
 
-        boolean and = false;
-        for (IntrospectedColumn introspectedColumn : introspectedTable.getPrimaryKeyColumns()) {
-            sb.setLength(0);
-            if (and) {
-                sb.append("  and ");
-            } else {
-                sb.append("where "); 
-                and = true;
-            }
+    document.getRootElement().addElement(update);
 
-            sb.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-            sb.append(" = ");
-            sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn,PROPERTY_PREFIX));
-            foreach.addElement(new TextElement(sb.toString()));
-        }
-        
-        update.addElement(foreach);
+    return true;
+  }
 
-        document.getRootElement().addElement(update);
-		
-        return true;
-	}
-	
-	
 
 }

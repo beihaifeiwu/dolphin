@@ -12,7 +12,7 @@ public class SQLServerUpsertPlugin extends AbstractUpsertPlugin {
   protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("update ", introspectedTable,parent);
     generateTextBlock(" set ",parent);
-    generateParameterForSet(PROPERTY_PREFIX, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
     parent.addElement(checkArrayWhere(introspectedTable));
     generateTextBlock(" if @@ROWCOUNT = 0 ",parent);
     generateTextBlockAppendTableName(" insert into ", introspectedTable,parent);
@@ -24,7 +24,7 @@ public class SQLServerUpsertPlugin extends AbstractUpsertPlugin {
   @Override protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("update ", introspectedTable,parent);
     generateTextBlock(" set ",parent);
-    generateParameterForSet(PROPERTY_PREFIX,true, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX,true, introspectedTable.getAllColumns(), parent);
     parent.addElement(checkArrayWhere(introspectedTable));
     generateTextBlock(" if @@ROWCOUNT = 0 ",parent);
     generateTextBlockAppendTableName(" insert into ", introspectedTable,parent);

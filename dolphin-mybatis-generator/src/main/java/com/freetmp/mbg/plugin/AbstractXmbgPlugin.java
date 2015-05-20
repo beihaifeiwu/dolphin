@@ -27,20 +27,20 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     parent.addElement(new TextElement(sb.toString()));
   }
 
-  protected void generateParameterForSet(IntrospectedTable introspectedTable, XmlElement parent){
-    generateParameterForSet("",false,introspectedTable,parent);
+  protected void generateParameterForSet(List<IntrospectedColumn> columns, XmlElement parent){
+    generateParameterForSet("",false,columns,parent);
   }
 
-  protected void generateParameterForSet(String fieldPrefix,IntrospectedTable introspectedTable, XmlElement parent){
-    generateParameterForSet(fieldPrefix,false,introspectedTable,parent);
+  protected void generateParameterForSet(String fieldPrefix,List<IntrospectedColumn> columns, XmlElement parent){
+    generateParameterForSet(fieldPrefix,false,columns,parent);
   }
 
-  protected void generateParameterForSet(String fieldPrefix,boolean ifNullCheck, IntrospectedTable introspectedTable, XmlElement dynamicElement) {
+  protected void generateParameterForSet(String fieldPrefix,boolean ifNullCheck, List<IntrospectedColumn> columns, XmlElement dynamicElement) {
     XmlElement trimElement = new XmlElement("trim");
     trimElement.addAttribute(new Attribute("suffixOverrides",","));
 
     StringBuilder sb = new StringBuilder();
-    for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
+    for (IntrospectedColumn introspectedColumn : columns) {
       sb.setLength(0);
       sb.append(MyBatis3FormattingUtilities.getAliasedEscapedColumnName(introspectedColumn));
       sb.append(" = ");
@@ -143,15 +143,32 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     parent.addElement(trimElement);
   }
 
-  protected boolean checkIfColumnIsPK(IntrospectedColumn column){
-    List<IntrospectedColumn> pks = column.getIntrospectedTable().getPrimaryKeyColumns();
 
-    for(IntrospectedColumn pk : pks){
-      if(column.getActualColumnName().equals(pk.getActualColumnName())){
-        return true;
-      }
+  protected void generateWhereConditions(String fieldPrefix, List<IntrospectedColumn> columns, XmlElement parent){
+    generateWhereConditions(fieldPrefix,false,columns,parent);
+  }
+
+  protected void generateWhereConditions(String fieldPrefix, boolean ifNullCheck, List<IntrospectedColumn> columns, XmlElement parent){
+    generateWhereConditions(fieldPrefix,null,ifNullCheck,columns,parent);
+  }
+
+  protected void generateWhereConditions(String fieldPrefix, String columnPrefix, boolean ifNullCheck, List<IntrospectedColumn> columns, XmlElement parent){
+    XmlElement trimElement = new XmlElement("trim");
+    trimElement.addAttribute(new Attribute("suffixOverrides",","));
+
+    StringBuilder sb = new StringBuilder();
+    for (IntrospectedColumn introspectedColumn : columns) {
+      sb.setLength(0);
+      sb.append((columnPrefix == null ? "" : columnPrefix) + MyBatis3FormattingUtilities.getAliasedEscapedColumnName(introspectedColumn));
+      sb.append(" = ");
+      sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, fieldPrefix));
+      sb.append(",");
+
+      doIfNullCheck(fieldPrefix, ifNullCheck, trimElement, sb, introspectedColumn);
     }
 
-    return false;
+    XmlElement where = new XmlElement("where");
+    where.addElement(trimElement);
+    parent.addElement(where);
   }
 }
