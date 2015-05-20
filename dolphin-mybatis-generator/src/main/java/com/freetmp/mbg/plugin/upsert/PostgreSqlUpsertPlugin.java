@@ -13,7 +13,7 @@ public class PostgreSQLUpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock("with upsert as ( ",parent);
     generateTextBlockAppendTableName("update ",introspectedTable,parent);
     generateTextBlock(" set ", parent);
-    generateParameterForSet(introspectedTable, parent);
+    generateParameterForSet(introspectedTable.getAllColumns(), parent);
 
     XmlElement where = checkArrayWhere(introspectedTable);
     parent.addElement(where);
@@ -30,7 +30,7 @@ public class PostgreSQLUpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock("with upsert as ( ",parent);
     generateTextBlockAppendTableName("update ",introspectedTable,parent);
     generateTextBlock(" set ", parent);
-    generateParameterForSet(PROPERTY_PREFIX,true,introspectedTable,parent);
+    generateParameterForSet(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
 
     XmlElement where = checkArrayWhere(introspectedTable);
     parent.addElement(where);

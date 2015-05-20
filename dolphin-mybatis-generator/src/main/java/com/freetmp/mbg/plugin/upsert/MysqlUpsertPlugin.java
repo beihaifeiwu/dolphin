@@ -22,7 +22,7 @@ public class MySqlUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock("on duplicate key update ",parent);
 
-    generateParameterForSet(PROPERTY_PREFIX, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
   }
 
   @Override protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {
@@ -36,6 +36,6 @@ public class MySqlUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock("on duplicate key update ",parent);
 
-    generateParameterForSet(PROPERTY_PREFIX,true, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX,true, introspectedTable.getAllColumns(), parent);
   }
 }
