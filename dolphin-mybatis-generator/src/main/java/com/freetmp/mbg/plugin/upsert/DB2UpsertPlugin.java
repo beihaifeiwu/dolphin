@@ -8,23 +8,20 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
 /**
- * Created by LiuPin on 2015/5/19.
+ * Created by LiuPin on 2015/5/20.
  */
-public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
-
+public class DB2UpsertPlugin extends AbstractUpsertPlugin {
   @Override protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("merge into ", introspectedTable, parent);
     generateTextBlock(" using (values ", parent);
     generateParametersSeparateByComma(introspectedTable.getAllColumns(), parent);
     generateTextBlock(" ) temp ", parent);
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
-    generateTextBlock(" on ( ", parent);
+    generateTextBlock(" on ", parent);
 
     XmlElement include = new XmlElement("include");
     include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
     parent.addElement(include);
-
-    generateTextBlock(" ) ", parent);
 
     generateTextBlock(" when matched then update set ", parent);
     generateCopyForSetByPrefix(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime(), "temp.", introspectedTable, parent);
@@ -41,13 +38,11 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
     generateParametersSeparateByComma(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
     generateTextBlock(" ) temp ", parent);
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
-    generateTextBlock(" on ( ", parent);
+    generateTextBlock(" on ", parent);
 
     XmlElement include = new XmlElement("include");
     include.addAttribute(new Attribute("refid", IDENTIFIERS_ARRAY_WHERE));
     parent.addElement(include);
-
-    generateTextBlock(" ) ", parent);
 
     generateTextBlock(" when matched then update set ", parent);
     generateCopyForSetByPrefix(PROPERTY_PREFIX,

@@ -6,7 +6,7 @@ import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
 import com.freetmp.mbg.plugin.geom.PostgisGeoPlugin;
 import com.freetmp.mbg.plugin.page.*;
-import com.freetmp.mbg.plugin.upsert.UpsertPlugin;
+import com.freetmp.mbg.plugin.upsert.AbstractUpsertPlugin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -320,7 +320,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
             if(verbose) getLog().info("enable batch update service");
             
             pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.setConfigurationType(UpsertPlugin.class.getTypeName());
+            pluginConfiguration.setConfigurationType(AbstractUpsertPlugin.class.getTypeName());
             addToContext(contexts,pluginConfiguration);
             if(verbose) getLog().info("enable if existed update record else insert service");
         }

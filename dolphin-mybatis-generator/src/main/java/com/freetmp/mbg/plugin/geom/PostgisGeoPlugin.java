@@ -1,6 +1,6 @@
 package com.freetmp.mbg.plugin.geom;
 
-import com.freetmp.mbg.plugin.upsert.UpsertPlugin;
+import com.freetmp.mbg.plugin.upsert.AbstractUpsertPlugin;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -108,7 +108,7 @@ public class PostgisGeoPlugin extends PluginAdapter {
 				case "sql":
 					if(containsAttribute(xe, "id", introspectedTable.getBaseColumnListId())){
 						checkAndReplaceOutput(columns,xe);						
-					}else if(containsAttribute(xe, "id", UpsertPlugin.IDENTIFIERS_ARRAY_WHERE)){
+					}else if(containsAttribute(xe, "id", AbstractUpsertPlugin.IDENTIFIERS_ARRAY_WHERE)){
 						checkAndReplaceInput(columns, xe);
 					}
 					break;

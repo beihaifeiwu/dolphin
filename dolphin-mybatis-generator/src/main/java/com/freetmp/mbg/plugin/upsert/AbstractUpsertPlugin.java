@@ -4,12 +4,15 @@ import com.freetmp.mbg.plugin.AbstractXmbgPlugin;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.*;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
+import java.lang.reflect.*;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -18,11 +21,13 @@ import java.util.TreeSet;
  * 存在即更新否则插入方法生成插件
  * @author Pin Liu
  */
-public class UpsertPlugin extends AbstractXmbgPlugin {
+public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
   public static final String UPSERT = "upsert";
+  public static final String UPSERT_SELECTIVE = "upsertSelective";
 
   public static final String BATCH_UPSERT = "batchUpsert";
+  public static final String BATCH_UPSERT_SELECTIVE = "batchUpsertSelective";
 
   public static final String IDENTIFIERS_ARRAY_WHERE = "Identifiers_Array_Where";
 
@@ -40,7 +45,7 @@ public class UpsertPlugin extends AbstractXmbgPlugin {
     Method upsert = new Method(UPSERT);
     upsert.setReturnType(FullyQualifiedJavaType.getIntInstance());
 
-    Set<FullyQualifiedJavaType> importedTypes = new TreeSet<FullyQualifiedJavaType>();
+    Set<FullyQualifiedJavaType> importedTypes = new TreeSet<>();
 
     FullyQualifiedJavaType parameterType = introspectedTable.getRules().calculateAllFieldsClass();
     upsert.addParameter(new Parameter(parameterType, "record", "@Param(\"record\")"));
@@ -54,6 +59,14 @@ public class UpsertPlugin extends AbstractXmbgPlugin {
 
     interfaze.addMethod(upsert);
 
+    /*-----------------------------添加单个upsertSelective的接口方法-----------------------------------*/
+    Method upsertSelective = new Method(UPSERT_SELECTIVE);
+    upsertSelective.setReturnType(FullyQualifiedJavaType.getIntInstance());
+    upsertSelective.addParameter(new Parameter(parameterType, "record", "@Param(\"record\")"));
+    upsertSelective.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
+
+    interfaze.addMethod(upsertSelective);
+
 		/*-----------------------------添加批量upsert的接口方法--------------------------------------*/
     Method batchUpsert = new Method(BATCH_UPSERT);
     batchUpsert.setReturnType(FullyQualifiedJavaType.getIntInstance());
@@ -63,6 +76,14 @@ public class UpsertPlugin extends AbstractXmbgPlugin {
     importedTypes.add(list);
 
     batchUpsert.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
+
+    interfaze.addMethod(batchUpsert);
+
+    /*-----------------------------添加批量upsertSelective的接口方法--------------------------------------*/
+    Method batchUpsertSelective = new Method(BATCH_UPSERT_SELECTIVE);
+    batchUpsertSelective.setReturnType(FullyQualifiedJavaType.getIntInstance());
+    batchUpsert.addParameter(new Parameter(list, "list", "@Param(\"records\")"));
+    batchUpsertSelective.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
 
     interfaze.addMethod(batchUpsert);
 
@@ -76,7 +97,9 @@ public class UpsertPlugin extends AbstractXmbgPlugin {
     XmlElement sql = buildSqlClause(introspectedTable);
     document.getRootElement().addElement(sql);
     addSingleUpsertToSqlMap(document, introspectedTable);
+    addSingleUpsertSelectiveToSqlMap(document,introspectedTable);
     addBatchUpsertToSqlMap(document, introspectedTable);
+    addBatchUpsertSelectiveToSqlMap(document,introspectedTable);
     return true;
   }
 
@@ -91,6 +114,16 @@ public class UpsertPlugin extends AbstractXmbgPlugin {
     update.addAttribute(new Attribute("parameterType", "map"));
 
     generateSqlMapContent(introspectedTable, update);
+
+    document.getRootElement().addElement(update);
+  }
+
+  protected void addSingleUpsertSelectiveToSqlMap(Document document, IntrospectedTable introspectedTable) {
+    XmlElement update = new XmlElement("update");
+    update.addAttribute(new Attribute("id", UPSERT_SELECTIVE));
+    update.addAttribute(new Attribute("parameterType", "map"));
+
+    generateSqlMapContentSelective(introspectedTable, update);
 
     document.getRootElement().addElement(update);
   }
@@ -117,44 +150,29 @@ public class UpsertPlugin extends AbstractXmbgPlugin {
     document.getRootElement().addElement(update);
   }
 
+  protected void addBatchUpsertSelectiveToSqlMap(Document document, IntrospectedTable introspectedTable) {
+    XmlElement update = new XmlElement("update");
+    update.addAttribute(new Attribute("id", BATCH_UPSERT_SELECTIVE));
+    update.addAttribute(new Attribute("parameterType", "map"));
+
+    XmlElement foreach = new XmlElement("foreach");
+    foreach.addAttribute(new Attribute("collection", "records"));
+    foreach.addAttribute(new Attribute("item", "record"));
+    foreach.addAttribute(new Attribute("index", "index"));
+    foreach.addAttribute(new Attribute("separator", " ; "));
+
+    generateSqlMapContent(introspectedTable, foreach);
+    update.addElement(foreach);
+
+    document.getRootElement().addElement(update);
+  }
+
   /*
    * 生成sqlMap里对应的xml元素
    * @author Pin Liu
    */
-  protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
-		/*----------------------------update语句--------------------------------*/
-
-    generateTextBlockAppendTableName("update ",introspectedTable,parent);
-
-    XmlElement dynamicElement = new XmlElement("set");
-    parent.addElement(dynamicElement);
-
-    generateParameterForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable, dynamicElement);
-
-    XmlElement where = checkArrayWhere(introspectedTable);
-    parent.addElement(where);
-        
-    /*--------------------------带exists判断的insert into语句-----------------------------------*/
-
-    generateTextBlockAppendTableName("; insert into ",introspectedTable,parent);
-
-    List<IntrospectedColumn> nonPkColumn = introspectedTable.getNonPrimaryKeyColumns();
-
-    generateActualColumnNamesWithParenthesis(nonPkColumn, parent);
-
-
-    generateTextBlock(" select ", parent);
-
-    generateParametersSeparateByComma(PROPERTY_PREFIX, nonPkColumn, parent);
-
-    generateTextBlockAppendTableName(" where not exists ( select 1 from ",introspectedTable,parent);
-
-    where = checkArrayWhere(introspectedTable);
-    parent.addElement(where);
-
-    generateTextBlock(" )",parent);
-
-  }
+  protected abstract void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent);
+  protected abstract void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent);
 
   /*
    * 生成根据参数array判断where条件的元素

@@ -7,21 +7,35 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 /**
  * Created by LiuPin on 2015/5/19.
  */
-public class MySqlUpsertPlugin extends UpsertPlugin {
+public class MySqlUpsertPlugin extends AbstractUpsertPlugin {
 
   @Override
   protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
 
     generateTextBlockAppendTableName("insert into ",introspectedTable,parent);
 
-    generateInsertColumnsWithParenthesis(introspectedTable.getAllColumns(),parent);
+    generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
 
     generateTextBlock("values ",parent);
 
-    generateRecordFieldsSeparateByCommaWithParenthesis(PROPERTY_PREFIX,introspectedTable.getAllColumns(),parent);
+    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
 
     generateTextBlock("on duplicate key update ",parent);
 
-    generateRecordFieldForSetWithIfNullCheck(PROPERTY_PREFIX, introspectedTable, parent);
+    generateParameterForSet(PROPERTY_PREFIX, introspectedTable, parent);
+  }
+
+  @Override protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {
+    generateTextBlockAppendTableName("insert into ",introspectedTable,parent);
+
+    generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
+
+    generateTextBlock("values ",parent);
+
+    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
+
+    generateTextBlock("on duplicate key update ",parent);
+
+    generateParameterForSet(PROPERTY_PREFIX,true, introspectedTable, parent);
   }
 }
