@@ -1,17 +1,15 @@
 package com.freetmp.mbg.plugin.batch;
 
 import com.freetmp.mbg.plugin.AbstractXmbgPlugin;
-import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 批量更新生成插件
@@ -30,12 +28,14 @@ public class BatchUpdatePlugin extends AbstractXmbgPlugin {
 
   @Override
   public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-    String objectName = introspectedTable.getTableConfiguration().getDomainObjectName();
+    Set<FullyQualifiedJavaType> importedTypes = new TreeSet<>();
     Method method = new Method(BATCH_UPDATE);
-    FullyQualifiedJavaType type = new FullyQualifiedJavaType("java.util.List<" + objectName + ">");
+    FullyQualifiedJavaType type = new FullyQualifiedJavaType("java.util.List<" + introspectedTable.getTableConfiguration().getDomainObjectName() + ">");
     method.addParameter(new Parameter(type, "list"));
     method.setReturnType(FullyQualifiedJavaType.getIntInstance());
+    importedTypes.add(type);
     interfaze.addMethod(method);
+    interfaze.addImportedTypes(importedTypes);
     return true;
   }
 

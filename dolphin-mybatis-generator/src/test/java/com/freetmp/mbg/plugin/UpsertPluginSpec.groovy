@@ -12,7 +12,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement
 /**
  * Created by LiuPin on 2015/5/20.
  */
-class UpsertGenerateSpec extends AbstractPluginSpec {
+class UpsertPluginSpec extends AbstractPluginSpec {
 
   def "check generated method signature"() {
     setup:
@@ -23,36 +23,28 @@ class UpsertGenerateSpec extends AbstractPluginSpec {
       @Override
       protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {}
     }
-    Interface interfaze = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
-    TopLevelClass topLevelClass = Mock()
 
     when:
     plugin.clientGenerated(interfaze, topLevelClass, introspectedTable)
 
     then:
-    4 * interfaze.addMethod(_) >>
-        { Method method -> method.getFormattedContent(0, true) == "int upsert(@Param(\"record\") User record, @Param(\"array\") String[] array);" } >>
-        { Method method -> method.getFormattedContent(0, true) == "int upsertSelective(@Param(\"record\") User record, @Param(\"array\") String[] array);" } >>
-        { Method method -> method.getFormattedContent(0, true) == "int batchUpsert(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" } >>
-        { Method method -> method.getFormattedContent(0, true) == "int batchUpsertSelective(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
-    1 * interfaze.addImportedTypes({ it.size() >= 3 })
-    1 * introspectedTable.rules >> rules
-    1 * introspectedTable.tableConfiguration >> tableConfiguration
+    with(interfaze){
+      1 * addMethod { Method method -> method.getFormattedContent(0, true) == "int upsert(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
+      1 * addMethod { Method method -> method.getFormattedContent(0, true) == "int upsertSelective(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
+      1 * addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsert(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
+      1 * addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsertSelective(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
+      1 * addImportedTypes({ it.size() >= 3 })
+    }
   }
 
   def "check generated upsert series xml for mysql"() {
     setup:
     MySqlUpsertPlugin plugin = new MySqlUpsertPlugin();
-    Document document = Spy()
-    XmlElement root = Spy(XmlElement, constructorArgs: ["mapper"])
 
     when:
     plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    _ * introspectedTable.getAllColumns() >> introspectedColumns
-    _ * introspectedTable.aliasedFullyQualifiedTableNameAtRuntime >> "user"
-    _ * document.rootElement >> root
     _ * root.addElement(_) >> { Element element -> println element.getFormattedContent(0) }
   }
 
@@ -66,8 +58,6 @@ class UpsertGenerateSpec extends AbstractPluginSpec {
     plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    _ * introspectedTable.getAllColumns() >> introspectedColumns
-    _ * introspectedTable.aliasedFullyQualifiedTableNameAtRuntime >> "user"
     _ * document.rootElement >> root
     _ * root.addElement(_) >> { Element element -> println element.getFormattedContent(0) }
   }
@@ -82,8 +72,6 @@ class UpsertGenerateSpec extends AbstractPluginSpec {
     plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    _ * introspectedTable.getAllColumns() >> introspectedColumns
-    _ * introspectedTable.aliasedFullyQualifiedTableNameAtRuntime >> "user"
     _ * document.rootElement >> root
     _ * root.addElement(_) >> { Element element -> println element.getFormattedContent(0) }
   }
@@ -98,8 +86,6 @@ class UpsertGenerateSpec extends AbstractPluginSpec {
     plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    _ * introspectedTable.getAllColumns() >> introspectedColumns
-    _ * introspectedTable.aliasedFullyQualifiedTableNameAtRuntime >> "user"
     _ * document.rootElement >> root
     _ * root.addElement(_) >> { Element element -> println element.getFormattedContent(0) }
   }
@@ -114,8 +100,6 @@ class UpsertGenerateSpec extends AbstractPluginSpec {
     plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    _ * introspectedTable.getAllColumns() >> introspectedColumns
-    _ * introspectedTable.aliasedFullyQualifiedTableNameAtRuntime >> "user"
     _ * document.rootElement >> root
     _ * root.addElement(_) >> { Element element -> println element.getFormattedContent(0) }
   }
@@ -130,8 +114,6 @@ class UpsertGenerateSpec extends AbstractPluginSpec {
     plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    _ * introspectedTable.getAllColumns() >> introspectedColumns
-    _ * introspectedTable.aliasedFullyQualifiedTableNameAtRuntime >> "user"
     _ * document.rootElement >> root
     _ * root.addElement(_) >> { Element element -> println element.getFormattedContent(0) }
   }

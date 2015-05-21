@@ -3,6 +3,10 @@ package com.freetmp.mbg.plugin
 import org.mybatis.generator.api.IntrospectedColumn
 import org.mybatis.generator.api.IntrospectedTable
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType
+import org.mybatis.generator.api.dom.java.Interface
+import org.mybatis.generator.api.dom.java.TopLevelClass
+import org.mybatis.generator.api.dom.xml.Document
+import org.mybatis.generator.api.dom.xml.XmlElement
 import org.mybatis.generator.config.TableConfiguration
 import org.mybatis.generator.internal.rules.Rules
 import spock.lang.Specification
@@ -12,7 +16,13 @@ import spock.lang.Specification
  */
 abstract class AbstractPluginSpec extends Specification {
 
-  IntrospectedTable introspectedTable = Mock()
+  Interface interfaze = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
+  TopLevelClass topLevelClass = Mock()
+
+  Document document = Spy() {
+    getRootElement() >> root
+  }
+  XmlElement root = Spy(XmlElement, constructorArgs: ["mapper"])
 
   Rules rules = Stub() {
     calculateAllFieldsClass() >> new FullyQualifiedJavaType(User.class.canonicalName)
@@ -20,6 +30,15 @@ abstract class AbstractPluginSpec extends Specification {
 
   TableConfiguration tableConfiguration = Stub() {
     getDomainObjectName() >> User.class.simpleName
+  }
+
+  IntrospectedTable introspectedTable = Stub() {
+    getRules() >> rules
+    getTableConfiguration() >> tableConfiguration
+    getAllColumns() >> introspectedColumns
+    getPrimaryKeyColumns() >> introspectedPkColumns
+    getNonPrimaryKeyColumns() >> introspectedNpkColumns
+    getAliasedFullyQualifiedTableNameAtRuntime() >> "user"
   }
 
   List<IntrospectedColumn> introspectedColumns = [
