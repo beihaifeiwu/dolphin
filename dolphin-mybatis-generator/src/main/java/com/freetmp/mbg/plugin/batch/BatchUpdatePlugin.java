@@ -50,8 +50,6 @@ public class BatchUpdatePlugin extends AbstractXmbgPlugin {
 
     update.addAttribute(new Attribute("parameterType", parameterType));
 
-    context.getCommentGenerator().addComment(update);
-
     XmlElement foreach = new XmlElement("foreach");
     foreach.addAttribute(new Attribute("collection", "list"));
     foreach.addAttribute(new Attribute("item", "item"));
