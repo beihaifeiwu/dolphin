@@ -1,19 +1,15 @@
 package com.freetmp.mbg.plugin.batch;
 
+import com.freetmp.mbg.plugin.AbstractXmbgPlugin;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 import org.mybatis.generator.config.GeneratedKey;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,7 +17,7 @@ import java.util.List;
  *
  * @author Pin Liu
  */
-public class BatchInsertPlugin extends PluginAdapter {
+public class BatchInsertPlugin extends AbstractXmbgPlugin {
 
   public static final String BATCH_INSERT = "batchInsert";
 
@@ -66,50 +62,11 @@ public class BatchInsertPlugin extends PluginAdapter {
  }
  }
  }*/
+    generateTextBlockAppendTableName("insert into ", introspectedTable,answer);
 
-    StringBuilder insertClause = new StringBuilder();
-    StringBuilder valuesClause = new StringBuilder();
+    generateActualColumnNamesWithParenthesis(introspectedTable.getNonPrimaryKeyColumns(),answer);
 
-    insertClause.append("insert into ");
-    insertClause.append(introspectedTable.getFullyQualifiedTableNameAtRuntime());
-    insertClause.append(" (");
-
-    valuesClause.append(" (");
-
-    List<String> valuesClauses = new ArrayList<String>();
-    Iterator<IntrospectedColumn> iter = introspectedTable.getNonPrimaryKeyColumns().iterator();
-    while (iter.hasNext()) {
-      IntrospectedColumn introspectedColumn = iter.next();
-      if (introspectedColumn.isIdentity()) {
-        // cannot set values on identity fields
-        continue;
-      }
-
-      insertClause.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-      valuesClause.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, PROPERTY_PREFIX));
-      if (iter.hasNext()) {
-        insertClause.append(", ");
-        valuesClause.append(", ");
-      }
-
-      if (valuesClause.length() > 80) {
-        answer.addElement(new TextElement(insertClause.toString()));
-        insertClause.setLength(0);
-        OutputUtilities.xmlIndent(insertClause, 1);
-
-        valuesClauses.add(valuesClause.toString());
-        valuesClause.setLength(0);
-        OutputUtilities.xmlIndent(valuesClause, 1);
-      }
-    }
-
-    insertClause.append(')');
-    answer.addElement(new TextElement(insertClause.toString()));
-
-    answer.addElement(new TextElement("values "));
-
-    valuesClause.append(')');
-    valuesClauses.add(valuesClause.toString());
+    generateTextBlock(" values ", answer);
 
     XmlElement foreach = new XmlElement("foreach");
     foreach.addAttribute(new Attribute("collection", "list"));
@@ -117,9 +74,8 @@ public class BatchInsertPlugin extends PluginAdapter {
     foreach.addAttribute(new Attribute("index", "index"));
     foreach.addAttribute(new Attribute("separator", ","));
 
-    for (String clause : valuesClauses) {
-      foreach.addElement(new TextElement(clause));
-    }
+    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX,introspectedTable.getNonPrimaryKeyColumns(),foreach);
+
     answer.addElement(foreach);
 
     document.getRootElement().addElement(answer);

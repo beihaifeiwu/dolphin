@@ -1,6 +1,8 @@
 package com.freetmp.mbg.plugin
 
-import org.apache.log4j.BasicConfigurator
+import org.apache.log4j.ConsoleAppender
+import org.apache.log4j.Logger
+import org.apache.log4j.PatternLayout
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.SystemOutRule
 import org.mybatis.generator.api.IntrospectedColumn
@@ -13,7 +15,6 @@ import org.mybatis.generator.api.dom.xml.XmlElement
 import org.mybatis.generator.config.TableConfiguration
 import org.mybatis.generator.internal.rules.Rules
 import spock.lang.Specification
-
 /**
  * Created by LiuPin on 2015/5/20.
  */
@@ -21,9 +22,9 @@ abstract class AbstractPluginSpec extends Specification {
 
   @Rule SystemOutRule systemOutRule = new SystemOutRule().enableLog().muteForSuccessfulTests()
 
-  Interface interfaze = Mock(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
+  Interface interfaze = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
   TopLevelClass topLevelClass = Mock()
-  XmlElement root = Mock(XmlElement, constructorArgs: ["mapper"])
+  XmlElement root = Spy(XmlElement, constructorArgs: ["mapper"])
   Document document = Mock()
   Rules rules = Stub()
   TableConfiguration tableConfiguration = Stub()
@@ -61,7 +62,7 @@ abstract class AbstractPluginSpec extends Specification {
   }
 
   def setupSpec(){
-    BasicConfigurator.configure()
+    Logger.rootLogger.addAppender new ConsoleAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"))
   }
 
 }
