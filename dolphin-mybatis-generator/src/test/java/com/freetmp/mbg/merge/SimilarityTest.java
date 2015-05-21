@@ -1,12 +1,17 @@
 package com.freetmp.mbg.merge;
 
 import info.debatty.java.stringsimilarity.*;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 /**
  * Created by LiuPin on 2015/5/15.
  */
 public class SimilarityTest {
+
+  @Rule
+  public final SystemOutRule systemOutRule = new SystemOutRule().muteForSuccessfulTests();
 
   @Test
   public void testLevenshtein() {

@@ -1,5 +1,7 @@
 package com.freetmp.mbg.plugin
 
+import org.junit.Rule
+import org.junit.contrib.java.lang.system.SystemOutRule
 import org.mybatis.generator.api.IntrospectedColumn
 import org.mybatis.generator.api.IntrospectedTable
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType
@@ -16,29 +18,31 @@ import spock.lang.Specification
  */
 abstract class AbstractPluginSpec extends Specification {
 
+  @Rule SystemOutRule systemOutRule = new SystemOutRule().muteForSuccessfulTests()
+
   Interface interfaze = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
   TopLevelClass topLevelClass = Mock()
 
   Document document = Spy() {
-    getRootElement() >> root
+    document.getRootElement() >> root
   }
   XmlElement root = Spy(XmlElement, constructorArgs: ["mapper"])
 
   Rules rules = Stub() {
-    calculateAllFieldsClass() >> new FullyQualifiedJavaType(User.class.canonicalName)
+    rules.calculateAllFieldsClass() >> new FullyQualifiedJavaType(User.class.canonicalName)
   }
 
   TableConfiguration tableConfiguration = Stub() {
-    getDomainObjectName() >> User.class.simpleName
+    tableConfiguration.getDomainObjectName() >> User.class.simpleName
   }
 
   IntrospectedTable introspectedTable = Stub() {
-    getRules() >> rules
-    getTableConfiguration() >> tableConfiguration
-    getAllColumns() >> introspectedColumns
-    getPrimaryKeyColumns() >> introspectedPkColumns
-    getNonPrimaryKeyColumns() >> introspectedNpkColumns
-    getAliasedFullyQualifiedTableNameAtRuntime() >> "user"
+    introspectedTable.getRules() >> rules
+    introspectedTable.getTableConfiguration() >> tableConfiguration
+    introspectedTable.getAllColumns() >> introspectedColumns
+    introspectedTable.getPrimaryKeyColumns() >> introspectedPkColumns
+    introspectedTable.getNonPrimaryKeyColumns() >> introspectedNpkColumns
+    introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() >> "user"
   }
 
   List<IntrospectedColumn> introspectedColumns = [

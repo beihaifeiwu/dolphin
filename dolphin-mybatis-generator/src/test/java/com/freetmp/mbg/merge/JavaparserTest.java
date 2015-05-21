@@ -14,12 +14,17 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 /**
  * Created by LiuPin on 2015/5/15.
  */
 public class JavaparserTest {
+
+  @Rule
+  public final SystemOutRule systemOutRule = new SystemOutRule().muteForSuccessfulTests();
 
   CompilationUnit unit = null;
 
