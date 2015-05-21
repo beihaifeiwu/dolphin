@@ -2,13 +2,8 @@ package com.freetmp.mbg.plugin
 
 import com.freetmp.mbg.plugin.upsert.*
 import groovy.util.logging.Slf4j
-import org.mybatis.generator.api.IntrospectedTable
-import org.mybatis.generator.api.dom.java.Interface
 import org.mybatis.generator.api.dom.java.Method
-import org.mybatis.generator.api.dom.java.TopLevelClass
-import org.mybatis.generator.api.dom.xml.Document
 import org.mybatis.generator.api.dom.xml.Element
-import org.mybatis.generator.api.dom.xml.XmlElement
 
 /**
  * Created by LiuPin on 2015/5/20.
@@ -21,14 +16,14 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     AbstractUpsertPlugin plugin = Spy()
 
     when:
-    plugin.clientGenerated(interfaze, topLevelClass, introspectedTable)
+    plugin.clientGenerated(mapper, mapperImpl, introspectedTable)
 
     then:
-    1 * interfaze.addMethod { Method method -> method.getFormattedContent(0, true) == "int upsert(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
-    1 * interfaze.addMethod { Method method -> method.getFormattedContent(0, true) == "int upsertSelective(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
-    1 * interfaze.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsert(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
-    1 * interfaze.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsertSelective(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
-    1 * interfaze.addImportedTypes({ it.size() >= 3 })
+    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int upsert(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
+    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int upsertSelective(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
+    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsert(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
+    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsertSelective(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
+    1 * mapper.addImportedTypes({ it.size() >= 3 })
   }
 
   def "check generated upsert series xml for mysql"() {

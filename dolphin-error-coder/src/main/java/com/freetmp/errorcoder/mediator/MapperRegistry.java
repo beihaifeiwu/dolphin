@@ -6,6 +6,7 @@ import com.freetmp.errorcoder.mapper.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,7 +66,7 @@ public class MapperRegistry {
      */
     public static void scanForMapper(String... paths){
 
-        log.info("Scan mappers in locations {}", paths);
+        log.info("Scan mappers in locations {}", Arrays.asList(paths));
 
         Set<MapperMetadata> mapperMetadatas = ClasspathScanner.scanForCandidateMapper(paths);
 

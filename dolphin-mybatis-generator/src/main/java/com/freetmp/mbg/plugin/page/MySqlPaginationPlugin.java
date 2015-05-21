@@ -1,16 +1,13 @@
 package com.freetmp.mbg.plugin.page;
 
-import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
 import java.util.List;
 
-/*
+/**
  * MySql数据库查询分页插件
  * @author Pin Liu
  * @编写日期 2014年11月26日下午12:43:50

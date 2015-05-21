@@ -17,11 +17,11 @@ class BatchPluginSpec extends AbstractPluginSpec {
     BatchUpdatePlugin plugin = new BatchUpdatePlugin()
 
     when:
-    plugin.clientGenerated(interfaze,topLevelClass,introspectedTable)
+    plugin.clientGenerated(mapper,mapperImpl,introspectedTable)
 
     then:
-    1 * interfaze.addMethod {Method method -> method.getFormattedContent(0,true) == "int batchUpdate(List<User> list);"}
-    1 * interfaze.addImportedTypes({it.size() >= 1})
+    1 * mapper.addMethod {Method method -> method.getFormattedContent(0,true) == "int batchUpdate(List<User> list);"}
+    1 * mapper.addImportedTypes({it.size() >= 1})
 
     when:
     plugin.sqlMapDocumentGenerated(document,introspectedTable)
@@ -35,10 +35,10 @@ class BatchPluginSpec extends AbstractPluginSpec {
     BatchInsertPlugin plugin = new BatchInsertPlugin()
 
     when:
-    plugin.clientGenerated(interfaze,topLevelClass,introspectedTable)
+    plugin.clientGenerated(mapper,mapperImpl,introspectedTable)
 
     then:
-    1 * interfaze.addMethod {Method method -> method.getFormattedContent(0,true) == "int batchInsert(List<User> list);"}
+    1 * mapper.addMethod {Method method -> method.getFormattedContent(0,true) == "int batchInsert(List<User> list);"}
 
     when:
     plugin.sqlMapDocumentGenerated(document,introspectedTable)

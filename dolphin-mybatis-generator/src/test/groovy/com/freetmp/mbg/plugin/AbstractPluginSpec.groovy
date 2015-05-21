@@ -22,8 +22,10 @@ abstract class AbstractPluginSpec extends Specification {
 
   @Rule SystemOutRule systemOutRule = new SystemOutRule().enableLog().muteForSuccessfulTests()
 
-  Interface interfaze = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
-  TopLevelClass topLevelClass = Mock()
+  Interface mapper = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
+  TopLevelClass mapperImpl = Spy(TopLevelClass, constructorArgs: [User.class.canonicalName + "MapperImpl"])
+  TopLevelClass example = Spy(TopLevelClass, constructorArgs: [User.class.canonicalName + "Example"])
+  TopLevelClass entity = Spy(TopLevelClass, constructorArgs: [User.class.canonicalName])
   XmlElement root = Spy(XmlElement, constructorArgs: ["mapper"])
   Document document = Mock()
   Rules rules = Stub()
@@ -31,9 +33,7 @@ abstract class AbstractPluginSpec extends Specification {
   IntrospectedTable introspectedTable = Stub()
 
   List<IntrospectedColumn> introspectedColumns = []
-
   List<IntrospectedColumn> introspectedNpkColumns = []
-
   List<IntrospectedColumn> introspectedPkColumns = []
 
   def setup(){

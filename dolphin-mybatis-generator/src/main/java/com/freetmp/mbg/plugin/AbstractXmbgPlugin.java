@@ -257,15 +257,8 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     builder.setVisibility(JavaVisibility.PRIVATE);
     builder.setStatic(false);
 
-    // constructor
-    Method method = new Method();
-    method.setConstructor(true);
-    method.setName(builderName);
-    method.setVisibility(JavaVisibility.PUBLIC);
-    builder.addMethod(method);
-
     // build method and builder field
-    method = new Method();
+    Method method = new Method();
     method.setName("build");
     method.setVisibility(JavaVisibility.PUBLIC);
 
@@ -284,7 +277,9 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     method.setVisibility(JavaVisibility.PUBLIC);
     method.addBodyLine("return new " + builderName + "();");
     method.setReturnType(builderType);
-    builder.addMethod(method);
+    topLevelClass.addMethod(method);
+
+    topLevelClass.addInnerClass(builder);
   }
 
 
