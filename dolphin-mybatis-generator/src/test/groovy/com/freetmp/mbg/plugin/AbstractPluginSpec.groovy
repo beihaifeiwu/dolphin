@@ -2,6 +2,8 @@ package com.freetmp.mbg.plugin
 
 import org.apache.ibatis.builder.xml.XMLMapperBuilder
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver
+import org.apache.ibatis.mapping.BoundSql
+import org.apache.ibatis.mapping.MappedStatement
 import org.apache.ibatis.parsing.XNode
 import org.apache.ibatis.parsing.XPathParser
 import org.apache.ibatis.session.Configuration
@@ -71,7 +73,7 @@ abstract class AbstractPluginSpec extends Specification {
     tableConfiguration.getDomainObjectName() >> User.class.simpleName
 
     introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "id" }; getJavaProperty() >> "id"; getJdbcTypeName() >> "BIGINT"; getActualColumnName() >> "id"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "loginName" }; getJavaProperty() >> "loginName"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "login_Name"; isColumnNameDelimited() >> false }
+    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "loginName" }; getJavaProperty() >> "loginName"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "login_name"; isColumnNameDelimited() >> false }
     introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "name" }; getJavaProperty() >> "name"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "name"; isColumnNameDelimited() >> false }
     introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "password" }; getJavaProperty() >> "password"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "password"; isColumnNameDelimited() >> false }
     introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "salt" }; getJavaProperty() >> "salt"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "salt"; isColumnNameDelimited() >> false }
@@ -95,6 +97,9 @@ abstract class AbstractPluginSpec extends Specification {
     mbgContext.commentGenerator >> commentGenerator
     def plugins = new PluginAggregator();
     mbgContext.getPlugins() >> plugins
+
+    // clear captured log
+    systemOutRule.clearLog()
   }
 
   def setupSpec() {
@@ -106,7 +111,7 @@ abstract class AbstractPluginSpec extends Specification {
    */
   def isXmlElementWithIdEquals(Element element, String idStr) {
     XmlElement xml = element instanceof XmlElement ? element : null
-    xml != null && xml.attributes.find({it.name == "id" && it.value == idStr}) != null
+    xml != null && xml.attributes.find({ it.name == "id" && it.value == idStr }) != null
   }
 
   /**
@@ -139,6 +144,12 @@ abstract class AbstractPluginSpec extends Specification {
     def mapperBuilder = new XMLMapperBuilder(parser, configuration, "", sqlFragments)
     mapperBuilder.parse()
     configuration.getMappedStatement element.getAttributes().find({ it.name == "id" }).value
+  }
+
+  def parseSql(XmlElement element, Map<String, Object> parameterMap) {
+    MappedStatement mappedStatement = parseXml(element)
+    BoundSql sql = mappedStatement.getBoundSql(parameterMap)
+    sql.sql.replaceAll("\\s+", " ").toLowerCase()
   }
 
 }
