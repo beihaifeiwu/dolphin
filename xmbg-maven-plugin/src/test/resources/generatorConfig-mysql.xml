@@ -41,7 +41,7 @@
       <property name="enableSubPackages" value="false"/>
     </sqlMapGenerator>
 
-    <!--生成Dao文件 可以配置 type="XMLMAPPER"生成xml的dao实现 context id="DB2Tables" 修改targetRuntime="MyBatis3" -->
+    <!--生成Dao文件 可以配置 type="XMLMAPPER"生成xml的dao实现 mbgContext id="DB2Tables" 修改targetRuntime="MyBatis3" -->
     <javaClientGenerator type="XMLMAPPER" targetPackage="com.freetmp.xmbg.test.mapper" targetProject="MAVEN">
       <property name="enableSubPackages" value="false"/>
     </javaClientGenerator>

@@ -27,8 +27,7 @@ public class MySqlPaginationPlugin extends AbstractPaginationPlugin {
 		isNotNullElement.addElement(new TextElement("limit #{offset} , #{limit}"));
 
 		element.addElement(isNotNullElement);
-		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element,
-				introspectedTable);
+		return true;
 	}
 	
 	/*

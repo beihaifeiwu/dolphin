@@ -3,8 +3,11 @@ package com.freetmp.mbg.plugin
 import com.freetmp.mbg.plugin.batch.BatchInsertPlugin
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin
 import groovy.util.logging.Slf4j
+import org.apache.ibatis.mapping.BoundSql
+import org.apache.ibatis.mapping.MappedStatement
 import org.mybatis.generator.api.dom.java.Method
 import org.mybatis.generator.api.dom.xml.Element
+import org.mybatis.generator.api.dom.xml.XmlElement
 
 /**
  * Created by LiuPin on 2015/5/21.
@@ -12,38 +15,50 @@ import org.mybatis.generator.api.dom.xml.Element
 @Slf4j
 class BatchPluginSpec extends AbstractPluginSpec {
 
-  def "check generated client interface and mapper xml for batch update"(){
+  def "check generated client interface and mapper xml for batch update"() {
     setup:
     BatchUpdatePlugin plugin = new BatchUpdatePlugin()
+    XmlElement element
 
     when:
-    plugin.clientGenerated(mapper,mapperImpl,introspectedTable)
+    plugin.clientGenerated(mapper, mapperImpl, introspectedTable)
 
     then:
-    1 * mapper.addMethod {Method method -> method.getFormattedContent(0,true) == "int batchUpdate(List<User> list);"}
-    1 * mapper.addImportedTypes({it.size() >= 1})
+    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpdate(List<User> list);" }
+    1 * mapper.addImportedTypes({ it.size() >= 1 })
 
     when:
-    plugin.sqlMapDocumentGenerated(document,introspectedTable)
+    plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    1 * root.addElement(_) >> {Element element -> log.info element.getFormattedContent(0)}
+    1 * root.addElement({ isXmlElementWithIdEquals(it, BatchUpdatePlugin.BATCH_UPDATE) }) >> { element = it }
+
+    when:
+    MappedStatement mappedStatement = parseXml(element)
+    BoundSql sql = mappedStatement.getBoundSql([
+        [id: 1, loginName: "admin", name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
+        [id: 2, loginName: "user", name: "User", password: "12345678", salt: "123", roles: "user", registerDate: new Date()] as User
+    ])
+    log.info sql.sql
+
+    then:
+    sql.sql != null
   }
 
-  def "check generated client interface for batch insert"(){
+  def "check generated client interface and mapper xml for batch insert"() {
     setup:
     BatchInsertPlugin plugin = new BatchInsertPlugin()
 
     when:
-    plugin.clientGenerated(mapper,mapperImpl,introspectedTable)
+    plugin.clientGenerated(mapper, mapperImpl, introspectedTable)
 
     then:
-    1 * mapper.addMethod {Method method -> method.getFormattedContent(0,true) == "int batchInsert(List<User> list);"}
+    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchInsert(List<User> list);" }
 
     when:
-    plugin.sqlMapDocumentGenerated(document,introspectedTable)
+    plugin.sqlMapDocumentGenerated(document, introspectedTable)
 
     then:
-    1 * root.addElement(_) >> {Element element -> log.info element.getFormattedContent(0)}
+    1 * root.addElement(_) >> { Element element -> log.info element.getFormattedContent(0) }
   }
 }
