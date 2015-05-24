@@ -19,6 +19,11 @@ class PaginationPluginSpec extends AbstractPluginSpec {
       new Attribute("resultMap", "BaseResultMap"), new Attribute("parameterType", User.class.canonicalName + "Example")
   ])
 
+  def setup(){
+    def generator = new SelectByExampleWithoutBLOBsElementGenerator()
+    generator.addElements()
+  }
+
   def "check generated example fields, method and inner class"() {
     setup:
     AbstractPaginationPlugin plugin = Spy()
