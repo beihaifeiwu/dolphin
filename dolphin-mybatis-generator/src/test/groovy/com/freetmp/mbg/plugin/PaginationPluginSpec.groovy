@@ -201,7 +201,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     plugin.sqlMapSelectByExampleWithoutBLOBsElementGenerated(selectByExample, introspectedTable)
 
     then:
-    1 * selectByExample.addElement { Element element -> log.info element.getFormattedContent(0); element != null }
+    1 * selectByExample.addElement { Element element -> log.info format(element.getFormattedContent(0)); element != null }
   }
 
 }
