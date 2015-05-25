@@ -29,7 +29,8 @@ public class OraclePaginationPlugin extends AbstractPaginationPlugin {
 
     checkIfPageable = new XmlElement("if");
     checkIfPageable.addAttribute(new Attribute("test", "limit != null and limit>=0 and offset != null"));
-    TextElement suffix = new TextElement(" ) tmp_page where rownum <= #{limit} + #{offset} ) where row_id > #{offset}");
+    TextElement suffix = new TextElement("<![CDATA[ ) tmp_page where rownum <= #{limit} + #{offset} ) where row_id > #{offset} ]]>");
+    checkIfPageable.addElement(suffix);
     element.addElement(checkIfPageable);
     return true;
   }

@@ -25,9 +25,9 @@ public abstract class AbstractPaginationPlugin extends AbstractXmbgPlugin {
     List<Field> fields = new ArrayList<>();
 
     // add field, getter, setter for limit clause
-    Field field = generateFieldDeclarationWithGetterSetterFor(LIMIT_NAME, FullyQualifiedJavaType.getIntInstance(), topLevelClass);
+    Field field = generateFieldDeclarationWithGetterSetterFor(LIMIT_NAME, new FullyQualifiedJavaType(Integer.class.getCanonicalName()), topLevelClass);
     fields.add(field);
-    field = generateFieldDeclarationWithGetterSetterFor(OFFSET_NAME, FullyQualifiedJavaType.getIntInstance(), topLevelClass);
+    field = generateFieldDeclarationWithGetterSetterFor(OFFSET_NAME, new FullyQualifiedJavaType(Integer.class.getCanonicalName()), topLevelClass);
     fields.add(field);
 
     generateBuilderFor(BOUND_BUILDER_NAME, topLevelClass, fields);

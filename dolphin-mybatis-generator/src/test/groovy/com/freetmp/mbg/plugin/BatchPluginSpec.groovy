@@ -35,7 +35,7 @@ class BatchPluginSpec extends AbstractPluginSpec {
     ]])
     log.info systemOutRule.log
     then:
-    systemOutRule.log == "update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? ; update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ?"
+    systemOutRule.log.trim() == "update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? ; update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ?"
   }
 
   def "check generated client interface and mapper xml for batch insert"() {
@@ -62,7 +62,7 @@ class BatchPluginSpec extends AbstractPluginSpec {
     ]])
     log.info systemOutRule.log
     then:
-    systemOutRule.log == "insert into user ( login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) , ( ?, ?, ?, ?, ?, ? )"
+    systemOutRule.log.trim() == "insert into user ( login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) , ( ?, ?, ?, ?, ?, ? )"
 
   }
 }

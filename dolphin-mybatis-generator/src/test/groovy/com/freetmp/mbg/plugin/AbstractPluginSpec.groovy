@@ -13,6 +13,7 @@ import org.apache.log4j.PatternLayout
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.SystemOutRule
 import org.mybatis.generator.api.CommentGenerator
+import org.mybatis.generator.api.FullyQualifiedTable
 import org.mybatis.generator.api.IntrospectedColumn
 import org.mybatis.generator.api.IntrospectedTable
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType
@@ -43,15 +44,16 @@ abstract class AbstractPluginSpec extends Specification {
   // JavaSource generate related
   Interface mapper = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
   TopLevelClass mapperImpl = Spy(TopLevelClass, constructorArgs: [User.class.canonicalName + "MapperImpl"])
-  TopLevelClass example = Spy(TopLevelClass, constructorArgs: [User.class.canonicalName + "Example"])
+  TopLevelClass example = Spy(TopLevelClass, constructorArgs: [UserExample.class.canonicalName])
   TopLevelClass entity = Spy(TopLevelClass, constructorArgs: [User.class.canonicalName])
 
   // Database table metadata related
   Rules rules = Stub()
   TableConfiguration tableConfiguration = Stub()
+  FullyQualifiedTable fullyQualifiedTable = new FullyQualifiedTable(null,null,"user","User",null,false,null,null,null,false,mbgContext)
   IntrospectedTable introspectedTable = Spy(IntrospectedTable, constructorArgs: [IntrospectedTable.TargetRuntime.MYBATIS3])
-  List<IntrospectedColumn> introspectedColumns = []
-  List<IntrospectedColumn> introspectedNpkColumns = []
+
+  List<IntrospectedColumn> introspectedBlobColumns = []
   List<IntrospectedColumn> introspectedPkColumns = []
   List<IntrospectedColumn> introspectedBaseColumns = []
 
@@ -64,7 +66,6 @@ abstract class AbstractPluginSpec extends Specification {
   Document document = Stub()
 
   // Xml mapper parser related
-  Map<String, XNode> sqlFragments = [:]
   Configuration configuration = new Configuration()
 
   def setup() {
@@ -72,27 +73,31 @@ abstract class AbstractPluginSpec extends Specification {
     rules.calculateAllFieldsClass() >> new FullyQualifiedJavaType(User.class.canonicalName)
     tableConfiguration.getDomainObjectName() >> User.class.simpleName
 
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "id" }; getJavaProperty() >> "id"; getJdbcTypeName() >> "BIGINT"; getActualColumnName() >> "id"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "loginName" }; getJavaProperty() >> "loginName"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "login_name"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "name" }; getJavaProperty() >> "name"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "name"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "password" }; getJavaProperty() >> "password"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "password"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "salt" }; getJavaProperty() >> "salt"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "salt"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "roles" }; getJavaProperty() >> "roles"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "roles"; isColumnNameDelimited() >> false }
-    introspectedColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "registerDate" }; getJavaProperty() >> "registerDate"; getJdbcTypeName() >> "TIMESTAMP"; getActualColumnName() >> "register_date"; isColumnNameDelimited() >> false }
+    introspectedPkColumns   << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "id" }; getJavaProperty() >> "id"; getJdbcTypeName() >> "BIGINT"; getActualColumnName() >> "id"; isColumnNameDelimited() >> false }
+    introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "loginName" }; getJavaProperty() >> "loginName"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "login_name"; isColumnNameDelimited() >> false }
+    introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "name" }; getJavaProperty() >> "name"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "name"; isColumnNameDelimited() >> false }
+    introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "password" }; getJavaProperty() >> "password"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "password"; isColumnNameDelimited() >> false }
+    introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "salt" }; getJavaProperty() >> "salt"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "salt"; isColumnNameDelimited() >> false }
+    introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "roles" }; getJavaProperty() >> "roles"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "roles"; isColumnNameDelimited() >> false }
+    introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "registerDate" }; getJavaProperty() >> "registerDate"; getJdbcTypeName() >> "TIMESTAMP"; getActualColumnName() >> "register_date"; isColumnNameDelimited() >> false }
 
-    introspectedNpkColumns.addAll introspectedColumns[1..-1]
-    introspectedPkColumns << introspectedColumns[0]
-    introspectedBaseColumns.addAll introspectedColumns[1..-1]
+    fullyQualifiedTable.domainObjectName = "User"
+    fullyQualifiedTable.introspectedTableName = "user"
 
-    introspectedTable.getRules() >> rules
-    introspectedTable.getTableConfiguration() >> tableConfiguration
-    introspectedTable.getAllColumns() >> introspectedColumns
-    introspectedTable.getPrimaryKeyColumns() >> introspectedPkColumns
-    introspectedTable.getNonPrimaryKeyColumns() >> introspectedNpkColumns
-    introspectedTable.getBaseColumns() >> introspectedBaseColumns
+    introspectedTable.rules = rules
+    introspectedTable.tableConfiguration = tableConfiguration
+    introspectedTable.context = mbgContext
+    introspectedTable.fullyQualifiedTable = fullyQualifiedTable
+    introspectedTable.baseColumns = introspectedBaseColumns
+    introspectedTable.blobColumns = introspectedBlobColumns
+    introspectedTable.primaryKeyColumns = introspectedPkColumns
+
+    introspectedTable.initialize()
+
     introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() >> "user"
     introspectedTable.constructorBased >> false
     introspectedTable.baseRecordType >> User.class.canonicalName
+    introspectedTable.getExampleType() >> UserExample.class.canonicalName
 
     mbgContext.commentGenerator >> commentGenerator
     def plugins = new PluginAggregator();
@@ -141,15 +146,18 @@ abstract class AbstractPluginSpec extends Specification {
     Document document = addBaseElement()
     document.rootElement.addElement element
     def parser = new XPathParser(document.formattedContent, false, Stub(Properties), new XMLMapperEntityResolver())
-    def mapperBuilder = new XMLMapperBuilder(parser, configuration, "", sqlFragments)
+    def mapperBuilder = new XMLMapperBuilder(parser, configuration, "", configuration.sqlFragments)
     mapperBuilder.parse()
     configuration.getMappedStatement element.getAttributes().find({ it.name == "id" }).value
   }
 
-  def parseSql(XmlElement element, Map<String, Object> parameterMap) {
+  def parseSql(XmlElement element, def parameterObject) {
     MappedStatement mappedStatement = parseXml(element)
-    BoundSql sql = mappedStatement.getBoundSql(parameterMap)
-    sql.sql.replaceAll("\\s+", " ").toLowerCase()
+    BoundSql sql = mappedStatement.getBoundSql(parameterObject)
+    format(sql.sql)?.toLowerCase()
   }
 
+  def format(String str){
+    str?.replaceAll("\\s+", " ")?.trim()
+  }
 }
