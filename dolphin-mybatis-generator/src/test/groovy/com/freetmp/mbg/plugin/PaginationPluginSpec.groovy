@@ -76,11 +76,19 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     1 * selectByExample.addElement { format(it.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > limit #{offset} , #{limit} </if>" }
 
     when:
+    println parseSqlWithoutPagination(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? )"
+
+    when:
+    systemOutRule.clearLog()
     println parseSql(plugin)
     log.info systemOutRule.log
 
     then:
-    systemOutRule.log.trim() == "select from user where ( name like ? ) limit ? , ?"
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? ) limit ? , ?"
   }
 
   def "check generated xml mapper for postgresql"() {
@@ -95,11 +103,19 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     1 * selectByExample.addElement { Element element -> format(element.getFormattedContent(0)) == "<if test=\"offset != null and offset >= 0\" > offset #{offset} </if>" }
 
     when:
+    println parseSqlWithoutPagination(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? )"
+
+    when:
+    systemOutRule.clearLog()
     println parseSql(plugin)
     log.info systemOutRule.log
 
     then:
-    systemOutRule.log.trim() == "select from user where ( name like ? ) limit ? offset ?"
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? ) limit ? offset ?"
   }
 
   def "check generated xml mapper for oracle"() {
