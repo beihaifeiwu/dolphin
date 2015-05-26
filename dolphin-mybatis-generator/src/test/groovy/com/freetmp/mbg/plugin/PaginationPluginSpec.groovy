@@ -76,7 +76,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     1 * selectByExample.addElement { format(it.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > limit #{offset} , #{limit} </if>" }
 
     when:
-    println parseSqlWithoutPagination(plugin)
+    print parseSqlWithoutPagination(plugin)
     log.info systemOutRule.log
 
     then:
@@ -84,7 +84,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
 
     when:
     systemOutRule.clearLog()
-    println parseSql(plugin)
+    print parseSql(plugin)
     log.info systemOutRule.log
 
     then:
@@ -103,7 +103,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     1 * selectByExample.addElement { Element element -> format(element.getFormattedContent(0)) == "<if test=\"offset != null and offset >= 0\" > offset #{offset} </if>" }
 
     when:
-    println parseSqlWithoutPagination(plugin)
+    print parseSqlWithoutPagination(plugin)
     log.info systemOutRule.log
 
     then:
@@ -111,7 +111,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
 
     when:
     systemOutRule.clearLog()
-    println parseSql(plugin)
+    print parseSql(plugin)
     log.info systemOutRule.log
 
     then:
@@ -126,16 +126,23 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     plugin.sqlMapSelectByExampleWithoutBLOBsElementGenerated(selectByExample, introspectedTable)
 
     then:
-    format(selectByExample.elements[0].getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > select * from ( select tmp_page.*, rownum row_id from ( </if>"
-    1 * selectByExample.addElement { Element element -> log.info format(element.getFormattedContent(0)); format(element.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > ) <![CDATA[ tmp_page where rownum <= #{limit} + #{offset} ) where row_id > #{offset} ]]> </if>" }
-    1 * selectByExample.getElements()
+    1 * selectByExample.addElement(0, { Element element -> format(element.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > select * from ( select tmp_page.*, rownum row_id from ( </if>" })
+    1 * selectByExample.addElement { Element element -> format(element.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > <![CDATA[ ) tmp_page where rownum <= #{limit} + #{offset} ) where row_id > #{offset} ]]> </if>"  }
 
     when:
-    println parseSql(plugin)
+    print parseSqlWithoutPagination(plugin)
     log.info systemOutRule.log
 
     then:
-    systemOutRule.log.trim() != null
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? )"
+
+    when:
+    systemOutRule.clearLog()
+    print parseSql(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select * from ( select tmp_page.*, rownum row_id from ( select id, login_name, name, password, salt, roles, register_date from user where ( name like ? ) ) tmp_page where rownum <= ? + ? ) where row_id > ?"
   }
 
   def "check generated xml mapper for sqlserver"() {
@@ -143,7 +150,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     SQLServerPaginationPlugin plugin = new SQLServerPaginationPlugin();
 
     when: "without pagination and order by"
-    println parseSqlWithoutPagination(plugin)
+    print parseSqlWithoutPagination(plugin)
     log.info systemOutRule.log
 
     then:
@@ -151,7 +158,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
 
     when: "with pagination and without order by"
     systemOutRule.clearLog()
-    println parseSql(plugin)
+    print parseSql(plugin)
     log.info systemOutRule.log
 
     then:
@@ -163,7 +170,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     systemOutRule.clearLog()
     UserExample example = buildExampleWithoutPagination()
     example.setOrderByClause("id asc")
-    println parseSql(generateXml(plugin), example)
+    print parseSql(generateXml(plugin), example)
     log.info systemOutRule.log
 
     then:
@@ -173,7 +180,7 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     systemOutRule.clearLog()
     example = buildExample()
     example.setOrderByClause("id asc")
-    println parseSql(generateXml(plugin), example)
+    print parseSql(generateXml(plugin), example)
     log.info systemOutRule.log
 
     then:
@@ -190,7 +197,22 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     plugin.sqlMapSelectByExampleWithoutBLOBsElementGenerated(selectByExample, introspectedTable)
 
     then:
-    1 * selectByExample.addElement { Element element -> log.info element.getFormattedContent(0); element != null }
+    1 * selectByExample.addElement { Element element -> format(element.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > limit #{limit} offset #{offset} </if>" }
+
+    when:
+    print parseSqlWithoutPagination(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? )"
+
+    when:
+    systemOutRule.clearLog()
+    print parseSql(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? ) limit ? offset ?"
   }
 
   def "check generated xml mapper for db2"() {
@@ -201,7 +223,25 @@ class PaginationPluginSpec extends AbstractPluginSpec {
     plugin.sqlMapSelectByExampleWithoutBLOBsElementGenerated(selectByExample, introspectedTable)
 
     then:
-    1 * selectByExample.addElement { Element element -> log.info format(element.getFormattedContent(0)); element != null }
+    1 * selectByExample.addElement(0, { Element element -> format(element.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > select * from (select tmp_page.*, rownumber() over() as row_id from ( </if>" })
+    1 * selectByExample.addElement { Element element -> format(element.getFormattedContent(0)) == "<if test=\"limit != null and limit>=0 and offset != null\" > ) as tmp_page ) where row_id between #{offset} and #{offset} + #{limit} </if>" }
+
+    when:
+    print parseSqlWithoutPagination(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select id, login_name, name, password, salt, roles, register_date from user where ( name like ? )"
+
+    when:
+    systemOutRule.clearLog()
+    print parseSql(plugin)
+    log.info systemOutRule.log
+
+    then:
+    systemOutRule.log.trim() == "select * from (select tmp_page.*, rownumber() over() as row_id from " +
+        "( select id, login_name, name, password, salt, roles, register_date from user where ( name like ? ) ) as tmp_page ) " +
+        "where row_id between ? and ? + ?"
   }
 
 }
