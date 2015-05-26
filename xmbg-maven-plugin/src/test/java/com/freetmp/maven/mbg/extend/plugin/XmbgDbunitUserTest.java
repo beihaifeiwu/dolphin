@@ -2,10 +2,12 @@ package com.freetmp.maven.mbg.extend.plugin;
 
 import com.freetmp.xmbg.test.entity.User;
 import com.freetmp.xmbg.test.entity.UserExample;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.Test;
+import org.springframework.test.context.TestExecutionListeners;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,12 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by LiuPin on 2015/5/18.
  */
+@TestExecutionListeners({DbUnitTestExecutionListener.class })
 @DatabaseSetup({"classpath:datasets/User.xml"})
 @DatabaseTearDown(type = DatabaseOperation.CLEAN_INSERT, value = {"classpath:datasets/User.xml"})
-public class XmbgUserTest extends XmbgBaseTest {
+public class XmbgDbunitUserTest extends XmbgBaseTest {
 
   @Test
-  public void testCountByExample(){
+  public void testCountByExample() {
     UserExample userExample = new UserExample();
     userExample.createCriteria().andLoginNameEqualTo("admin");
 
@@ -31,7 +34,7 @@ public class XmbgUserTest extends XmbgBaseTest {
   }
 
   @Test
-  public void testDeleteByExample(){
+  public void testDeleteByExample() {
     UserExample userExample = new UserExample();
     userExample.createCriteria().andLoginNameEqualTo("user");
 
@@ -45,7 +48,7 @@ public class XmbgUserTest extends XmbgBaseTest {
   }
 
   @Test
-  public void testDeleteByPrimaryKey(){
+  public void testDeleteByPrimaryKey() {
     int rows = mapper.deleteByPrimaryKey(1L);
 
     assertThat(rows).isEqualTo(1);
@@ -56,7 +59,7 @@ public class XmbgUserTest extends XmbgBaseTest {
   }
 
   @Test
-  public void testInsert(){
+  public void testInsert() {
     // insert with normal field
     User user = buildUser(3L);
 
@@ -66,7 +69,7 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     User loaded = mapper.selectByPrimaryKey(user.getId());
 
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
 
     // insert with null field
     user = buildUser(4L);
@@ -82,7 +85,7 @@ public class XmbgUserTest extends XmbgBaseTest {
   }
 
   @Test
-  public void testInsertSelective(){
+  public void testInsertSelective() {
     User user = buildUser(3L);
 
     user.setRoles(null);
@@ -93,11 +96,11 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     User loaded = mapper.selectByPrimaryKey(user.getId());
 
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
   }
 
   @Test
-  public void testSelectByExample(){
+  public void testSelectByExample() {
     UserExample userExample = new UserExample();
     userExample.createCriteria().andLoginNameEqualTo("admin").andIdLessThan(10L);
 
@@ -114,7 +117,7 @@ public class XmbgUserTest extends XmbgBaseTest {
   }
 
   @Test
-  public void testSelectByPrimaryKey(){
+  public void testSelectByPrimaryKey() {
     User user = mapper.selectByPrimaryKey(1L);
 
     assertThat(user).isNotNull();
@@ -122,7 +125,7 @@ public class XmbgUserTest extends XmbgBaseTest {
   }
 
   @Test
-  public void testUpdateByExampleSelective(){
+  public void testUpdateByExampleSelective() {
     // update with all field non null
     User user = buildUser(2L);
     UserExample example = new UserExample();
@@ -134,7 +137,7 @@ public class XmbgUserTest extends XmbgBaseTest {
     User loaded = mapper.selectByPrimaryKey(user.getId());
 
     assertThat(loaded).isNotNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
 
     // update with roles null
     user.setRoles(null);
@@ -146,39 +149,39 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     assertThat(loaded).isNotNull();
     assertThat(loaded.getRoles()).isNotNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate","roles");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate", "roles");
   }
 
   @Test
-  public void testUpdateByExample(){
+  public void testUpdateByExample() {
     // update with all field non null
     User user = buildUser(2L);
     UserExample example = new UserExample();
     example.createCriteria().andIdEqualTo(user.getId());
 
-    int rows = mapper.updateByExample(user,example);
+    int rows = mapper.updateByExample(user, example);
 
     assertThat(rows).isEqualTo(1);
     User loaded = mapper.selectByPrimaryKey(user.getId());
 
     assertThat(loaded).isNotNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
 
     // update with roles null
     user.setRoles(null);
 
-    rows = mapper.updateByExample(user,example);
+    rows = mapper.updateByExample(user, example);
 
     assertThat(rows).isEqualTo(1);
     loaded = mapper.selectByPrimaryKey(user.getId());
 
     assertThat(loaded).isNotNull();
     assertThat(loaded.getRoles()).isNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
   }
 
   @Test
-  public void testUpdateByPrimaryKeySelective(){
+  public void testUpdateByPrimaryKeySelective() {
     // update with all field non null
     User user = buildUser(2L);
 
@@ -188,7 +191,7 @@ public class XmbgUserTest extends XmbgBaseTest {
     User loaded = mapper.selectByPrimaryKey(user.getId());
 
     assertThat(loaded).isNotNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
 
     // update with roles null
     user.setRoles(null);
@@ -200,11 +203,11 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     assertThat(loaded).isNotNull();
     assertThat(loaded.getRoles()).isNotNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate","roles");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate", "roles");
   }
 
   @Test
-  public void testUpdateByPrimaryKey(){
+  public void testUpdateByPrimaryKey() {
     // update with all field non null
     User user = buildUser(2L);
 
@@ -214,7 +217,7 @@ public class XmbgUserTest extends XmbgBaseTest {
     User loaded = mapper.selectByPrimaryKey(user.getId());
 
     assertThat(loaded).isNotNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
 
     // update with roles null
     user.setRoles(null);
@@ -226,11 +229,11 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     assertThat(loaded).isNotNull();
     assertThat(loaded.getRoles()).isNull();
-    assertThat(user).isEqualToIgnoringGivenFields(loaded,"registerDate");
+    assertThat(user).isEqualToIgnoringGivenFields(loaded, "registerDate");
   }
 
   @Test
-  public void testBatchUpdate(){
+  public void testBatchUpdate() {
     // update with all field non null
     List<User> list = new ArrayList<>();
     list.add(buildUser(1L));
@@ -240,7 +243,7 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     assertThat(rows).isGreaterThan(0);
 
-    for(User user : list){
+    for (User user : list) {
       User loaded = mapper.selectByPrimaryKey(user.getId());
       assertThat(loaded).isNotNull();
       assertThat(loaded.getRoles()).isNotNull();
@@ -248,7 +251,7 @@ public class XmbgUserTest extends XmbgBaseTest {
     }
 
     // update with roles null
-    for(User user : list){
+    for (User user : list) {
       user.setRoles(null);
     }
 
@@ -256,17 +259,17 @@ public class XmbgUserTest extends XmbgBaseTest {
 
     assertThat(rows).isGreaterThan(0);
 
-    for(User user : list){
+    for (User user : list) {
       User loaded = mapper.selectByPrimaryKey(user.getId());
       assertThat(loaded).isNotNull();
       assertThat(loaded.getRoles()).isNotNull();
-      assertThat(loaded).isEqualToIgnoringGivenFields(user,"registerDate","roles");
+      assertThat(loaded).isEqualToIgnoringGivenFields(user, "registerDate", "roles");
     }
 
   }
 
   @Test
-  public void testBatchInsert(){
+  public void testBatchInsert() {
     List<User> list = new ArrayList<>();
     list.add(buildUser(3L));
     list.add(buildUser(4L));
@@ -276,49 +279,76 @@ public class XmbgUserTest extends XmbgBaseTest {
     assertThat(rows).isEqualTo(2);
 
     UserExample example = new UserExample();
-
     example.createCriteria().andIdGreaterThan(2L);
     example.setOrderByClause("id asc");
 
     List<User> loadeds = mapper.selectByExample(example);
 
-    for(int i = 0; i < list.size(); i++){
-      User user = list.get(i);
-      User loaded = loadeds.get(i);
-      assertThat(loaded).isNotNull();
-      assertThat(loaded.getRoles()).isNotNull();
-      assertThat(loaded).isEqualToIgnoringGivenFields(user,"id", "registerDate");
-    }
+    validate(list, loadeds);
 
   }
 
   @Test
-  public void testUpsert(){
+  public void testUpsert() {
 
     User user = buildUser(3L);
     // user is new
-    int rows = mapper.upsert(user,new String[]{"id","name"});
+    int rows = mapper.upsert(user, new String[]{"id", "name"});
     assertThat(rows).isEqualTo(1);
     User loaded = mapper.selectByPrimaryKey(3L);
     assertThat(loaded).isNotNull();
-    assertThat(loaded).isEqualToIgnoringGivenFields(user,"registerDate");
+    assertThat(loaded).isEqualToIgnoringGivenFields(user, "registerDate");
 
     // user has been in the db
     user.setRoles("admin");
     user.setLoginName("admin_test");
 
-    rows = mapper.upsert(user,new String[]{"id","name"});
-    assertThat(rows).isEqualTo(1);
+    rows = mapper.upsert(user, new String[]{"id", "name"});
+    assertThat(rows).isGreaterThanOrEqualTo(1);
 
     loaded = mapper.selectByPrimaryKey(3L);
     assertThat(loaded).isNotNull();
-    assertThat(loaded).isEqualToIgnoringGivenFields(user,"registerDate");
+    assertThat(loaded).isEqualToIgnoringGivenFields(user, "registerDate");
 
   }
 
   @Test
-  public void testBatchUpsert(){
+  public void testBatchUpsert() {
+    List<User> list = new ArrayList<>();
+    list.add(buildUser(3L));
+    list.add(buildUser(4L));
 
+    // users is new
+    int rows = mapper.batchUpsert(list, new String[]{"id", "name"});
+    assertThat(rows).isGreaterThanOrEqualTo(1);
+
+    UserExample example = new UserExample();
+    example.createCriteria().andIdGreaterThan(2L);
+    example.setOrderByClause("id asc");
+
+    List<User> loadeds = mapper.selectByExample(example);
+    validate(list, loadeds);
+
+    // users is mixed
+    list.add(buildUser(5L));
+    list.get(1).setRoles("admin");
+    list.get(1).setName("Admin");
+
+    rows = mapper.batchUpsert(list, new String[]{"id", "name"});
+    assertThat(rows).isGreaterThanOrEqualTo(1);
+
+    loadeds = mapper.selectByExample(example);
+    validate(list,loadeds);
+  }
+
+  private void validate(List<User> list, List<User> loadeds) {
+    for (int i = 0; i < list.size(); i++) {
+      User user = list.get(i);
+      User loaded = loadeds.get(i);
+      assertThat(loaded).isNotNull();
+      assertThat(loaded.getRoles()).isNotNull();
+      assertThat(loaded).isEqualToIgnoringGivenFields(user, "id", "registerDate");
+    }
   }
 
   public User buildUser(Long id) {
