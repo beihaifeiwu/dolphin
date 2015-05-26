@@ -10,6 +10,13 @@ import org.mybatis.generator.api.dom.xml.XmlElement
 @Slf4j
 class BatchPluginSpec extends AbstractPluginSpec {
 
+  def buildParameter(){
+    [list: [
+        [id: 1, loginName: "admin", name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
+        [id: 2, loginName: "user", name: "User", password: "12345678", salt: "123", roles: "user", registerDate: new Date()] as User
+    ]]
+  }
+
   def "check generated client interface and mapper xml for batch update"() {
     setup:
     BatchUpdatePlugin plugin = new BatchUpdatePlugin()
@@ -29,10 +36,7 @@ class BatchPluginSpec extends AbstractPluginSpec {
     1 * root.addElement({ isXmlElementWithIdEquals(it, BatchUpdatePlugin.BATCH_UPDATE) }) >> { element = it }
 
     when:
-    println parseSql(element, [list: [
-        [id: 1, loginName: "admin", name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
-        [id: 2, loginName: "user", name: "User", password: "12345678", salt: "123", roles: "user", registerDate: new Date()] as User
-    ]])
+    print parseSql(element, buildParameter())
     log.info systemOutRule.log
     then:
     systemOutRule.log.trim() == "update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? ; update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ?"
@@ -56,10 +60,7 @@ class BatchPluginSpec extends AbstractPluginSpec {
     1 * root.addElement({ isXmlElementWithIdEquals(it, BatchInsertPlugin.BATCH_INSERT) }) >> { element = it }
 
     when:
-    println parseSql(element, [list: [
-        [id: 1, loginName: "admin", name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
-        [id: 2, loginName: "user", name: "User", password: "12345678", salt: "123", roles: "user", registerDate: new Date()] as User
-    ]])
+    print parseSql(element, buildParameter())
     log.info systemOutRule.log
     then:
     systemOutRule.log.trim() == "insert into user ( login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) , ( ?, ?, ?, ?, ?, ? )"
