@@ -18,9 +18,9 @@
 
     <!--数据库连接 -->
     <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                    connectionURL="jdbc:mysql://localhost/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8"
+                    connectionURL="jdbc:mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8"
                     userId="root"
-                    password=""
+                    password="liupin"
         >
     </jdbcConnection>
 

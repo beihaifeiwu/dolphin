@@ -1,5 +1,6 @@
 package com.freetmp.mbg.interceptor;
 
+import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
@@ -16,6 +17,7 @@ public class BatchInterceptor implements Interceptor {
 
   @Override
   public Object intercept(Invocation invocation) throws Throwable {
+    CachingExecutor executor = (CachingExecutor) invocation.getTarget();
     return null;
   }
 

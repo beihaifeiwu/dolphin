@@ -155,14 +155,11 @@
             <id>process-javadoc-or-annotation</id>
             <phase>process-classes</phase>
           </execution>
-          <!-- if you want to generate help goal -->
-          <execution>
-            <id>help-goal</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
         </executions>
+        <configuration>
+          <!-- Needed for Java 5 annotation based configuration, for some reason. -->
+          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+        </configuration>
       </plugin>
 
       <!--Close Test -->
