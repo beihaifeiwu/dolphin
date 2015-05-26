@@ -96,14 +96,15 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     XmlElement sql = buildSqlClause(introspectedTable);
     document.getRootElement().addElement(sql);
     addSingleUpsertToSqlMap(document, introspectedTable);
-    addSingleUpsertSelectiveToSqlMap(document,introspectedTable);
+    addSingleUpsertSelectiveToSqlMap(document, introspectedTable);
     addBatchUpsertToSqlMap(document, introspectedTable);
-    addBatchUpsertSelectiveToSqlMap(document,introspectedTable);
+    addBatchUpsertSelectiveToSqlMap(document, introspectedTable);
     return true;
   }
 
   /**
    * add update xml element to mapper.xml for upsert
+   *
    * @param document
    * @param introspectedTable
    */
@@ -129,6 +130,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
   /**
    * add update xml element to mapper.xml for batch upsert
+   *
    * @param document
    * @param introspectedTable
    */
@@ -171,6 +173,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
    * @author Pin Liu
    */
   protected abstract void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent);
+
   protected abstract void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent);
 
   /*

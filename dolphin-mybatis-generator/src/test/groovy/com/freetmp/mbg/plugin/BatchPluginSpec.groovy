@@ -1,16 +1,18 @@
 package com.freetmp.mbg.plugin
+
 import com.freetmp.mbg.plugin.batch.BatchInsertPlugin
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin
 import groovy.util.logging.Slf4j
 import org.mybatis.generator.api.dom.java.Method
 import org.mybatis.generator.api.dom.xml.XmlElement
+
 /**
  * Created by LiuPin on 2015/5/21.
  */
 @Slf4j
 class BatchPluginSpec extends AbstractPluginSpec {
 
-  def buildParameter(){
+  def buildParameter() {
     [list: [
         [id: 1, loginName: "admin", name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
         [id: 2, loginName: "user", name: "User", password: "12345678", salt: "123", roles: "user", registerDate: new Date()] as User

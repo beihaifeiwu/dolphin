@@ -20,7 +20,7 @@ public class PostgreSQLUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock(" returning * )",parent);
     generateTextBlockAppendTableName("insert into ",introspectedTable,parent);
-    generateParametersSeparateByCommaWithParenthesis(introspectedTable.getAllColumns(), parent);
+    generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
     generateTextBlock(" select ",parent);
     generateParametersSeparateByComma(PROPERTY_PREFIX, introspectedTable.getAllColumns(), parent);
     generateTextBlock(" where not exists ( select * from upsert )",parent);
@@ -37,7 +37,7 @@ public class PostgreSQLUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock(" returning * )",parent);
     generateTextBlockAppendTableName("insert into ",introspectedTable,parent);
-    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
+    generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
     generateTextBlock(" select ",parent);
     generateParametersSeparateByComma(PROPERTY_PREFIX,true,introspectedTable.getAllColumns(),parent);
     generateTextBlock(" where not exists ( select * from upsert )",parent);

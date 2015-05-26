@@ -1,10 +1,8 @@
 package com.freetmp.mbg.plugin
-
 import org.apache.ibatis.builder.xml.XMLMapperBuilder
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver
 import org.apache.ibatis.mapping.BoundSql
 import org.apache.ibatis.mapping.MappedStatement
-import org.apache.ibatis.parsing.XNode
 import org.apache.ibatis.parsing.XPathParser
 import org.apache.ibatis.session.Configuration
 import org.apache.log4j.ConsoleAppender
@@ -32,7 +30,6 @@ import org.mybatis.generator.config.TableConfiguration
 import org.mybatis.generator.internal.PluginAggregator
 import org.mybatis.generator.internal.rules.Rules
 import spock.lang.Specification
-
 /**
  * Created by LiuPin on 2015/5/20.
  */
@@ -64,9 +61,6 @@ abstract class AbstractPluginSpec extends Specification {
   // Xml mapper generate related
   XmlElement root = Spy(XmlElement, constructorArgs: ["mapper"])
   Document document = Stub()
-
-  // Xml mapper parser related
-  Configuration configuration = new Configuration()
 
   def setup() {
     document.rootElement >> root
@@ -122,7 +116,7 @@ abstract class AbstractPluginSpec extends Specification {
   /**
    * xml mapper parser helper method
    */
-  def addBaseElement() {
+  def addBaseElement(XmlElement... bases) {
     XmlElement root = new XmlElement("mapper")
     root.attributes << new Attribute("namespace", User.class.canonicalName + "Mapper")
     Document document = new Document(XmlConstants.MYBATIS3_MAPPER_PUBLIC_ID, XmlConstants.MYBATIS3_MAPPER_SYSTEM_ID)
@@ -139,11 +133,15 @@ abstract class AbstractPluginSpec extends Specification {
     resultMapWithoutBlobs.addElements(root)
     exampleWhere.addElements(root)
     baseColumnList.addElements(root)
+
+    bases?.each {root.addElement(it)}
+
     return document
   }
 
-  def parseXml(XmlElement element) {
-    Document document = addBaseElement()
+  def parseXml(XmlElement element, XmlElement... bases) {
+    Configuration configuration = new Configuration()
+    Document document = addBaseElement(bases)
     document.rootElement.addElement element
     def parser = new XPathParser(document.formattedContent, false, Stub(Properties), new XMLMapperEntityResolver())
     def mapperBuilder = new XMLMapperBuilder(parser, configuration, "", configuration.sqlFragments)
@@ -151,8 +149,8 @@ abstract class AbstractPluginSpec extends Specification {
     configuration.getMappedStatement element.getAttributes().find({ it.name == "id" }).value
   }
 
-  def parseSql(XmlElement element, def parameterObject) {
-    MappedStatement mappedStatement = parseXml(element)
+  def parseSql(XmlElement element, def parameterObject, XmlElement... bases) {
+    MappedStatement mappedStatement = parseXml(element, bases)
     BoundSql sql = mappedStatement.getBoundSql(parameterObject)
     format(sql.sql)?.toLowerCase()
   }
