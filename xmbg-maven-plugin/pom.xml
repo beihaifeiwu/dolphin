@@ -184,7 +184,7 @@
 
   <profiles>
     <profile>
-      <id>mysql</id>
+      <id>xmbg-mysql-test</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -234,7 +234,7 @@
       </dependencies>
     </profile>
     <profile>
-      <id>postgresql</id>
+      <id>xmbg-postgresql-test</id>
       <build>
         <plugins>
           <!-- Open Test -->
