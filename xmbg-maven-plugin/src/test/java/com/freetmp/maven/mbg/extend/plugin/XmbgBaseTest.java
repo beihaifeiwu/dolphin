@@ -23,8 +23,14 @@ public class XmbgBaseTest extends AbstractTransactionalJUnit4SpringContextTests 
     BasicConfigurator.configure();
     Logger.getRootLogger().setLevel(Level.INFO);
     Logger logger = LogManager.getLogger("org.dbunit");
-    logger.setLevel(Level. ERROR);
-    logger = LogManager.getLogger("druid.sql");
-    logger.setLevel(Level.DEBUG);
+    logger.setLevel(Level.ERROR);
+    logger = LogManager.getLogger("jdbc.audit");
+    logger.setLevel(Level.ERROR);
+    logger = LogManager.getLogger("jdbc.resultset");
+    logger.setLevel(Level.ERROR);
+    logger = LogManager.getLogger("jdbc.connection");
+    logger.setLevel(Level.ERROR);
+    logger = LogManager.getLogger("jdbc.sqlonly");
+    logger.setLevel(Level.ERROR);
   }
 }
