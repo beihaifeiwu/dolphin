@@ -18,8 +18,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     1 * root.addElement({ XmlElement element -> element.name == "sql" && isXmlElementWithIdEquals(element, IDENTIFIERS_ARRAY_CONDITIONS) }) >> { generatedXmlElements.put(IDENTIFIERS_ARRAY_CONDITIONS, it) }
     1 * root.addElement({ XmlElement element -> element.name == "update" && isXmlElementWithIdEquals(element, UPSERT) }) >> { generatedXmlElements.put(UPSERT, it) }
     1 * root.addElement({ XmlElement element -> element.name == "update" && isXmlElementWithIdEquals(element, UPSERT_SELECTIVE) }) >> { generatedXmlElements.put(UPSERT_SELECTIVE, it) }
-    1 * root.addElement({ XmlElement element -> element.name == "update" && isXmlElementWithIdEquals(element, BATCH_UPSERT) }) >> { generatedXmlElements.put(BATCH_UPSERT, it) }
-    1 * root.addElement({ XmlElement element -> element.name == "update" && isXmlElementWithIdEquals(element, BATCH_UPSERT_SELECTIVE) }) >> { generatedXmlElements.put(BATCH_UPSERT_SELECTIVE, it) }
   }
 
   def buildParameterForSingle() {
@@ -53,20 +51,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     parseSql upsertSelective, parameter, sql
   }
 
-  def parseSqlForBatchUpsert() {
-    XmlElement sql = generatedXmlElements.get(IDENTIFIERS_ARRAY_CONDITIONS)
-    XmlElement batchUpsert = generatedXmlElements.get(BATCH_UPSERT)
-    Object parameter = buildParameterForBatch()
-    parseSql batchUpsert, parameter, sql
-  }
-
-  def parseSqlForBatchUpsertSelective() {
-    XmlElement sql = generatedXmlElements.get(IDENTIFIERS_ARRAY_CONDITIONS)
-    XmlElement batchUpsertSelective = generatedXmlElements.get(BATCH_UPSERT_SELECTIVE)
-    Object parameter = buildParameterForBatch()
-    parseSql batchUpsertSelective, parameter, sql
-  }
-
   def "check generated method signature"() {
     setup:
     AbstractUpsertPlugin plugin = Spy()
@@ -81,8 +65,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     then:
     1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int upsert(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
     1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int upsertSelective(@Param(\"record\") User record, @Param(\"array\") String[] array);" }
-    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsert(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
-    1 * mapper.addMethod { Method method -> method.getFormattedContent(0, true) == "int batchUpsertSelective(@Param(\"records\") List<User> list, @Param(\"array\") String[] array);" }
     1 * mapper.addImportedTypes({ it.size() >= 3 })
   }
 
@@ -107,24 +89,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     then:
     systemOutRule.log.trim() == "insert into user ( id, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) " +
         "on duplicate key update id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsert()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "insert into user ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? ) on duplicate key update id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? ; " +
-        "insert into user ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? ) on duplicate key update id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsertSelective()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "insert into user ( id, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) on duplicate key update id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? ; " +
-        "insert into user ( id, login_name, name, password, salt, register_date ) values ( ?, ?, ?, ?, ?, ? ) on duplicate key update id = ?, login_name = ?, name = ?, password = ?, salt = ?, register_date = ?"
   }
 
   def "check generated upsert series xml for oracle"() {
@@ -150,32 +114,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     systemOutRule.log.trim() == "merge into user using dual on ( id = ? and name = ? ) " +
         "when matched then update set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? " +
         "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsert()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "merge into user using dual on ( id = ? and name = ? ) " +
-        "when matched then update set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? " +
-        "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? ) ; " +
-        "merge into user using dual on ( id = ? and name = ? ) " +
-        "when matched then update set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? " +
-        "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsertSelective()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "merge into user using dual on ( id = ? and name = ? ) " +
-        "when matched then update set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? " +
-        "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) ; " +
-        "merge into user using dual on ( id = ? and name = ? ) " +
-        "when matched then update set id = ?, login_name = ?, name = ?, password = ?, salt = ?, register_date = ? " +
-        "when not matched then insert ( id, login_name, name, password, salt, register_date ) values ( ?, ?, ?, ?, ?, ? )"
   }
 
   def "check generated upsert series xml for postgresql"() {
@@ -199,28 +137,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     then:
     systemOutRule.log.trim() == "with upsert as ( update user set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? returning * ) " +
         "insert into user ( id, name, password, salt, roles, register_date ) select ?, ?, ?, ?, ?, ? where not exists ( select * from upsert )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsert()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "with upsert as ( update user set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? returning * ) " +
-        "insert into user ( id, login_name, name, password, salt, roles, register_date ) select ?, ?, ?, ?, ?, ?, ? where not exists ( select * from upsert ) ; " +
-        "with upsert as ( update user set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? returning * ) " +
-        "insert into user ( id, login_name, name, password, salt, roles, register_date ) select ?, ?, ?, ?, ?, ?, ? where not exists ( select * from upsert )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsertSelective()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "with upsert as ( update user set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? returning * ) " +
-        "insert into user ( id, name, password, salt, roles, register_date ) select ?, ?, ?, ?, ?, ? where not exists ( select * from upsert ) ; " +
-        "with upsert as ( update user set id = ?, login_name = ?, name = ?, password = ?, salt = ?, register_date = ? where id = ? and name = ? returning * ) " +
-        "insert into user ( id, login_name, name, password, salt, register_date ) select ?, ?, ?, ?, ?, ? where not exists ( select * from upsert )"
   }
 
   def "check generated upsert series xml for sqlserver"() {
@@ -244,28 +160,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     then:
     systemOutRule.log.trim() == "update user set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? " +
         "if @@rowcount = 0 insert into user ( id, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsert()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "update user set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? " +
-        "if @@rowcount = 0 insert into user ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? ) ; " +
-        "update user set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? " +
-        "if @@rowcount = 0 insert into user ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsertSelective()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "update user set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? and name = ? " +
-        "if @@rowcount = 0 insert into user ( id, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) ; " +
-        "update user set id = ?, login_name = ?, name = ?, password = ?, salt = ?, register_date = ? where id = ? and name = ? " +
-        "if @@rowcount = 0 insert into user ( id, login_name, name, password, salt, register_date ) values ( ?, ?, ?, ?, ?, ? )"
   }
 
   def "check generated upsert series xml for hsqldb"() {
@@ -291,32 +185,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, name, password, salt, roles, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
         "when matched then update set userid = temp.id, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
         "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( temp.id, temp.name, temp.password, temp.salt, temp.roles, temp.register_date )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsert()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, roles, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.roles, temp.register_date ) ; " +
-        "merge into user using (values ?, ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, roles, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.roles, temp.register_date )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsertSelective()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, name, password, salt, roles, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
-        "when matched then update set userid = temp.id, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( temp.id, temp.name, temp.password, temp.salt, temp.roles, temp.register_date ) ; " +
-        "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, login_name, name, password, salt, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.register_date )"
   }
 
   def "check generated upsert series xml for db2"() {
@@ -342,32 +210,6 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, name, password, salt, roles, register_date ) on user.id = temp.id and user.name = temp.name " +
         "when matched then update set userid = temp.id, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
         "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( temp.id, temp.name, temp.password, temp.salt, temp.roles, temp.register_date )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsert()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, roles, register_date ) on user.id = temp.id and user.name = temp.name " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.roles, temp.register_date ) ; " +
-        "merge into user using (values ?, ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, roles, register_date ) on user.id = temp.id and user.name = temp.name " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.roles, temp.register_date )"
-
-    when:
-    systemOutRule.clearLog()
-    print parseSqlForBatchUpsertSelective()
-    log.info systemOutRule.log
-
-    then:
-    systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, name, password, salt, roles, register_date ) on user.id = temp.id and user.name = temp.name " +
-        "when matched then update set userid = temp.id, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( temp.id, temp.name, temp.password, temp.salt, temp.roles, temp.register_date ) ; " +
-        "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, register_date ) on user.id = temp.id and user.name = temp.name " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userregister_date = temp.register_date " +
-        "when not matched then insert ( id, login_name, name, password, salt, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.register_date )"
   }
 
 }

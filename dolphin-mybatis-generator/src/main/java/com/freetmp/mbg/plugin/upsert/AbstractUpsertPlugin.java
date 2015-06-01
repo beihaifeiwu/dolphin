@@ -25,9 +25,6 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
   public static final String UPSERT = "upsert";
   public static final String UPSERT_SELECTIVE = "upsertSelective";
 
-  public static final String BATCH_UPSERT = "batchUpsert";
-  public static final String BATCH_UPSERT_SELECTIVE = "batchUpsertSelective";
-
   public static final String IDENTIFIERS_ARRAY_CONDITIONS = "Identifiers_Array_Conditions";
 
   public static final String PROPERTY_PREFIX = "record.";
@@ -66,26 +63,6 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
     interfaze.addMethod(upsertSelective);
 
-		/*-----------------------------添加批量upsert的接口方法--------------------------------------*/
-    Method batchUpsert = new Method(BATCH_UPSERT);
-    batchUpsert.setReturnType(FullyQualifiedJavaType.getIntInstance());
-
-    FullyQualifiedJavaType list = new FullyQualifiedJavaType("java.util.List<" + introspectedTable.getTableConfiguration().getDomainObjectName() + ">");
-    batchUpsert.addParameter(new Parameter(list, "list", "@Param(\"records\")"));
-    importedTypes.add(list);
-
-    batchUpsert.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
-
-    interfaze.addMethod(batchUpsert);
-
-    /*-----------------------------添加批量upsertSelective的接口方法--------------------------------------*/
-    Method batchUpsertSelective = new Method(BATCH_UPSERT_SELECTIVE);
-    batchUpsertSelective.setReturnType(FullyQualifiedJavaType.getIntInstance());
-    batchUpsertSelective.addParameter(new Parameter(list, "list", "@Param(\"records\")"));
-    batchUpsertSelective.addParameter(new Parameter(arrayType, "array", "@Param(\"array\")"));
-
-    interfaze.addMethod(batchUpsertSelective);
-
     interfaze.addImportedTypes(importedTypes);
     return true;
   }
@@ -97,8 +74,6 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     document.getRootElement().addElement(sql);
     addSingleUpsertToSqlMap(document, introspectedTable);
     addSingleUpsertSelectiveToSqlMap(document, introspectedTable);
-    addBatchUpsertToSqlMap(document, introspectedTable);
-    addBatchUpsertSelectiveToSqlMap(document, introspectedTable);
     return true;
   }
 
@@ -129,46 +104,6 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
   }
 
   /**
-   * add update xml element to mapper.xml for batch upsert
-   *
-   * @param document
-   * @param introspectedTable
-   */
-  protected void addBatchUpsertToSqlMap(Document document, IntrospectedTable introspectedTable) {
-    XmlElement update = new XmlElement("update");
-    update.addAttribute(new Attribute("id", BATCH_UPSERT));
-    update.addAttribute(new Attribute("parameterType", "map"));
-
-    XmlElement foreach = new XmlElement("foreach");
-    foreach.addAttribute(new Attribute("collection", "records"));
-    foreach.addAttribute(new Attribute("item", "record"));
-    foreach.addAttribute(new Attribute("index", "index"));
-    foreach.addAttribute(new Attribute("separator", " ; "));
-
-    generateSqlMapContent(introspectedTable, foreach);
-    update.addElement(foreach);
-
-    document.getRootElement().addElement(update);
-  }
-
-  protected void addBatchUpsertSelectiveToSqlMap(Document document, IntrospectedTable introspectedTable) {
-    XmlElement update = new XmlElement("update");
-    update.addAttribute(new Attribute("id", BATCH_UPSERT_SELECTIVE));
-    update.addAttribute(new Attribute("parameterType", "map"));
-
-    XmlElement foreach = new XmlElement("foreach");
-    foreach.addAttribute(new Attribute("collection", "records"));
-    foreach.addAttribute(new Attribute("item", "record"));
-    foreach.addAttribute(new Attribute("index", "index"));
-    foreach.addAttribute(new Attribute("separator", " ; "));
-
-    generateSqlMapContentSelective(introspectedTable, foreach);
-    update.addElement(foreach);
-
-    document.getRootElement().addElement(update);
-  }
-
-  /*
    * 生成sqlMap里对应的xml元素
    * @author Pin Liu
    */
@@ -176,7 +111,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
   protected abstract void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent);
 
-  /*
+  /**
    * 生成根据参数array判断where条件的元素
    * @author Pin Liu
    */
@@ -191,7 +126,7 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     return where;
   }
 
-  /*
+  /**
    * 创建根据传入的Array数组进行判断的sql语句
    * @author Pin Liu
    */
