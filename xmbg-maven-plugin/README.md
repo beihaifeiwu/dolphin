@@ -1,5 +1,6 @@
-# Mybatis Generator Extent
-## maven 插件
+Mybatis Generator Extent
+===========================================
+# maven 插件
 
 XMBG扩展自Mybatis Generator插件，增加了一些：  
 
@@ -20,72 +21,76 @@ XMBG扩展自Mybatis Generator插件，增加了一些：
 
 通过MBG插件`com.freetmp.mbg.plugin.UpsertPlugin`实现，包括批量操作，生成示例如下：
 
-    <update id="batchUpsert" parameterType="map" >
-        <foreach collection="records" item="record" index="index" separator=" ; " >
-          update ss_task
-          <set >
-            <if test="record.id != null" >
-              id = #{record.id,jdbcType=BIGINT},
-            </if>
-            <if test="record.title != null" >
-              title = #{record.title,jdbcType=VARCHAR},
-            </if>
-            <if test="record.description != null" >
-              description = #{record.description,jdbcType=VARCHAR},
-            </if>
-            <if test="record.userId != null" >
-              user_id = #{record.userId,jdbcType=BIGINT},
-            </if>
-          </set>
-          <where >
-            <include refid="Identifiers_Array_Where" />
-          </where>
-          ; insert into ss_task(title,description,user_id)
-           select #{record.title,jdbcType=VARCHAR},#{record.description,jdbcType=VARCHAR},#{record.userId,jdbcType=BIGINT}
-
-           where not exists (select 1 from ss_task
-          <where >
-            <include refid="Identifiers_Array_Where" />
-          </where>
-           )
-        </foreach>
-    </update>
+```xml
+<update id="batchUpsert" parameterType="map" >
+    <foreach collection="records" item="record" index="index" separator=" ; " >
+      update ss_task
+      <set >
+        <if test="record.id != null" >
+          id = #{record.id,jdbcType=BIGINT},
+        </if>
+        <if test="record.title != null" >
+          title = #{record.title,jdbcType=VARCHAR},
+        </if>
+        <if test="record.description != null" >
+          description = #{record.description,jdbcType=VARCHAR},
+        </if>
+        <if test="record.userId != null" >
+          user_id = #{record.userId,jdbcType=BIGINT},
+        </if>
+      </set>
+      <where >
+        <include refid="Identifiers_Array_Where" />
+      </where>
+      ; insert into ss_task(title,description,user_id)
+       select #{record.title,jdbcType=VARCHAR},#{record.description,jdbcType=VARCHAR},#{record.userId,jdbcType=BIGINT}
+       where not exists (select 1 from ss_task
+      <where >
+        <include refid="Identifiers_Array_Where" />
+      </where>
+       )
+    </foreach>
+</update>
+```
 
 存在即更新的操作分为两步，1）判断记录是否存在 2）根据1的结果更新或者插入。标准的sql语法中并没有定义这样的语义或者操作，每个数据库对于存在
 即更新的支持都是不一样的，XMBG为提供统一的结构，将这个操作分为两个完全独立的操作，先更新后插入，无论记录存不存在这两个步骤都会执行。为实
 现存在即更新的语义，需要一些判断条件以决定记录是否存在，XMBG生成的方法需要用户指定可用作判断条件的字段，方法签名如下：
 
+```java
     int upsert(@Param("record") Task record, @Param("array") String[] array);
-
     int batchUpsert(@Param("records") List<Task> list, @Param("array") String[] array);
-
+```
 其中array参数就是可用作判断条件的字段名称组成的数组，判断条件生成的xml结构如下：
 
-    <sql id="Identifiers_Array_Where" >
-    <foreach collection="array" item="item" index="index" separator=" and " >
-      <if test="item == 'id'" >
-        id = #{record.id,jdbcType=BIGINT}
-      </if>
-      <if test="item == 'title'" >
-        title = #{record.title,jdbcType=VARCHAR}
-      </if>
-      <if test="item == 'description'" >
-        description = #{record.description,jdbcType=VARCHAR}
-      </if>
-      <if test="item == 'userId'" >
-        user_id = #{record.userId,jdbcType=BIGINT}
-      </if>
-    </foreach>
-    </sql>
-
+```xml
+<sql id="Identifiers_Array_Where" >
+<foreach collection="array" item="item" index="index" separator=" and " >
+  <if test="item == 'id'" >
+    id = #{record.id,jdbcType=BIGINT}
+  </if>
+  <if test="item == 'title'" >
+    title = #{record.title,jdbcType=VARCHAR}
+  </if>
+  <if test="item == 'description'" >
+    description = #{record.description,jdbcType=VARCHAR}
+  </if>
+  <if test="item == 'userId'" >
+    user_id = #{record.userId,jdbcType=BIGINT}
+  </if>
+</foreach>
+</sql>
+```
 ###分页查询
 
 类`com.freetmp.mbg.plugin.page.AbstractPaginationPlugin`实现了分页查询的统一数据模型，并在生成的Example模型上添加了操作数据模型
 的方法，数据模型包括limit和offset，其中limit是当前页的最大记录数，offset是当前页距离数据库表首行的偏移量。操作方法除了通常的getter和
 setter方法外，还增加了fluent API操作，通过一个静态内部类`AbstractPaginationPlugin.PageBuiler`来实现，使用如下:
 
+```java
     XxxExample example = new XxxExample();
     example.bound().offset(0).limit(20).build();
+```    
     
 由于Jdbc的基于游标的分页方式性能较低，因而使用物理分页就成为了唯一的选择，物理分页会因为实际采用数据库的不同有不同的实现方式需要针对具
 体的数据库选用不同的插件：
@@ -100,23 +105,25 @@ setter方法外，还增加了fluent API操作，通过一个静态内部类`Abs
 
 分页查询针对的方法为selectByExample，生成示例如下：
 
-      <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.freetmp.xmbg.mysql.entity.TaskExample">
-        select
-        <if test="distinct" >
-          distinct
-        </if>
-        <include refid="Base_Column_List" />
-        from ss_task
-        <if test="_parameter != null" >
-          <include refid="Example_Where_Clause" />
-        </if>
-        <if test="orderByClause != null" >
-          order by ${orderByClause}
-        </if>
-        <if test="limit != null and limit>=0 and offset != null" >
-          limit #{offset} , #{limit}
-        </if>
-      </select>
+```xml
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.freetmp.xmbg.mysql.entity.TaskExample">
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ss_task
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null and limit>=0 and offset != null" >
+      limit #{offset} , #{limit}
+    </if>
+  </select>
+```
 
 ##类型转换
 
@@ -124,21 +131,24 @@ setter方法外，还增加了fluent API操作，通过一个静态内部类`Abs
 
 为屏蔽各个数据库对地理信息系统实现的不统一，XMBG采用第三方地理信息类库geolatte-geom实现对地理信息数据的建模，其Maven构件地址为：  
 
+```xml
     <dependency>
         <groupId>org.geolatte</groupId>
         <artifactId>geolatte-geom</artifactId>
         <version>0.14</version>
     </dependency>
+```
 
 地理信息在数据库中的存储形式一般为二进制格式，不便于使用和阅读，每个数据库地理信息扩展都会提供自己的专有函数将二进制数据转换为文本形式,
 但是仅凭数据库函数只能转换到文本形式，虽然通过geolatte的DSL很容易将其转换为对应的数据模型，但是XMBG希望这种转换能够自动完成，为此XMBG
 提供了一个标准的Mybatis类型解析器`com.freetmp.mbg.typehandler.GeometryTypeHandler`,使用方法和标准的类型解析器使用方法相同：  
 
+```xml
     <!-- mybatis-config.xml -->
     <typeHandlers>
      <typeHandler handler="com.freetmp.mbg.typehandler.GeometryTypeHandler"/>
     </typeHandlers>
-
+```
 ####Postgis
 
 PostgreSQL的地理信息系统扩展插件Postgis为PostgreSQL数据库提供了存储和处理地理信息数据的函数和数据类型，Postgis的地理信息数据的存取
@@ -151,16 +161,16 @@ PostgreSQL的地理信息系统扩展插件Postgis为PostgreSQL数据库提供�
 
 原生的MBG并没有提供灵活的命名转换策略，仅提供了一种配置可以解决列名前缀问题
 [columnRenamingRule](http://mybatis.github.io/generator/configreference/columnRenamingRule.html),使用方法如下：
-
+```xml
     <columnRenamingRule searchString="^CUST_" replaceString="" />
-
+```
 但对于将列名转换为Java的驼峰命名的形式，MBG则没有给出解决方法。对于此XMBG通过插件`com.freetmp.mbg.plugin.ColumnNameConversionPlugin`
 提供了一种解决方案，通过正则表达式来匹配列名中的每一个单词项，然后再将所有的单词项组合在一下，且首个单词小写。作为插件的用法如下：
-
+```xml
     <plugin type="com.palmaplus.mbg.plugin.ColumnNameConversionPlugin">
         <property name="columnPattern" value="[A-Z][a-z]*" />
     </plugin>
-
+```
 ##增量生成
 
 一般情况下，使用MBG生成代码之后就不会再使用MBG了，这样增量生成也就没有用武之地了，但是当数据库结构发生变化时，手动修改MBG的生成代码就
@@ -184,16 +194,16 @@ ShellCallback并没有提供相应的扩展点，所以XML的合并仍是通过�
 版权声明。XMBG默认提供了英文和中文两个版本的注释资源，保存在类路径下的`i18n_for_CG`文件夹下，用户可以提供自己的注释资源，普通注释以`Comments`
 命名，版权声明以`Copyrights`命名，可以参考默认资源的实现方式。
 
+```properties
     # XML映射文件中POJO字段与数据库表列的对应声明
     BaseResultMap=the basic mapping of POJO fields and db table's columns
     ResultMapWithBLOBs=the mapping of POJO fields and db table's columns with type BLOB in it
-
     # 可重用的SQL片段声明
     Example_Where_Clause=the where condition clause of the helper class example
     Update_By_Example_Where_Clause=the where condition for updating the db data using the example helper class
     Base_Column_List=the basic columns of db table used by select
     Blob_Column_List=the columns of db table used by select with type BLOB in it
-
+```
 ##其它
 
 ###Mapper文件覆写
