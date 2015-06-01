@@ -254,7 +254,7 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     FullyQualifiedJavaType builderType = new FullyQualifiedJavaType(builderName);
 
     InnerClass builder = new InnerClass(builderType);
-    builder.setVisibility(JavaVisibility.PRIVATE);
+    builder.setVisibility(JavaVisibility.PUBLIC);
     builder.setStatic(false);
 
     // build method and builder field

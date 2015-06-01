@@ -153,6 +153,21 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/test/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>${basedir}/target/generated-test-sources/xmbg</directory>
+        <includes>
+          <include>**/*.xml</include>
+        </includes>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -170,13 +185,42 @@
         </configuration>
       </plugin>
 
-      <!--Close Test -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9.1</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-test-sources/xmbg/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Open Test -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire.version}</version>
         <configuration>
-          <skipTests>true</skipTests>
+          <skipTests>false</skipTests>
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
         </configuration>
       </plugin>
     </plugins>
@@ -190,18 +234,6 @@
       </activation>
       <build>
         <plugins>
-          <!-- Open Test -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>${surefire.version}</version>
-            <configuration>
-              <forkCount>1</forkCount>
-              <reuseForks>true</reuseForks>
-              <argLine>-Dspring.profiles.active="mysql"</argLine>
-            </configuration>
-          </plugin>
-
           <!-- XMBG test for mysql -->
           <plugin>
             <groupId>com.freetmp</groupId>
@@ -219,12 +251,15 @@
               <configurationFile>${basedir}/src/test/resources/generatorConfig-mysql.xml</configurationFile>
               <overwrite>true</overwrite>
               <disableGeom>true</disableGeom>
-              <outputDirectory>${basedir}/target/generated-test-sources</outputDirectory>
+              <outputDirectory>${basedir}/target/generated-test-sources/xmbg</outputDirectory>
               <verbose>true</verbose>
             </configuration>
           </plugin>
         </plugins>
       </build>
+      <properties>
+        <jdbc.url.suffix>mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;amp;characterEncoding=utf-8&amp;amp;allowMultiQueries=true</jdbc.url.suffix>
+      </properties>
       <dependencies>
         <dependency>
           <groupId>mysql</groupId>
@@ -237,18 +272,6 @@
       <id>xmbg-postgresql-test</id>
       <build>
         <plugins>
-          <!-- Open Test -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>${surefire.version}</version>
-            <configuration>
-              <forkCount>1</forkCount>
-              <reuseForks>true</reuseForks>
-              <argLine>-Dspring.profiles.active="postgresql"</argLine>
-            </configuration>
-          </plugin>
-
           <!-- XMBG test for postgresql -->
           <plugin>
             <groupId>com.freetmp</groupId>
@@ -265,34 +288,37 @@
             <configuration>
               <configurationFile>${basedir}/src/test/resources/generatorConfig-postgresql.xml</configurationFile>
               <overwrite>true</overwrite>
-              <outputDirectory>${basedir}/target/generated-test-sources</outputDirectory>
+              <outputDirectory>${basedir}/target/generated-test-sources/xmbg</outputDirectory>
               <locale>en_US</locale>
               <i18nPath>${basedir}/src/test/resources/i18n_for_test</i18nPath>
               <verbose>true</verbose>
             </configuration>
-            <dependencies>
-              <!-- PostGis jdbc driver -->
-              <dependency>
-                <groupId>org.postgis</groupId>
-                <artifactId>postgis-jdbc</artifactId>
-                <version>${postgis.version}</version>
-                <exclusions>
-                  <!-- 需要排除桩代码否则运行会出问题 -->
-                  <exclusion>
-                    <groupId>org.postgis</groupId>
-                    <artifactId>postgis-stubs</artifactId>
-                  </exclusion>
-                </exclusions>
-              </dependency>
-              <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>
+      <properties>
+        <jdbc.url.suffix>mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true</jdbc.url.suffix>
+      </properties>
+      <dependencies>
+        <!-- PostGis jdbc driver -->
+        <dependency>
+          <groupId>org.postgis</groupId>
+          <artifactId>postgis-jdbc</artifactId>
+          <version>${postgis.version}</version>
+          <exclusions>
+            <!-- 需要排除桩代码否则运行会出问题 -->
+            <exclusion>
+              <groupId>org.postgis</groupId>
+              <artifactId>postgis-stubs</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>${postgresql.version}</version>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 </project>

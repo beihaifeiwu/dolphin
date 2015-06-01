@@ -7,7 +7,4 @@
     <typeHandler handler="com.freetmp.mbg.typehandler.GeometryTypeHandler"/>
   </typeHandlers>
 
-	<plugins>
-    <plugin interceptor="com.freetmp.mbg.interceptor.BatchInterceptor"></plugin>
-  </plugins>
 </configuration> 

@@ -1,10 +1,13 @@
 package com.freetmp.mbg.shellcallback;
 
 import com.freetmp.mbg.merge.CompilationUnitMerger;
+import org.apache.commons.io.FileUtils;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.apache.commons.io.FileUtils.*;
 
 /*
  * Created by pin on 2015/2/7.
@@ -30,7 +33,7 @@ public class MergeSupportedShellCallback extends DefaultShellCallback {
     String mergedFileSource = newFileSource;
     LOGGER.info("merge java source file for {}", existingFileFullPath);
     try {
-      mergedFileSource =  CompilationUnitMerger.merge(newFileSource,existingFileFullPath);
+      mergedFileSource =  CompilationUnitMerger.merge(newFileSource, readFileToString(getFile(existingFileFullPath)));
     } catch (Exception e) {
       LOGGER.info("java source merge failed: {}", e);
       throw new ShellException(e);

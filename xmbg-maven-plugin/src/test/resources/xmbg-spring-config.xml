@@ -35,14 +35,11 @@
   </bean>
 
   <!-- 数据源配置 -->
-  <beans profile="mysql">
-    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-      <property name="url"
-                value="jdbc:log4jdbc:mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true"/>
-      <property name="username" value="root"/>
-      <property name="password" value="liupin"/>
-      <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
-    </bean>
-  </beans>
+  <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+    <property name="url" value="jdbc:log4jdbc:${jdbc.url.suffix}"/>
+    <property name="username" value="root"/>
+    <property name="password" value="liupin"/>
+    <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
+  </bean>
 
 </beans>

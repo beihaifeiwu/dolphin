@@ -19,7 +19,7 @@
     <postgresql.version>9.4-1201-jdbc41</postgresql.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mybatis.generator.version>1.3.2</mybatis.generator.version>
-    <javaparser.version>2.0.0</javaparser.version>
+    <javaparser.version>2.1.0</javaparser.version>
     <javapoet.version>1.0.0</javapoet.version>
     <roaster.version>2.13.0.Final</roaster.version>
     <groovy.version>2.4.3</groovy.version>
@@ -54,14 +54,14 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- MBG 核心包 -->
+    <!-- MBG core -->
     <dependency>
       <groupId>org.mybatis.generator</groupId>
       <artifactId>mybatis-generator-core</artifactId>
       <version>${mybatis.generator.version}</version>
     </dependency>
 
-    <!-- MyBatis支持 -->
+    <!-- MyBatis runtime -->
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
