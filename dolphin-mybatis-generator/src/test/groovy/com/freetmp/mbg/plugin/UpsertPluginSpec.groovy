@@ -20,34 +20,24 @@ class UpsertPluginSpec extends AbstractPluginSpec {
     1 * root.addElement({ XmlElement element -> element.name == "update" && isXmlElementWithIdEquals(element, UPSERT_SELECTIVE) }) >> { generatedXmlElements.put(UPSERT_SELECTIVE, it) }
   }
 
-  def buildParameterForSingle() {
+  def buildParameter() {
     [
         record: [id: 1, name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
         array : ["id", "name"]
     ]
   }
 
-  def buildParameterForBatch() {
-    [
-        records: [
-            [id: 1, name: "Admin", password: "12345678", salt: "123", roles: "admin", registerDate: new Date()] as User,
-            [id: 2, loginName: "user", name: "User", password: "12345678", salt: "123", registerDate: new Date()] as User
-        ],
-        array  : ["id", "name"]
-    ]
-  }
-
   def parseSqlForUpsert() {
     XmlElement sql = generatedXmlElements.get(IDENTIFIERS_ARRAY_CONDITIONS)
     XmlElement upsert = generatedXmlElements.get(UPSERT)
-    Object parameter = buildParameterForSingle()
+    Object parameter = buildParameter()
     parseSql(upsert, parameter, sql)
   }
 
   def parseSqlForUpsertSelective() {
     XmlElement sql = generatedXmlElements.get(IDENTIFIERS_ARRAY_CONDITIONS)
     XmlElement upsertSelective = generatedXmlElements.get(UPSERT_SELECTIVE)
-    Object parameter = buildParameterForSingle()
+    Object parameter = buildParameter()
     parseSql upsertSelective, parameter, sql
   }
 
