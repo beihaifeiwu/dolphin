@@ -65,7 +65,7 @@ class BatchPluginSpec extends AbstractPluginSpec {
     print parseSql(element, buildParameter())
     log.info systemOutRule.log
     then:
-    systemOutRule.log.trim() == "insert into user ( login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ? ) , ( ?, ?, ?, ?, ?, ? )"
+    systemOutRule.log.trim() == "insert into user ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? ) , ( ?, ?, ?, ?, ?, ?, ? )"
 
   }
 }

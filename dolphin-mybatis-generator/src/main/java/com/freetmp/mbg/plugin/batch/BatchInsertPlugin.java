@@ -64,7 +64,7 @@ public class BatchInsertPlugin extends AbstractXmbgPlugin {
  }*/
     generateTextBlockAppendTableName("insert into ", introspectedTable,answer);
 
-    generateActualColumnNamesWithParenthesis(introspectedTable.getNonPrimaryKeyColumns(),answer);
+    generateActualColumnNamesWithParenthesis(introspectedTable.getNonBLOBColumns(),answer);
 
     generateTextBlock(" values ", answer);
 
@@ -74,7 +74,7 @@ public class BatchInsertPlugin extends AbstractXmbgPlugin {
     foreach.addAttribute(new Attribute("index", "index"));
     foreach.addAttribute(new Attribute("separator", ","));
 
-    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX,introspectedTable.getNonPrimaryKeyColumns(),foreach);
+    generateParametersSeparateByCommaWithParenthesis(PROPERTY_PREFIX,introspectedTable.getNonBLOBColumns(),foreach);
 
     answer.addElement(foreach);
 

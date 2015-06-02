@@ -42,4 +42,15 @@
     <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
   </bean>
 
+  <!-- 配置DbUnit -->
+  <bean id="dbUnitDatabaseConfig" class="com.github.springtestdbunit.bean.DatabaseConfigBean">
+    <property name="skipOracleRecyclebinTables" value="true"/>
+    <property name="caseSensitiveTableNames" value="${case.sensitive}"/>
+    <property name="escapePattern" value="&quot;?&quot;"/>
+  </bean>
+  <bean id="dbUnitDatabaseConnection" class="com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean">
+    <property name="databaseConfig" ref="dbUnitDatabaseConfig"/>
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
 </beans>

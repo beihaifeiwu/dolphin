@@ -189,7 +189,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
-
       </plugin>
 
       <plugin>
@@ -229,9 +228,6 @@
   <profiles>
     <profile>
       <id>xmbg-mysql-test</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <build>
         <plugins>
           <!-- XMBG test for mysql -->
@@ -259,6 +255,7 @@
       </build>
       <properties>
         <jdbc.url.suffix>mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;amp;characterEncoding=utf-8&amp;amp;allowMultiQueries=true</jdbc.url.suffix>
+        <case.sensitive>true</case.sensitive>
       </properties>
       <dependencies>
         <dependency>
@@ -270,6 +267,9 @@
     </profile>
     <profile>
       <id>xmbg-postgresql-test</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <!-- XMBG test for postgresql -->
@@ -297,7 +297,8 @@
         </plugins>
       </build>
       <properties>
-        <jdbc.url.suffix>mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true</jdbc.url.suffix>
+        <jdbc.url.suffix>postgresql://192.168.81.128/xmbg_test</jdbc.url.suffix>
+        <case.sensitive>true</case.sensitive>
       </properties>
       <dependencies>
         <!-- PostGis jdbc driver -->

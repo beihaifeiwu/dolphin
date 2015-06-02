@@ -1,80 +1,64 @@
--- Sequence: "AdminSequence"
+-- Sequence: "task_sequence"
 
--- DROP SEQUENCE "AdminSequence";
+-- DROP SEQUENCE "task_sequence";
 
-CREATE SEQUENCE "AdminSequence"
+CREATE SEQUENCE "task_sequence"
 INCREMENT 1
 MINVALUE 1
 MAXVALUE 999999
 START 1
 CACHE 1;
-ALTER TABLE "AdminSequence"
-OWNER TO postgres;
+ALTER TABLE "task_sequence"
+OWNER TO root;
 
--- Table: "Admin"
+-- Table: "task"
 
--- DROP TABLE "Admin";
+-- DROP TABLE "task";
 
-CREATE TABLE "Admin"
+CREATE TABLE "task"
 (
-  "ID" bigint NOT NULL DEFAULT nextval('"AdminSequence"'::regclass),
-  "Name" character varying(20),
-  "Password" text,
-  "MallId" bigint,
-  "CreateTime" timestamp with time zone,
-  CONSTRAINT "Admin_pkey" PRIMARY KEY ("ID")
+  "id" bigint NOT NULL DEFAULT nextval('"task_sequence"'::regclass),
+  "title" character varying(20) NOT NULL,
+  "description" text,
+  "user_id" bigint NOT NULL,
+  CONSTRAINT "task_pkey" PRIMARY KEY ("id")
 )
 WITH (
 OIDS=FALSE
 );
-ALTER TABLE "Admin"
-OWNER TO postgres;
+ALTER TABLE "task"
+OWNER TO root;
 
--- Sequence: "BeaconSequence"
+-- Sequence: "user_sequence"
 
--- DROP SEQUENCE "BeaconSequence";
+-- DROP SEQUENCE "user_sequence";
 
-CREATE SEQUENCE "BeaconSequence"
+CREATE SEQUENCE "user_sequence"
   INCREMENT 1
   MINVALUE 1
   MAXVALUE 9223372036854775806
   START 1
   CACHE 1;
-ALTER TABLE "BeaconSequence"
-  OWNER TO postgres;
+ALTER TABLE "user_sequence"
+  OWNER TO root;
 
--- Table: "Beacon"
+-- Table: "user"
 
--- DROP TABLE "Beacon";
+-- DROP TABLE "user";
 
-CREATE TABLE "Beacon"
+CREATE TABLE "user"
 (
-  "ID" bigint NOT NULL DEFAULT nextval('"BeaconSequence"'::regclass),
-  "MAC" character varying(20),
-  "UUID" character varying(50),
-  "Major" integer,
-  "Minor" integer,
-  "MeasuredPower" integer,
-  "RSSI" integer,
-  "BatteryLevel" integer,
-  "Frequency" integer,
-  "TxPower" integer,
-  "Password" character varying(30),
-  "Status" integer,
-  "MallId" bigint,
-  "FloorId" bigint,
-  "Point" geometry(Point,3857),
-  "Flag" integer,
-  "GatewayId" bigint,
-  "ScanTime" timestamp with time zone,
-  "CreateTime" timestamp without time zone,
-  "Number" character varying(15),
-  "Region" bigint,
-  "Type" integer,
-  CONSTRAINT "Beacon_pkey" PRIMARY KEY ("ID")
+  "id" bigint NOT NULL DEFAULT nextval('"user_sequence"'::regclass),
+  "login_name" character varying(64) NOT NULL UNIQUE,
+  "name" character varying(50) NOT NULL,
+  "password" character varying(255) NOT NULL,
+  "salt" character varying(255) NOT NULL,
+  "roles" character varying(255) NULL,
+  "register_date" timestamp without time zone DEFAULT now(),
+  CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 )
 WITH (
 OIDS=FALSE
 );
-ALTER TABLE "Beacon"
-OWNER TO postgres;
+ALTER TABLE "user"
+OWNER TO root;
