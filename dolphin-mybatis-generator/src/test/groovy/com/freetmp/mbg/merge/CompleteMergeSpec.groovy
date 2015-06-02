@@ -7,12 +7,12 @@ import spock.lang.Specification
  */
 class CompleteMergeSpec extends Specification {
 
-  def "Only test for once"(){
+  def "test on all parts"() {
     expect:
     CompilationUnitMerger.merge(first, second).trim() == result.trim()
     where:
     first =
-"""
+        """
 /**
  * Copyright 2015-2015 the original author or authors.
  *
@@ -260,6 +260,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class User implements Serializable {
+
     private Long id;
 
     private String loginName;
@@ -334,7 +335,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new  StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
@@ -347,6 +348,310 @@ public class User implements Serializable {
         sb.append(", registerDate=").append(registerDate);
         sb.append("]");
         return sb.toString();
+    }
+}
+"""
+  }
+
+  def "test on class with a few fields"(){
+    expect:
+    CompilationUnitMerger.merge(first, second).trim() == result.trim()
+    where:
+    first =
+"""
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private String loginName;
+
+    private String name;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName == null ? null : loginName.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+}
+"""
+    second =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private String loginName;
+
+    private String name;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName == null ? null : loginName.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+}
+"""
+    result =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private Long id;
+
+    private String loginName;
+
+    private String name;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName == null ? null : loginName.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+}
+"""
+  }
+
+  def "test on class with only one field"(){
+    expect:
+    CompilationUnitMerger.merge(first, second).trim() == result.trim()
+    where:
+    first =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}
+"""
+    second =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}
+"""
+    result =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}
+"""
+  }
+
+  def "test on class with only one field and getter"(){
+    expect:
+    CompilationUnitMerger.merge(first, second).trim() == result.trim()
+    where:
+    first =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+}
+"""
+    second =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+}
+"""
+    result =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+}
+"""
+  }
+
+  def "test on class with only one field and setter"(){
+    expect:
+    CompilationUnitMerger.merge(first, second).trim() == result.trim()
+    where:
+    first =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}
+"""
+    second =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}
+"""
+    result =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
 """

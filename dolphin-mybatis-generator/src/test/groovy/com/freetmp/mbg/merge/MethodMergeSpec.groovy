@@ -292,4 +292,97 @@ public interface UserMapper {
 }
 """
   }
+
+  def "test on complex method"() {
+    expect:
+    CompilationUnitMerger.merge(first, second).trim() == result.trim()
+    where:
+    first =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", loginName=").append(loginName);
+        sb.append(", name=").append(name);
+        sb.append(", password=").append(password);
+        sb.append(", salt=").append(salt);
+        sb.append(", roles=").append(roles);
+        sb.append(", registerDate=").append(registerDate);
+        sb.append("]");
+        return sb.toString();
+    }
+}
+"""
+    second =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", loginName=").append(loginName);
+        sb.append(", name=").append(name);
+        sb.append(", password=").append(password);
+        sb.append(", salt=").append(salt);
+        sb.append(", roles=").append(roles);
+        sb.append(", registerDate=").append(registerDate);
+        sb.append("]");
+        return sb.toString();
+    }
+}
+"""
+    result =
+        """
+package com.freetmp.xmbg.test.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new  StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", loginName=").append(loginName);
+        sb.append(", name=").append(name);
+        sb.append(", password=").append(password);
+        sb.append(", salt=").append(salt);
+        sb.append(", roles=").append(roles);
+        sb.append(", registerDate=").append(registerDate);
+        sb.append("]");
+        return sb.toString();
+    }
+}
+"""
+  }
 }
