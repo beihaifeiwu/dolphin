@@ -6,10 +6,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -30,23 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class XmbgBaseTest extends AbstractTransactionalJUnit4SpringContextTests {
 
   @Autowired UserMapper mapper;
-
-  static {
-    BasicConfigurator.configure();
-    Logger.getRootLogger().setLevel(Level.INFO);
-    Logger logger = LogManager.getLogger("org.dbunit");
-    logger.setLevel(Level.ERROR);
-    logger = LogManager.getLogger("org.springframework");
-    logger.setLevel(Level.ERROR);
-    logger = LogManager.getLogger("jdbc.audit");
-    logger.setLevel(Level.ERROR);
-    logger = LogManager.getLogger("jdbc.resultset");
-    logger.setLevel(Level.ERROR);
-    logger = LogManager.getLogger("jdbc.connection");
-    logger.setLevel(Level.ERROR);
-    logger = LogManager.getLogger("jdbc.sqlonly");
-    logger.setLevel(Level.ERROR);
-  }
 
   protected void validate(List<User> list, List<User> loadeds) {
     for (int i = 0; i < list.size(); i++) {
