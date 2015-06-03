@@ -2,10 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring" xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-         http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+         http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
   <!-- 配置事务管理器 -->
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -17,6 +17,8 @@
 
   <!-- 开启MyBatis注解支持 -->
   <mybatis-spring:scan base-package="com.freetmp.xmbg.test.mapper" />
+
+  <context:property-placeholder location="classpath*:dbspecific.properties"/>
 
   <!--创建sqlSessionFactory -->
   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -36,17 +38,17 @@
 
   <!-- 数据源配置 -->
   <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-    <property name="url" value="jdbc:log4jdbc:${jdbc.url.suffix}"/>
-    <property name="username" value="root"/>
-    <property name="password" value="liupin"/>
-    <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="driverClassName" value="${jdbc.driver}"/>
   </bean>
 
   <!-- 配置DbUnit -->
   <bean id="dbUnitDatabaseConfig" class="com.github.springtestdbunit.bean.DatabaseConfigBean">
     <property name="skipOracleRecyclebinTables" value="true"/>
     <property name="caseSensitiveTableNames" value="${case.sensitive}"/>
-    <property name="escapePattern" value="&quot;?&quot;"/>
+    <property name="escapePattern" value="${escape.pattern}"/>
   </bean>
   <bean id="dbUnitDatabaseConnection" class="com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean">
     <property name="databaseConfig" ref="dbUnitDatabaseConfig"/>

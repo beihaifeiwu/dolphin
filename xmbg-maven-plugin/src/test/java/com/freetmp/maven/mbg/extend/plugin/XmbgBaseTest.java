@@ -1,5 +1,6 @@
 package com.freetmp.maven.mbg.extend.plugin;
 
+import com.freetmp.mbg.constant.DatabaseType;
 import com.freetmp.xmbg.test.entity.User;
 import com.freetmp.xmbg.test.mapper.UserMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -7,6 +8,7 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -14,6 +16,8 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -26,6 +30,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class XmbgBaseTest extends AbstractTransactionalJUnit4SpringContextTests {
 
   @Autowired UserMapper mapper;
+
+  @Value("${case.sensitive}") boolean caseSensitive;
+
+  @Value("${escape.pattern}") String escapePattern;
+
+  @Value("${jdbc.url}") String jdbcUrl;
 
   protected void validate(List<User> list, List<User> loadeds) {
     for (int i = 0; i < list.size(); i++) {
@@ -47,5 +57,28 @@ public abstract class XmbgBaseTest extends AbstractTransactionalJUnit4SpringCont
     user.setRoles("user");
     user.setRegisterDate(new Date());
     return user;
+  }
+
+  public String escapeOrNot(String column){
+    return caseSensitive ? escapePattern.replace("?", column) : column;
+  }
+
+  public DatabaseType dbType(){
+    String[] arrays = jdbcUrl.split(":");
+    String dbType;
+    if(equalsIgnoreCase(arrays[1], "log4jdbc")){
+      dbType = upperCase(arrays[2]);
+    }else {
+      dbType = upperCase(arrays[1]);
+    }
+    return DatabaseType.valueOf(dbType);
+  }
+
+  public boolean isUnsupported(DatabaseType... types){
+    DatabaseType type = dbType();
+    for (DatabaseType dt : types){
+      if(type.equals(dt)) return true;
+    }
+    return false;
   }
 }

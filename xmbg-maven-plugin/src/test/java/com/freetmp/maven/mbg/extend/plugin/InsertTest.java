@@ -67,7 +67,8 @@ public class InsertTest extends XmbgBaseTest {
 
     UserExample example = new UserExample();
     example.createCriteria().andIdGreaterThan(5L);
-    example.setOrderByClause("id asc");
+
+    example.setOrderByClause(escapeOrNot("id") + " asc");
 
     List<User> loadeds = mapper.selectByExample(example);
 

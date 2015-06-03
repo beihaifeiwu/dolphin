@@ -1,6 +1,7 @@
 package com.freetmp.maven.mbg.extend.plugin;
 
 import com.freetmp.mbg.comment.CommentGenerator;
+import com.freetmp.mbg.constant.DatabaseType;
 import com.freetmp.mbg.plugin.*;
 import com.freetmp.mbg.plugin.batch.BatchInsertPlugin;
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin;
@@ -397,37 +398,35 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
    * @param context
    */
   void choosePaginationPlugin(Context context) {
-    String dbName = detectDBName(context);
-    if (dbName == null) return;
-    if (dbName == null || dbName.trim().equals("")) return;
+    DatabaseType type = detectDB(context);
     PluginConfiguration pluginConfiguration = new PluginConfiguration();
-    switch (dbName) {
-      case "mysql":
+    switch (type) {
+      case MYSQL:
         pluginConfiguration.setConfigurationType(MySqlPaginationPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if (verbose) getLog().info("enable pagination service with mysql for context " + context.getId());
         break;
-      case "postgresql":
+      case POSTGRESQL:
         pluginConfiguration.setConfigurationType(PostgreSQLPaginationPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if (verbose) getLog().info("enable pagination service with postgresql for context " + context.getId());
         break;
-      case "sqlserver":
+      case SQLSERVER:
         pluginConfiguration.setConfigurationType(SQLServerPaginationPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if (verbose) getLog().info("enable pagination service with sqlserver for context " + context.getId());
         break;
-      case "db2":
+      case DB2:
         pluginConfiguration.setConfigurationType(DB2PaginationPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if (verbose) getLog().info("enable pagination service with db2 for context " + context.getId());
         break;
-      case "oracle":
+      case ORACLE:
         pluginConfiguration.setConfigurationType(OraclePaginationPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if (verbose) getLog().info("enable pagination service with oracle for context " + context.getId());
         break;
-      case "hsqldb":
+      case HSQLDB:
         pluginConfiguration.setConfigurationType(HsqldbPaginationPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if (verbose) getLog().info("enable pagination service with hsqldb for context " + context.getId());
@@ -440,37 +439,35 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
    * @param context
    */
   void chooseUpsertPlugin(Context context) {
-    String dbName = detectDBName(context);
-    if (dbName == null) return;
-    if (dbName == null || dbName.trim().equals("")) return;
+    DatabaseType type = detectDB(context);
     PluginConfiguration pluginConfiguration = new PluginConfiguration();
-    switch (dbName){
-      case "mysql":
+    switch (type){
+      case MYSQL:
         pluginConfiguration.setConfigurationType(MySqlUpsertPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if(verbose)getLog().info("enable upsert service with mysql for context " + context.getId());
         break;
-      case "postgresql":
+      case POSTGRESQL:
         pluginConfiguration.setConfigurationType(PostgreSQLUpsertPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if(verbose)getLog().info("enable upsert service with postgresql for context " + context.getId());
         break;
-      case "sqlserver":
+      case SQLSERVER:
         pluginConfiguration.setConfigurationType(SQLServerUpsertPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if(verbose)getLog().info("enable upsert service with sqlserver for context " + context.getId());
         break;
-      case "db2":
+      case DB2:
         pluginConfiguration.setConfigurationType(DB2UpsertPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if(verbose)getLog().info("enable upsert service with db2 for context " + context.getId());
         break;
-      case "oracle":
+      case ORACLE:
         pluginConfiguration.setConfigurationType(OracleUpsertPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if(verbose)getLog().info("enable upsert service with oracle for context " + context.getId());
         break;
-      case "hsqldb":
+      case HSQLDB:
         pluginConfiguration.setConfigurationType(HsqldbUpsertPlugin.class.getTypeName());
         context.addPluginConfiguration(pluginConfiguration);
         if(verbose)getLog().info("enable upsert service with hsqldb for context " + context.getId());
@@ -479,13 +476,12 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
   }
 
   void chooseGeomPlugin(Context context) {
-    String dbName = detectDBName(context);
-    if (dbName == null || dbName.trim().equals("")) return;
+    DatabaseType type = detectDB(context);
     PluginConfiguration pluginConfiguration = new PluginConfiguration();
-    switch (dbName) {
-      case "mysql":
+    switch (type) {
+      case MYSQL:
         break;
-      case "postgresql":
+      case POSTGRESQL:
         pluginConfiguration.setConfigurationType(PostgisGeoPlugin.class.getTypeName());
         pluginConfiguration.addProperty(PostgisGeoPlugin.SRID_NAME, srid);
         context.addPluginConfiguration(pluginConfiguration);
@@ -494,16 +490,21 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
     }
   }
 
-  private String detectDBName(Context context) {
+  private DatabaseType detectDB(Context context) {
     JDBCConnectionConfiguration jdbcConnectionConfiguration = context.getJdbcConnectionConfiguration();
     String url = jdbcConnectionConfiguration.getConnectionURL();
     int start = url.indexOf(":");
-    if (start == -1) return null;
+    if (start == -1) return DatabaseType.UNKNOWN;
     start += 1;
     int end = url.indexOf(":", start);
-    if (end == -1) return null;
-    String dbName = url.substring(start, end).toLowerCase();
-    return dbName;
+    if (end == -1) return DatabaseType.UNKNOWN;
+    String dbName = url.substring(start, end).toUpperCase();
+    try {
+      return DatabaseType.valueOf(dbName);
+    } catch (IllegalArgumentException e) {
+      getLog().warn("cannot detect db type from the context",e);
+    }
+    return DatabaseType.UNKNOWN;
   }
 
   private void addToContext(List<Context> contexts, PluginConfiguration pluginConfiguration) {

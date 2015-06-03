@@ -12,7 +12,8 @@ import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
  */
 public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
 
-  @Override protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
+  @Override
+  protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("merge into ", introspectedTable, parent);
     generateTextBlock(" using (values ", parent);
     generateParametersSeparateByComma(introspectedTable.getAllColumns(), parent);
@@ -27,7 +28,7 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
     generateTextBlock(" ) ", parent);
 
     generateTextBlock(" when matched then update set ", parent);
-    generateCopyForSetByPrefix(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime(), "temp.", introspectedTable, parent);
+    generateCopyForSetByPrefix(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + ".", "temp.", introspectedTable, parent);
 
     generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
@@ -35,7 +36,8 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, "temp.", false, introspectedTable.getAllColumns(), parent);
   }
 
-  @Override protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {
+  @Override
+  protected void generateSqlMapContentSelective(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("merge into ", introspectedTable, parent);
     generateTextBlock(" using (values ", parent);
     generateParametersSeparateByComma(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
@@ -51,7 +53,7 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock(" when matched then update set ", parent);
     generateCopyForSetByPrefix(PROPERTY_PREFIX,
-        introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime(), "temp.", true, introspectedTable, parent);
+        introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + ".", "temp.", true, introspectedTable, parent);
 
     generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);
@@ -59,7 +61,8 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, "temp.", true, introspectedTable.getAllColumns(), parent);
   }
 
-  @Override protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
+  @Override
+  protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
     XmlElement sql = new XmlElement("sql");
     sql.addAttribute(new Attribute("id", IDENTIFIERS_ARRAY_CONDITIONS));
 
@@ -73,9 +76,9 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
     for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
       XmlElement isEqualElement = new XmlElement("if");
       sb.setLength(0);
-      sb.append("item == \'");
+      sb.append("item == &quot;");
       sb.append(introspectedColumn.getJavaProperty());
-      sb.append("\'");
+      sb.append("&quot;");
       isEqualElement.addAttribute(new Attribute("test", sb.toString()));
       foreach.addElement(isEqualElement);
 

@@ -158,8 +158,14 @@
         <directory>${basedir}/src/test/resources</directory>
         <filtering>true</filtering>
         <includes>
-          <include>**/*</include>
+          <include>**/*.properties</include>
         </includes>
+      </testResource>
+      <testResource>
+        <directory>${basedir}/src/test/resources</directory>
+        <excludes>
+          <exclude>**/*.properties</exclude>
+        </excludes>
       </testResource>
       <testResource>
         <directory>${basedir}/target/generated-test-sources/xmbg</directory>
@@ -267,9 +273,6 @@
     </profile>
     <profile>
       <id>xmbg-postgresql-test</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <build>
         <plugins>
           <!-- XMBG test for postgresql -->
@@ -318,6 +321,49 @@
           <groupId>org.postgresql</groupId>
           <artifactId>postgresql</artifactId>
           <version>${postgresql.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>xmbg-hsqldb-test</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <!-- XMBG test for hsqldb -->
+          <plugin>
+            <groupId>com.freetmp</groupId>
+            <artifactId>xmbg-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <phase>generate-test-sources</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <configurationFile>${basedir}/src/test/resources/generatorConfig-hsqldb.xml</configurationFile>
+              <overwrite>true</overwrite>
+              <outputDirectory>${basedir}/target/generated-test-sources/xmbg</outputDirectory>
+              <locale>en_US</locale>
+              <i18nPath>${basedir}/src/test/resources/i18n_for_test</i18nPath>
+              <verbose>true</verbose>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <jdbc.url.suffix>hsqldb:file:/D:/tmp/xmbg_test</jdbc.url.suffix>
+        <case.sensitive>true</case.sensitive>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.hsqldb</groupId>
+          <artifactId>hsqldb</artifactId>
+          <version>2.3.2</version>
         </dependency>
       </dependencies>
     </profile>

@@ -11,6 +11,8 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,8 @@ import java.util.TreeSet;
  * @author Pin Liu
  */
 public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
+
+  private final Logger log = LoggerFactory.getLogger(AbstractUpsertPlugin.class);
 
   public static final String UPSERT = "upsert";
   public static final String UPSERT_SELECTIVE = "upsertSelective";
@@ -145,9 +149,9 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
       XmlElement isEqualElement = new XmlElement("if");
       sb.setLength(0);
-      sb.append("item == \'");
+      sb.append("item == &quot;");
       sb.append(introspectedColumn.getJavaProperty());
-      sb.append("\'");
+      sb.append("&quot;");
       isEqualElement.addAttribute(new Attribute("test", sb.toString()));
       foreach.addElement(isEqualElement);
 
@@ -160,7 +164,6 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     }
 
     sql.addElement(foreach);
-
     return sql;
   }
 

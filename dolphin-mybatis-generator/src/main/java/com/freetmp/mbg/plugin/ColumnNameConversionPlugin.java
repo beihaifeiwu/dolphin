@@ -1,6 +1,5 @@
 package com.freetmp.mbg.plugin;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
@@ -70,9 +70,7 @@ public class ColumnNameConversionPlugin extends PluginAdapter {
       //print("after calculate for blob", introspectedColumns);
       blobColumnsField.set(introspectedTable, introspectedColumns);
 
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
+    } catch (IllegalArgumentException | IllegalAccessException e) {
       e.printStackTrace();
     }
   }
@@ -105,15 +103,15 @@ public class ColumnNameConversionPlugin extends PluginAdapter {
     StringBuilder sb = new StringBuilder();
     while (matcher.find()) {
       String word = matcher.group();
-      word = StringUtils.removePattern(word, "[^a-zA-Z]"); //去除word中所有非字母字符
-      sb.append(StringUtils.capitalize(word.toLowerCase()));
+      word = removePattern(word, "[^a-zA-Z]"); //去除word中所有非字母字符
+      sb.append(capitalize(word.toLowerCase()));
     }
     String result = sb.toString();
     //System.out.println(result);
-    if (StringUtils.isAllUpperCase(result)) { //实际列名全为大写时则全部改为小写
+    if (isAllUpperCase(result)) { //实际列名全为大写时则全部改为小写
       result = result.toLowerCase();
     } else {
-      result = StringUtils.uncapitalize(result);
+      result = uncapitalize(result);
     }
     //System.out.println(result);
     return result;

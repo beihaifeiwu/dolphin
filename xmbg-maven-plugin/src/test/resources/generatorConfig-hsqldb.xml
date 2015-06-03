@@ -17,8 +17,8 @@
     </commentGenerator>
 
     <!--数据库连接 -->
-    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                    connectionURL="jdbc:mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;characterEncoding=utf-8"
+    <jdbcConnection driverClass="org.hsqldb.jdbc.JDBCDriver"
+                    connectionURL="jdbc:hsqldb:file:/D:/tmp/xmbg_test;readonly=true"
                     userId="root"
                     password="liupin"
         >
@@ -47,12 +47,12 @@
     </javaClientGenerator>
 
     <!--对应数据库表 mysql可以加入主键自增 字段命名 忽略某字段等 -->
-    <table tableName="user" domainObjectName="User">
-      <generatedKey column="id" sqlStatement="MySql"/>
+    <table tableName="user" domainObjectName="User" delimitIdentifiers="true" delimitAllColumns="true">
+      <!--<generatedKey column="id" sqlStatement="HSQLDB"/>-->
     </table>
 
-    <table tableName="task" domainObjectName="Task">
-      <generatedKey column="id" sqlStatement="MySql"/>
+    <table tableName="task" domainObjectName="Task" delimitIdentifiers="true" delimitAllColumns="true">
+      <generatedKey column="id" sqlStatement="HSQLDB"/>
     </table>
 
   </context>

@@ -1,5 +1,6 @@
 package com.freetmp.maven.mbg.extend.plugin;
 
+import com.freetmp.mbg.constant.DatabaseType;
 import com.freetmp.xmbg.test.entity.User;
 import com.freetmp.xmbg.test.entity.UserExample;
 import org.junit.Test;
@@ -123,6 +124,9 @@ public class UpdateTest extends XmbgBaseTest {
 
   @Test
   public void testBatchUpdate() {
+    // jump unsupported database
+    if(isUnsupported(DatabaseType.HSQLDB)) return;
+
     // update with all field non null
     List<User> list = new ArrayList<>();
     list.add(buildUser(1L));
