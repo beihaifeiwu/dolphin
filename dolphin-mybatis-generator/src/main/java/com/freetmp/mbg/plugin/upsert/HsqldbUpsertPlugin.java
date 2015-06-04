@@ -16,7 +16,7 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
   protected void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent) {
     generateTextBlockAppendTableName("merge into ", introspectedTable, parent);
     generateTextBlock(" using (values ", parent);
-    generateParametersSeparateByComma(introspectedTable.getAllColumns(), parent);
+    generateParametersSeparateByComma(PROPERTY_PREFIX,introspectedTable.getAllColumns(), parent);
     generateTextBlock(" ) temp ", parent);
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
     generateTextBlock(" on ( ", parent);
@@ -76,9 +76,9 @@ public class HsqldbUpsertPlugin extends AbstractUpsertPlugin {
     for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
       XmlElement isEqualElement = new XmlElement("if");
       sb.setLength(0);
-      sb.append("item == &quot;");
+      sb.append("item == \'");
       sb.append(introspectedColumn.getJavaProperty());
-      sb.append("&quot;");
+      sb.append("\'");
       isEqualElement.addAttribute(new Attribute("test", sb.toString()));
       foreach.addElement(isEqualElement);
 

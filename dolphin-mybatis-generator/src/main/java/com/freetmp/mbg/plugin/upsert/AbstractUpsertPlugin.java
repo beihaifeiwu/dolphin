@@ -149,9 +149,9 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
     for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
       XmlElement isEqualElement = new XmlElement("if");
       sb.setLength(0);
-      sb.append("item == &quot;");
+      sb.append("item == \'");
       sb.append(introspectedColumn.getJavaProperty());
-      sb.append("&quot;");
+      sb.append("\'");
       isEqualElement.addAttribute(new Attribute("test", sb.toString()));
       foreach.addElement(isEqualElement);
 

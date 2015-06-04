@@ -163,7 +163,7 @@ class UpsertPluginSpec extends AbstractPluginSpec {
 
     then:
     systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ?, ? ) temp ( id, login_name, name, password, salt, roles, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
-        "when matched then update set userid = temp.id, userlogin_name = temp.login_name, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
+        "when matched then update set user.id = temp.id, user.login_name = temp.login_name, user.name = temp.name, user.password = temp.password, user.salt = temp.salt, user.roles = temp.roles, user.register_date = temp.register_date " +
         "when not matched then insert ( id, login_name, name, password, salt, roles, register_date ) values ( temp.id, temp.login_name, temp.name, temp.password, temp.salt, temp.roles, temp.register_date )"
 
     when:
@@ -173,7 +173,7 @@ class UpsertPluginSpec extends AbstractPluginSpec {
 
     then:
     systemOutRule.log.trim() == "merge into user using (values ?, ?, ?, ?, ?, ? ) temp ( id, name, password, salt, roles, register_date ) on ( user.id = temp.id and user.name = temp.name ) " +
-        "when matched then update set userid = temp.id, username = temp.name, userpassword = temp.password, usersalt = temp.salt, userroles = temp.roles, userregister_date = temp.register_date " +
+        "when matched then update set user.id = temp.id, user.name = temp.name, user.password = temp.password, user.salt = temp.salt, user.roles = temp.roles, user.register_date = temp.register_date " +
         "when not matched then insert ( id, name, password, salt, roles, register_date ) values ( temp.id, temp.name, temp.password, temp.salt, temp.roles, temp.register_date )"
   }
 
