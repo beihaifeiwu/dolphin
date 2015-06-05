@@ -148,7 +148,12 @@
       <version>1.10.0</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.0.14</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- dom4j xml解析支持 -->
     <dependency>

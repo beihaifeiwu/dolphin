@@ -1,5 +1,7 @@
 package com.freetmp.mbg.plugin
 
+import com.alibaba.druid.sql.SQLUtils
+import com.freetmp.mbg.formatter.BasicFormatterImpl
 import com.freetmp.mbg.plugin.batch.BatchInsertPlugin
 import com.freetmp.mbg.plugin.batch.BatchUpdatePlugin
 import groovy.util.logging.Slf4j
@@ -41,13 +43,22 @@ class BatchPluginSpec extends AbstractPluginSpec {
     print parseSql(element, buildParameter())
     log.info systemOutRule.log
     then:
-    systemOutRule.log.trim() == "update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ? ; update user set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ? where id = ?"
+    systemOutRule.log ==
+        """
+update user
+set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?
+where id = ?;
+update user
+set login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?
+where id = ?
+"""
   }
 
   def "check generated client interface and mapper xml for batch insert"() {
     setup:
     BatchInsertPlugin plugin = new BatchInsertPlugin()
     XmlElement element
+    formatter = new BasicFormatterImpl()
 
     when:
     plugin.clientGenerated(mapper, mapperImpl, introspectedTable)
@@ -65,7 +76,16 @@ class BatchPluginSpec extends AbstractPluginSpec {
     print parseSql(element, buildParameter())
     log.info systemOutRule.log
     then:
-    systemOutRule.log.trim() == "insert into user ( id, login_name, name, password, salt, roles, register_date ) values ( ?, ?, ?, ?, ?, ?, ? ) , ( ?, ?, ?, ?, ?, ?, ? )"
-
+    systemOutRule.log ==
+"""
+    insert
+    into
+        user
+        ( id, login_name, name, password, salt, roles, register_date )
+    values
+        ( ?, ?, ?, ?, ?, ?, ? ) , (
+            ?, ?, ?, ?, ?, ?, ?
+        )
+"""
   }
 }

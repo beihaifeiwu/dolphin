@@ -24,7 +24,7 @@ public class DB2UpsertPlugin extends AbstractUpsertPlugin {
     parent.addElement(include);
 
     generateTextBlock(" when matched then update set ", parent);
-    generateCopyForSetByPrefix(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime(), "temp.", introspectedTable, parent);
+    generateCopyForSetByPrefix(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + ".", "temp.", introspectedTable, parent);
 
     generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(introspectedTable.getAllColumns(), parent);
@@ -46,7 +46,7 @@ public class DB2UpsertPlugin extends AbstractUpsertPlugin {
 
     generateTextBlock(" when matched then update set ", parent);
     generateCopyForSetByPrefix(PROPERTY_PREFIX,
-        introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime(), "temp.", true, introspectedTable, parent);
+        introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() + ".", "temp.", true, introspectedTable, parent);
 
     generateTextBlock(" when not matched then insert ", parent);
     generateActualColumnNamesWithParenthesis(PROPERTY_PREFIX, true, introspectedTable.getAllColumns(), parent);

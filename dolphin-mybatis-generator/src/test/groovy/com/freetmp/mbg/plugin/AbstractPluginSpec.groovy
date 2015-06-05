@@ -1,4 +1,7 @@
 package com.freetmp.mbg.plugin
+
+import com.alibaba.druid.sql.SQLUtils
+import com.freetmp.mbg.formatter.Formatter
 import org.apache.ibatis.builder.xml.XMLMapperBuilder
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver
 import org.apache.ibatis.mapping.BoundSql
@@ -30,6 +33,7 @@ import org.mybatis.generator.config.TableConfiguration
 import org.mybatis.generator.internal.PluginAggregator
 import org.mybatis.generator.internal.rules.Rules
 import spock.lang.Specification
+
 /**
  * Created by LiuPin on 2015/5/20.
  */
@@ -37,6 +41,8 @@ abstract class AbstractPluginSpec extends Specification {
 
   @Rule
   SystemOutRule systemOutRule = new SystemOutRule().enableLog().muteForSuccessfulTests()
+
+  Formatter formatter = { SQLUtils.format(it, null) };
 
   // JavaSource generate related
   Interface mapper = Spy(Interface, constructorArgs: [User.class.canonicalName + "Mapper"])
@@ -47,7 +53,7 @@ abstract class AbstractPluginSpec extends Specification {
   // Database table metadata related
   Rules rules = Stub()
   TableConfiguration tableConfiguration = Stub()
-  FullyQualifiedTable fullyQualifiedTable = new FullyQualifiedTable(null,null,"user","User",null,false,null,null,null,false,mbgContext)
+  FullyQualifiedTable fullyQualifiedTable = new FullyQualifiedTable(null, null, "user", "User", null, false, null, null, null, false, mbgContext)
   IntrospectedTable introspectedTable = Spy(IntrospectedTable, constructorArgs: [IntrospectedTable.TargetRuntime.MYBATIS3])
 
   List<IntrospectedColumn> introspectedBlobColumns = []
@@ -67,7 +73,7 @@ abstract class AbstractPluginSpec extends Specification {
     rules.calculateAllFieldsClass() >> new FullyQualifiedJavaType(User.class.canonicalName)
     tableConfiguration.getDomainObjectName() >> User.class.simpleName
 
-    introspectedPkColumns   << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "id" }; getJavaProperty() >> "id"; getJdbcTypeName() >> "BIGINT"; getActualColumnName() >> "id"; isColumnNameDelimited() >> false }
+    introspectedPkColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "id" }; getJavaProperty() >> "id"; getJdbcTypeName() >> "BIGINT"; getActualColumnName() >> "id"; isColumnNameDelimited() >> false }
     introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "loginName" }; getJavaProperty() >> "loginName"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "login_name"; isColumnNameDelimited() >> false }
     introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "name" }; getJavaProperty() >> "name"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "name"; isColumnNameDelimited() >> false }
     introspectedBaseColumns << Mock(IntrospectedColumn) { getJavaProperty(_) >> { String prefix -> prefix + "password" }; getJavaProperty() >> "password"; getJdbcTypeName() >> "VARCHAR"; getActualColumnName() >> "password"; isColumnNameDelimited() >> false }
@@ -134,7 +140,7 @@ abstract class AbstractPluginSpec extends Specification {
     exampleWhere.addElements(root)
     baseColumnList.addElements(root)
 
-    bases?.each {root.addElement(it)}
+    bases?.each { root.addElement(it) }
 
     return document
   }
@@ -152,10 +158,24 @@ abstract class AbstractPluginSpec extends Specification {
   def parseSql(XmlElement element, def parameterObject, XmlElement... bases) {
     MappedStatement mappedStatement = parseXml(element, bases)
     BoundSql sql = mappedStatement.getBoundSql(parameterObject)
-    format(sql.sql)?.toLowerCase()
+    formatSql(sql.sql)?.toLowerCase()
   }
 
-  def format(String str){
-    str?.replaceAll("\\s+", " ")?.trim()
+  def formatSql(String sql) {
+    String[] sqls = sql?.replaceAll("\\s+", " ")?.trim()?.split(";")
+    if (sqls) {
+      StringBuilder sb = new StringBuilder()
+      sqls.each { sb.append formatter.format(it.trim()) + ";\n" }
+      sb.setLength(sb.length() - 2)
+      if (sb.contains('\n')) {
+        if(sb.charAt(0) != '\n') sb.insert(0, '\n')
+        sb.append("\n")
+      }
+      return sb.toString().replaceAll("\t","  ")
+    }
+  }
+
+  def formatXml(String xml) {
+    xml?.replaceAll("\\s+", " ")?.trim()
   }
 }
