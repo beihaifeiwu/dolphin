@@ -26,9 +26,33 @@ public class UpsertTest extends XmbgBaseTest {
     user.setLoginName("admin_test");
 
     rows = mapper.upsert(user, new String[]{"id", "name"});
-    assertThat(rows).isGreaterThanOrEqualTo(1);
+    assertThat(rows).isGreaterThanOrEqualTo(0);
 
     loaded = mapper.selectByPrimaryKey(3L);
+    assertThat(loaded).isNotNull();
+    assertThat(loaded).isEqualToIgnoringGivenFields(user, "registerDate");
+
+  }
+
+  @Test
+  public void testUpsertSelective(){
+    User user = buildUser(4L);
+    user.setRoles(null);
+    // user is new
+    int rows = mapper.upsertSelective(user, new String[]{"id", "name"});
+    assertThat(rows).isEqualTo(1);
+    User loaded = mapper.selectByPrimaryKey(4L);
+    assertThat(loaded).isNotNull();
+    assertThat(loaded).isEqualToIgnoringGivenFields(user, "registerDate");
+
+    // user has been in the db
+    user.setRoles("admin");
+    user.setLoginName("admin_test");
+
+    rows = mapper.upsert(user, new String[]{"id", "name"});
+    assertThat(rows).isGreaterThanOrEqualTo(0);
+
+    loaded = mapper.selectByPrimaryKey(4L);
     assertThat(loaded).isNotNull();
     assertThat(loaded).isEqualToIgnoringGivenFields(user, "registerDate");
 
