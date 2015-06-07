@@ -271,6 +271,7 @@
     <module>dolphin-error-coder</module>
     <module>dolphin-common</module>
     <module>dolphin-web-login</module>
+    <module>dolphin-web-ui</module>
   </modules>
 
 
