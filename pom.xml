@@ -272,6 +272,7 @@
     <module>dolphin-common</module>
     <module>dolphin-web-login</module>
     <module>dolphin-web-ui</module>
+    <module>dolphin-dependency-manager</module>
   </modules>
 
 
