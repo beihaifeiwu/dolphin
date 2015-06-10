@@ -1,9 +1,13 @@
 package com.freetmp.dolphin.dependency.manager.artifact
 
 import org.eclipse.aether.transfer.AbstractTransferListener
+import org.eclipse.aether.transfer.MetadataNotFoundException
 import org.eclipse.aether.transfer.TransferEvent
 import org.eclipse.aether.transfer.TransferResource
 import java.io.PrintStream
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -23,10 +27,11 @@ public class ConsoleTransferListener(var out: PrintStream = System.out) : Abstra
     val resource = event!!.getResource()
     downloads.put(resource, event.getTransferredBytes())
     val sb = StringBuilder {
-      for((key,value) in downloads)
-        append("${getStatus(key.getContentLength(),value)}  ")
+      for ((key, value) in downloads)
+        append("${getStatus(key.getContentLength(), value)}  ")
 
-      append()
+      pad(lastLength - length())
+      append('\r')
     }
     out.println(sb)
   }
@@ -36,19 +41,49 @@ public class ConsoleTransferListener(var out: PrintStream = System.out) : Abstra
   }
 
   override fun transferFailed(event: TransferEvent?) {
-    super.transferFailed(event)
+    transferCompleted(event!!)
+    if ( event.getException() is MetadataNotFoundException)
+      event.getException().printStackTrace(out)
   }
 
   override fun transferCorrupted(event: TransferEvent?) {
-    super.transferCorrupted(event)
+    event?.getException()?.printStackTrace()
   }
 
   override fun transferSucceeded(event: TransferEvent?) {
-    super.transferSucceeded(event)
+    transferCompleted(event!!)
+    val resource = event.getResource()
+    val contentLength = event.getTransferredBytes()
+    if (contentLength >= 0) {
+      val type = if (event.getRequestType() == TransferEvent.RequestType.PUT) "Uploaded" else "Downloaded"
+      val len = if (contentLength >= 1024) "${toKB(contentLength)} KB" else "$contentLength B}"
+      var throughput = ""
+      val duration = System.currentTimeMillis() - resource.getTransferStartTime()
+      if (duration > 0) {
+        val kbPerSec = ((contentLength - resource.getResumeOffset()) / 1024.0) / (duration / 1000.0)
+        throughput = " at ${DecimalFormat("0.0", DecimalFormatSymbols(Locale.ENGLISH)).format(kbPerSec)} KB/sec"
+      }
+      out.println("$type: ${resource.getRepositoryUrl()}${resource.getResourceName()} ($len$throughput)")
+    }
   }
 
-  fun StringBuffer.pad(spaces:Int){
+  fun transferCompleted(event: TransferEvent) {
+    downloads.remove(event.getResource())
+    out.println(StringBuilder {
+      pad(lastLength)
+      append('\r')
+    })
+  }
 
+  fun StringBuilder.pad(spaces: Int): StringBuilder {
+    var block = "                                        "
+    var mutable = spaces
+    while ( mutable > 0) {
+      val n = Math.min(spaces, block.length())
+      append(block, 0, n)
+      mutable -= n
+    }
+    return this
   }
 
   fun getStatus(complete: Long, total: Long): String {
@@ -63,4 +98,5 @@ public class ConsoleTransferListener(var out: PrintStream = System.out) : Abstra
   fun toKB(bytes: Long): Long {
     return (bytes + 1023) / 1024
   }
+
 }
