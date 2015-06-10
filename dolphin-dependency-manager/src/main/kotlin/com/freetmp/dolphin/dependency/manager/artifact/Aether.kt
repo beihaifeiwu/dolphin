@@ -1,9 +1,12 @@
 package com.freetmp.dolphin.dependency.manager.artifact
 
 import com.freetmp.dolphin.dependency.manager.config.Configuration
+import com.freetmp.dolphin.dependency.manager.config.fillDeployRepoTo
+import com.freetmp.dolphin.dependency.manager.config.fillReposTo
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils
 import org.eclipse.aether.DefaultRepositorySystemSession
 import org.eclipse.aether.RepositorySystem
+import org.eclipse.aether.RepositorySystemSession
 import org.eclipse.aether.artifact.Artifact
 import org.eclipse.aether.artifact.DefaultArtifact
 import org.eclipse.aether.collection.CollectRequest
@@ -16,13 +19,16 @@ import org.eclipse.aether.installation.InstallRequest
 import org.eclipse.aether.repository.Authentication
 import org.eclipse.aether.repository.LocalRepository
 import org.eclipse.aether.repository.RemoteRepository
-import org.eclipse.aether.resolution.DependencyRequest
+import org.eclipse.aether.resolution.*
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory
 import org.eclipse.aether.spi.connector.transport.TransporterFactory
 import org.eclipse.aether.transport.file.FileTransporterFactory
 import org.eclipse.aether.transport.http.HttpTransporterFactory
+import org.eclipse.aether.util.artifact.JavaScopes
+import org.eclipse.aether.util.filter.DependencyFilterUtils
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator
 import org.eclipse.aether.util.repository.AuthenticationBuilder
+import org.eclipse.aether.version.Version
 import java.io.File
 
 /**
@@ -53,62 +59,98 @@ fun newRepositorySystemSession(system: RepositorySystem, config: Configuration):
   return session
 }
 
-fun newRepositories(vararg repos: String): MutableList<RemoteRepository> {
-  return arrayListOf(
-      remoteRepository("oschina", "default", "http://maven.oschina.net/content/groups/public/"),
-      remoteRepository("central", "default", "http://central.maven.org/maven2/")
-  )
-}
-
-fun remoteRepository(id: String, type: String, url: String, auth: Authentication? = null): RemoteRepository {
-  val builder = RemoteRepository.Builder(id, type, url)
-  if (auth != null) builder.setAuthentication(auth)
-  return builder.build()
-}
-
 fun displayTree(node: DependencyNode) = node.accept(ConsoleDependencyGraphDumper())
 
 
 data class ResolveResult(val root: DependencyNode, val resolvedFiles: List<File>, val resolvedClassPath: String)
 
-fun resolve(groupId: String, artifactId: String, version: String, config: Configuration): ResolveResult {
+inline fun <T> template(full: String, config: Configuration, run: (RepositorySystem, RepositorySystemSession, Artifact) -> T): T {
   val system = newRepositorySystem()
   val session = newRepositorySystemSession(system, config)
-  val dependency = Dependency(DefaultArtifact(groupId, artifactId, "", "jar", version), "runtime")
+  val artifact = DefaultArtifact(full)
 
-  val collectRequest = CollectRequest()
-  collectRequest.setRoot(dependency)
-  config.remoteRepos.forEachIndexed { i, s -> collectRequest.addRepository(remoteRepository("id_$i", "default", s)) }
+  return run(system, session, artifact)
+}
 
-  val dependencyRequest = DependencyRequest()
-  dependencyRequest.setCollectRequest(collectRequest)
+inline fun template(config: Configuration, run: (RepositorySystem, RepositorySystemSession) -> Unit) {
+  val system = newRepositorySystem()
+  val session = newRepositorySystemSession(system, config)
+  run(system, session)
+}
 
-  val rootNode = system.resolveDependencies(session, dependencyRequest).getRoot()
-  displayTree(rootNode)
 
-  val nlg = PreorderNodeListGenerator()
-  rootNode.accept(nlg)
+fun resolve(full: String, config: Configuration): ResolveResult {
+  return template<ResolveResult>(full, config) { system, session, artifact ->
+    val dependency = Dependency(artifact, JavaScopes.RUNTIME)
 
-  return ResolveResult(rootNode, nlg.getFiles(), nlg.getClassPath())
+    val collectRequest = CollectRequest()
+    collectRequest.setRoot(dependency)
+    config.fillReposTo { collectRequest.addRepository(it) }
+
+    val dependencyRequest = DependencyRequest()
+    dependencyRequest.setCollectRequest(collectRequest)
+    val rootNode = system.resolveDependencies(session, dependencyRequest).getRoot()
+    val nlg = PreorderNodeListGenerator()
+    rootNode.accept(nlg)
+
+    return ResolveResult(rootNode, nlg.getFiles(), nlg.getClassPath())
+  }
+}
+
+fun resolveArtifact(full: String, config: Configuration): Artifact {
+  return template(full, config) { system, session, artifact ->
+    val request = ArtifactRequest()
+    request.setArtifact(artifact)
+    config.fillReposTo { request.addRepository(it) }
+
+    val artifactResult = system.resolveArtifact(session, request)
+    return artifactResult.getArtifact()
+  }
+
+}
+
+fun resolveTransitiveDependencies(full: String, config: Configuration): List<Artifact> {
+  return template(full, config) { system, session, artifact ->
+    val filter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE)
+    val collectRequest = CollectRequest()
+    collectRequest.setRoot(Dependency(artifact, JavaScopes.COMPILE))
+    config.fillReposTo { collectRequest.addRepository(it) }
+    val dependencyRequest = DependencyRequest(collectRequest, filter)
+    system.resolveDependencies(session, dependencyRequest).getArtifactResults().map { it.getArtifact() }
+  }
 }
 
 fun install(artifact: Artifact, pom: Artifact, config: Configuration) {
-  val system = newRepositorySystem()
-  val session = newRepositorySystemSession(system, config)
-  val installRequest: InstallRequest = InstallRequest()
-  installRequest.addArtifact(artifact).addArtifact(pom)
-  system.install(session, installRequest)
+
+  template(config){system, session ->
+    val installRequest: InstallRequest = InstallRequest()
+    installRequest.addArtifact(artifact).addArtifact(pom)
+    system.install(session, installRequest)
+  }
+
 }
 
 fun deploy(artifact: Artifact, pom: Artifact, config: Configuration) {
   val system = newRepositorySystem()
   val session = newRepositorySystemSession(system, config)
-  val auth = AuthenticationBuilder().addUsername(config.username).addPassword(config.password).build()
-  val nexus = remoteRepository("deploy_target", "default", config.deployRepos, auth)
 
   val deployRequest = DeployRequest()
   deployRequest.addArtifact(artifact).addArtifact(pom)
-  deployRequest.setRepository(nexus)
+  config.fillDeployRepoTo { deployRequest.setRepository(it) }
 
   system.deploy(session, deployRequest)
 }
+
+fun availableVersions(groupId: String, artifactId: String, config: Configuration): VersionRangeResult {
+  val system = newRepositorySystem()
+  val session = newRepositorySystemSession(system, config)
+  val artifact = DefaultArtifact("$groupId:$artifactId:[0,)")
+
+  val vrr = VersionRangeRequest()
+  vrr.setArtifact(artifact)
+  config.fillReposTo { vrr.addRepository(it) }
+
+  val rangeResult = system.resolveVersionRange(session, vrr)
+  return rangeResult
+}
+

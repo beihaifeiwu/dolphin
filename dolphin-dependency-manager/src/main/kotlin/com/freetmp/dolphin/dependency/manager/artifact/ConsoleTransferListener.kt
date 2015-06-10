@@ -33,7 +33,7 @@ public class ConsoleTransferListener(var out: PrintStream = System.out) : Abstra
       pad(lastLength - length())
       append('\r')
     }
-    out.println(sb)
+    out.print(sb)
   }
 
   override fun transferStarted(event: TransferEvent?) {
@@ -69,7 +69,7 @@ public class ConsoleTransferListener(var out: PrintStream = System.out) : Abstra
 
   fun transferCompleted(event: TransferEvent) {
     downloads.remove(event.getResource())
-    out.println(StringBuilder {
+    out.print(StringBuilder {
       pad(lastLength)
       append('\r')
     })

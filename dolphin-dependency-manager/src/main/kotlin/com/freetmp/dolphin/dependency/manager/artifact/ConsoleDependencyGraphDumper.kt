@@ -2,8 +2,8 @@ package com.freetmp.dolphin.dependency.manager.artifact
 
 import org.eclipse.aether.graph.DependencyNode
 import org.eclipse.aether.graph.DependencyVisitor
-import org.eclipse.aether.util.artifact.ArtifactIdUtils
-import org.eclipse.aether.util.graph.manager.DependencyManagerUtils
+import org.eclipse.aether.util.artifact.ArtifactIdUtils.*
+import org.eclipse.aether.util.graph.manager.DependencyManagerUtils.*
 import org.eclipse.aether.util.graph.transformer.ConflictResolver
 import java.io.PrintStream
 
@@ -42,16 +42,16 @@ public class ConsoleDependencyGraphDumper(val out: PrintStream = System.out) : D
         if (d.isOptional()) append(", optional")
         append("]")
       }
-      var premanaged = DependencyManagerUtils.getPremanagedVersion(node)
+      var premanaged = getPremanagedVersion(node)
       if (premanaged != null && premanaged != a.getBaseVersion()) append(" (version managed from $premanaged)")
-      premanaged = DependencyManagerUtils.getPremanagedScope(node)
+      premanaged = getPremanagedScope(node)
       if (premanaged != null && premanaged != d.getScope()) append(" (scope managed from $premanaged)")
 
       val winner = node.getData().get(ConflictResolver.NODE_DATA_WINNER) as DependencyNode?
-      if (winner != null && !ArtifactIdUtils.equalsBaseId(a, winner.getArtifact())) {
+      if (winner != null && !equalsBaseId(a, winner.getArtifact())) {
         val w = winner.getArtifact()
         append(" (conflicts with ")
-        if (ArtifactIdUtils.toVersionlessId(a).equals(ArtifactIdUtils.toVersionlessId(w))) append(w.getVersion())
+        if (toVersionlessId(a).equals(toVersionlessId(w))) append(w.getVersion())
         else append(w)
         append(")")
       }

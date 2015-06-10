@@ -45,11 +45,11 @@ public class ConsoleRepositoryListener(val out: PrintStream = System.out) : Abst
   }
 
   override fun artifactResolving(event: RepositoryEvent?) {
-    out.println("Resolving artifact ${event!!.getArtifact()} from ${event.getRepository()}")
+    out.println("Resolving artifact ${event!!.getArtifact()}")
   }
 
   override fun metadataResolving(event: RepositoryEvent?) {
-    out.println("Resolving metadata ${event!!.getMetadata()} from ${event.getRepository()}")
+    out.println("Resolving metadata ${event!!.getMetadata()}")
   }
 
   override fun metadataInstalled(event: RepositoryEvent?) {
