@@ -106,7 +106,7 @@ fun resolveArtifact(full: String, config: Configuration): Artifact {
     config.fillReposTo { request.addRepository(it) }
 
     val artifactResult = system.resolveArtifact(session, request)
-    return artifactResult.getArtifact()
+    artifactResult.getArtifact()
   }
 
 }
