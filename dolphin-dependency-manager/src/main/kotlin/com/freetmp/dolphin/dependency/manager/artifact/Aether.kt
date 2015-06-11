@@ -26,10 +26,14 @@ import org.eclipse.aether.transport.file.FileTransporterFactory
 import org.eclipse.aether.transport.http.HttpTransporterFactory
 import org.eclipse.aether.util.artifact.JavaScopes
 import org.eclipse.aether.util.filter.DependencyFilterUtils
+import org.eclipse.aether.util.graph.manager.DependencyManagerUtils
+import org.eclipse.aether.util.graph.transformer.ConflictResolver
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator
 import org.eclipse.aether.util.repository.AuthenticationBuilder
 import org.eclipse.aether.version.Version
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
 
 /**
  * Created by LiuPin on 2015/6/9.
@@ -61,7 +65,6 @@ fun newRepositorySystemSession(system: RepositorySystem, config: Configuration):
 
 fun displayTree(node: DependencyNode) = node.accept(ConsoleDependencyGraphDumper())
 
-
 data class ResolveResult(val root: DependencyNode, val resolvedFiles: List<File>, val resolvedClassPath: String)
 
 inline fun <T> template(full: String, config: Configuration, run: (RepositorySystem, RepositorySystemSession, Artifact) -> T): T {
@@ -77,7 +80,6 @@ inline fun template(config: Configuration, run: (RepositorySystem, RepositorySys
   val session = newRepositorySystemSession(system, config)
   run(system, session)
 }
-
 
 fun resolve(full: String, config: Configuration): ResolveResult {
   return template<ResolveResult>(full, config) { system, session, artifact ->
@@ -120,9 +122,43 @@ fun resolveTransitiveDependencies(full: String, config: Configuration): List<Art
   }
 }
 
-fun install(artifact: Artifact, pom: Artifact, config: Configuration) {
+fun getDependencyHierarchy(full: String, config: Configuration): String {
+  return template(full, config) { system, session, artifact ->
+    (session as DefaultRepositorySystemSession).setConfigProperty(ConflictResolver.CONFIG_PROP_VERBOSE, true)
+    session.setConfigProperty(DependencyManagerUtils.CONFIG_PROP_VERBOSE, true)
 
-  template(config){system, session ->
+    val adr = ArtifactDescriptorRequest()
+    adr.setArtifact(artifact)
+    config.fillReposTo { adr.addRepository(it) }
+    val adResult = system.readArtifactDescriptor(session, adr)
+
+    val collectRequest = CollectRequest()
+    collectRequest.setRootArtifact(adResult.getArtifact()).setDependencies(adResult.getDependencies())
+        .setManagedDependencies(adResult.getManagedDependencies())
+        .setRepositories(adResult.getRepositories())
+
+    val collectResult = system.collectDependencies(session, collectRequest)
+
+    val out = ByteArrayOutputStream()
+    collectResult.getRoot().accept(ConsoleDependencyGraphDumper(PrintStream(out)))
+    out.toString()
+  }
+}
+
+fun getDependencyTree(full: String, config: Configuration): String {
+  return template(full,config){ system, session, artifact ->
+    val collectRequest = CollectRequest()
+    collectRequest.setRoot(Dependency(artifact,""))
+    config.fillReposTo { collectRequest.addRepository(it) }
+    val collectResult = system.collectDependencies(session, collectRequest)
+    val out = ByteArrayOutputStream()
+    collectResult.getRoot().accept(ConsoleDependencyGraphDumper(PrintStream(out)))
+    out.toString()
+  }
+}
+
+fun install(artifact: Artifact, pom: Artifact, config: Configuration) {
+  template(config) { system, session ->
     val installRequest: InstallRequest = InstallRequest()
     installRequest.addArtifact(artifact).addArtifact(pom)
     system.install(session, installRequest)
@@ -131,26 +167,20 @@ fun install(artifact: Artifact, pom: Artifact, config: Configuration) {
 }
 
 fun deploy(artifact: Artifact, pom: Artifact, config: Configuration) {
-  val system = newRepositorySystem()
-  val session = newRepositorySystemSession(system, config)
-
-  val deployRequest = DeployRequest()
-  deployRequest.addArtifact(artifact).addArtifact(pom)
-  config.fillDeployRepoTo { deployRequest.setRepository(it) }
-
-  system.deploy(session, deployRequest)
+  template(config) { system, session ->
+    val deployRequest = DeployRequest()
+    deployRequest.addArtifact(artifact).addArtifact(pom)
+    config.fillDeployRepoTo { deployRequest.setRepository(it) }
+    system.deploy(session, deployRequest)
+  }
 }
 
 fun availableVersions(groupId: String, artifactId: String, config: Configuration): VersionRangeResult {
-  val system = newRepositorySystem()
-  val session = newRepositorySystemSession(system, config)
-  val artifact = DefaultArtifact("$groupId:$artifactId:[0,)")
-
-  val vrr = VersionRangeRequest()
-  vrr.setArtifact(artifact)
-  config.fillReposTo { vrr.addRepository(it) }
-
-  val rangeResult = system.resolveVersionRange(session, vrr)
-  return rangeResult
+  return template("$groupId:$artifactId:[0,)", config) { system, session, artifact ->
+    val vrr = VersionRangeRequest()
+    vrr.setArtifact(artifact)
+    config.fillReposTo { vrr.addRepository(it) }
+    system.resolveVersionRange(session, vrr)
+  }
 }
 

@@ -15,7 +15,7 @@
     <maven.version>3.3.3</maven.version>
     <maven.project.version>3.0-alpha-2</maven.project.version>
     <aether.version>1.0.2.v20150114</aether.version>
-    <kotlin.version>0.12.213</kotlin.version>
+    <kotlin.version>0.12.412</kotlin.version>
   </properties>
 
   <dependencies>
