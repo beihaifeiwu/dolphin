@@ -16,7 +16,7 @@
   <properties>
     <surefire.version>2.18.1</surefire.version>
     <spring.version>4.1.6.RELEASE</spring.version>
-    <mybatis.version>3.2.8</mybatis.version>
+    <mybatis.version>3.3.0</mybatis.version>
     <mysql.version>5.1.35</mysql.version>
     <postgis.version>1.3.3</postgis.version>
     <postgresql.version>9.3-1102-jdbc41</postgresql.version>
@@ -197,26 +197,6 @@
         <version>3.3</version>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.9.1</version>
-        <executions>
-          <execution>
-            <id>add-test-source</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/generated-test-sources/xmbg/</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Open Test -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -261,6 +241,8 @@
       </build>
       <properties>
         <jdbc.url.suffix>mysql://192.168.81.128/xmbg_test?useUnicode=true&amp;amp;characterEncoding=utf-8&amp;amp;allowMultiQueries=true</jdbc.url.suffix>
+        <jdbc.username>root</jdbc.username>
+        <jdbc.password>liupin</jdbc.password>
         <case.sensitive>true</case.sensitive>
       </properties>
       <dependencies>
@@ -301,6 +283,8 @@
       </build>
       <properties>
         <jdbc.url.suffix>postgresql://192.168.81.128/xmbg_test</jdbc.url.suffix>
+        <jdbc.username>root</jdbc.username>
+        <jdbc.password>liupin</jdbc.password>
         <case.sensitive>true</case.sensitive>
       </properties>
       <dependencies>
@@ -331,6 +315,33 @@
       </activation>
       <build>
         <plugins>
+          <plugin>
+            <!-- current version -->
+            <groupId>fr.avianey.mojo</groupId>
+            <artifactId>hsqldb-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <configuration>
+              <name>xmbg_test</name>
+              <failIfAlreadyRunning>false</failIfAlreadyRunning>
+            </configuration>
+            <!-- call start and stop -->
+            <executions>
+              <execution>
+                <id>start-hsqldb</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-hsqldb</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
           <!-- XMBG test for hsqldb -->
           <plugin>
             <groupId>com.freetmp</groupId>
@@ -351,12 +362,19 @@
               <locale>en_US</locale>
               <i18nPath>${basedir}/src/test/resources/i18n_for_test</i18nPath>
               <verbose>true</verbose>
+              <sqlScript>${basedir}/src/test/resources/sql/hsqldb.sql</sqlScript>
+              <jdbcURL>jdbc:hsqldb:hsql://localhost/xmbg_test</jdbcURL>
+              <jdbcUserId>sa</jdbcUserId>
+              <jdbcPassword></jdbcPassword>
+              <jdbcDriver>org.hsqldb.jdbc.JDBCDriver</jdbcDriver>
             </configuration>
           </plugin>
         </plugins>
       </build>
       <properties>
-        <jdbc.url.suffix>hsqldb:file:/D:/tmp/xmbg_test</jdbc.url.suffix>
+        <jdbc.url.suffix>hsqldb:hsql://localhost/xmbg_test</jdbc.url.suffix>
+        <jdbc.username>sa</jdbc.username>
+        <jdbc.password></jdbc.password>
         <case.sensitive>true</case.sensitive>
       </properties>
       <dependencies>

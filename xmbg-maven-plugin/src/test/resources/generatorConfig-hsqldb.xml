@@ -18,9 +18,9 @@
 
     <!--数据库连接 -->
     <jdbcConnection driverClass="org.hsqldb.jdbc.JDBCDriver"
-                    connectionURL="jdbc:hsqldb:file:/D:/tmp/xmbg_test;readonly=true"
-                    userId="root"
-                    password="liupin"
+                    connectionURL="jdbc:hsqldb:hsql://localhost/xmbg_test"
+                    userId="sa"
+                    password=""
         >
     </jdbcConnection>
 

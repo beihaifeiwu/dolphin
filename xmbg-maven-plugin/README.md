@@ -81,6 +81,19 @@ XMBG扩展自Mybatis Generator插件，增加了一些：
 </foreach>
 </sql>
 ```
+####1.0.0
+
+之前版本的upsert方法在不支持多语句执行的数据库上无法使用（Mysql，PostgreSQL可以），所以使用和分页查询类似的方式，对不同的数据库提供不同
+的插件：  
+
+* 针对PostgreSQL的插件 `com.freetmp.mbg.plugin.upsert.PostgreSQLUpsertPlugin`
+* 针对MySql的插件 `com.freetmp.mbg.plugin.upsert.MySqlUpsertPlugin`
+* 针对DB2的插件 `com.freetmp.mbg.plugin.upsert.DB2UpsertPlugin`
+* 针对Hsqldb的插件 `com.freetmp.mbg.plugin.upsert.HsqldbUpsertPlugin`
+* 针对Oracle的插件 `com.freetmp.mbg.plugin.upsert.OracleUpsertPlugin`
+* 针对SQLServer的插件 `com.freetmp.mbg.plugin.upsert.SQLServerUpsertPlugin`
+* 其它待续
+
 ###分页查询
 
 类`com.freetmp.mbg.plugin.page.AbstractPaginationPlugin`实现了分页查询的统一数据模型，并在生成的Example模型上添加了操作数据模型
@@ -91,6 +104,12 @@ setter方法外，还增加了fluent API操作，通过一个静态内部类`Abs
     XxxExample example = new XxxExample();
     example.bound().offset(0).limit(20).build();
 ```    
+
+####1.0.0
+```java
+    UserExample userExample = new UserExample();
+    userExample.boundBuilder().limit(10).offset(1).build();
+```
     
 由于Jdbc的基于游标的分页方式性能较低，因而使用物理分页就成为了唯一的选择，物理分页会因为实际采用数据库的不同有不同的实现方式需要针对具
 体的数据库选用不同的插件：
@@ -187,6 +206,9 @@ MBG本身并没有提供增量生成的支持，MBG的eclipse插件借助AST抽�
 提供了对XML合并的简单支持，但其合并方式会直接删除旧的生成xml节点和属性，与直观意义上的合并并不一致，所以XMBG仍需对xml的合并提供支持，但
 ShellCallback并没有提供相应的扩展点，所以XML的合并仍是通过插件来实现的`com.freetmp.mbg.plugin.XMLMergePlugin`
 
+####1.0.0
+使用javaparser重构内容合并工具集，解决合并过程中造成的方法声明重复
+
 ##自定义注释
 
 给自动生成的代码添加有意义的注释通常是有用的，尤其是代码的维护，MBG对注释生成的支持非常有限而且没有实际意义，XMBG通过继承扩展了注释生成器
@@ -246,3 +268,5 @@ XMBG兼容大部分[MBG的配置](http://mybatis.github.io/generator/configrefer
 |i18nPath                   |${x.mybatis.generator.i18nPath}                |java.io.File       |指定自定义的注释资源所在的文件夹|
 |locale                     |${x.mybatis.generator.locale}                  |java.lang.String   |指定本次代码生成使用的locale，默认为en_US|
 |projectStartYear           |${x.mybatis.generator.projectStartYear}        |java.lang.String   |指定项目开始的年份，用在版权声明中，默认为今年|
+|addToProjectAsCompileSource|${x.mybatis.generator.addToProjectAsCompileSource} |boolean        |设置为true将生成的文件添加到compile阶段, 默认为false|
+|addToProjectAsTestCompileSource|${x.mybatis.generator.addToProjectAsTestCompileSource} |boolean        |设置为true将生成的文件添加到test compile阶段，默认为true|

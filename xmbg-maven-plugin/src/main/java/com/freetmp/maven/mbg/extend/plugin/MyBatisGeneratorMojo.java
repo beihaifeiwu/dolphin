@@ -109,6 +109,18 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
   private String contexts;
 
   /**
+   * set true to add the generated sources and xml mappers to the compile phase
+   */
+  @Parameter(defaultValue = "false", property = "x.mybatis.generator.addToProjectAsCompileSource")
+  private boolean addToProjectAsCompileSource;
+
+  /**
+   * set true to add the generated sources and xml mappers to the test compile phase
+   */
+  @Parameter(defaultValue = "true", property = "x.mybatis.generator.addToProjectAsTestCompileSource")
+  private boolean addToProjectAsTestCompileSource;
+
+  /**
    * set true to disable the extend methods(include batch,upsert etc)
    */
   @Parameter(defaultValue = "false", property = "x.mybatis.generator.disableExtendMethods")
@@ -268,14 +280,22 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
       getLog().warn(error);
     }
 
-    if (project != null && outputDirectory != null
-        && outputDirectory.exists()) {
+    if (addToProjectAsCompileSource && project != null && outputDirectory != null && outputDirectory.exists()) {
       project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
 
       Resource resource = new Resource();
       resource.setDirectory(outputDirectory.getAbsolutePath());
       resource.addInclude("**/*.xml");
       project.addResource(resource);
+    }
+
+    if (addToProjectAsTestCompileSource && project != null && outputDirectory != null && outputDirectory.exists()) {
+      project.addTestCompileSourceRoot(outputDirectory.getAbsolutePath());
+
+      Resource resource = new Resource();
+      resource.setDirectory(outputDirectory.getAbsolutePath());
+      resource.addInclude("**/*.xml");
+      project.addTestResource(resource);
     }
   }
 
