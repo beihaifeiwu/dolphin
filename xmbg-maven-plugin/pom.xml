@@ -255,47 +255,6 @@
       </dependencies>
     </profile>
     <profile>
-      <id>xmbg-oracle-test</id>
-      <build>
-        <plugins>
-          <!-- XMBG test for oracle -->
-          <plugin>
-            <groupId>com.freetmp</groupId>
-            <artifactId>xmbg-maven-plugin</artifactId>
-            <version>${project.version}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-                <phase>generate-test-sources</phase>
-              </execution>
-            </executions>
-            <configuration>
-              <configurationFile>${basedir}/src/test/resources/generatorConfig-oracle.xml</configurationFile>
-              <overwrite>true</overwrite>
-              <disableGeom>true</disableGeom>
-              <outputDirectory>${basedir}/target/generated-test-sources/xmbg</outputDirectory>
-              <verbose>true</verbose>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <jdbc.url.suffix>oracle:thin:@192.168.81.128:1521:xmbg_test</jdbc.url.suffix>
-        <jdbc.username>root</jdbc.username>
-        <jdbc.password>liupin</jdbc.password>
-        <case.sensitive>true</case.sensitive>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>com.oracle</groupId>
-          <artifactId>ojdbc14</artifactId>
-          <version>${oracle.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>xmbg-postgresql-test</id>
       <build>
         <plugins>
@@ -352,9 +311,6 @@
     </profile>
     <profile>
       <id>xmbg-hsqldb-test</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <build>
         <plugins>
           <plugin>
