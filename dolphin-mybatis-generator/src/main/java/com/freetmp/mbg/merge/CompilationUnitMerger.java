@@ -29,32 +29,30 @@ public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
 
   @Override
   public boolean doIsEquals(CompilationUnit first, CompilationUnit second) {
-
-    boolean equals = false;
-
     // 检测包声明
-    if (!first.getPackage().equals(second)) return equals;
+    if (!isEqualsUseMerger(first.getPackage(), second.getPackage())) return false;
 
     // 检查公共类声明
     for (TypeDeclaration outer : first.getTypes()) {
       for (TypeDeclaration inner : second.getTypes()) {
         if (ModifierSet.isPublic(outer.getModifiers()) && ModifierSet.isPublic(inner.getModifiers())) {
           if (outer.getName().equals(inner.getName())) {
-            equals = true;
-            break;
+            return true;
           }
         }
       }
     }
 
-    return equals;
+    return false;
   }
 
   /**
    * Util method to make source merge more convenient
-   * @param first
-   * @param second
-   * @return
+   *
+   * @param first  merge params, specifically for the existing source
+   * @param second merge params, specifically for the new source
+   * @return merged result
+   * @throws ParseException cannot parse the input params
    */
   public static String merge(String first, String second) throws ParseException {
     JavaParser.setDoNotAssignCommentsPreceedingEmptyLines(false);
@@ -62,7 +60,7 @@ public class CompilationUnitMerger extends AbstractMerger<CompilationUnit> {
     CompilationUnit cu1 = JavaParser.parse(new StringReader(first), true);
     CompilationUnit cu2 = JavaParser.parse(new StringReader(second), true);
     AbstractMerger<CompilationUnit> merger = AbstractMerger.getMerger(CompilationUnit.class);
-    CompilationUnit result = merger.merge(cu1,cu2);
+    CompilationUnit result = merger.merge(cu1, cu2);
     return result.toString();
   }
 

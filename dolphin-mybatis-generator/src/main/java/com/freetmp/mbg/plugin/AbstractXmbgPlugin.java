@@ -17,9 +17,9 @@ import java.util.List;
  */
 public abstract class AbstractXmbgPlugin extends PluginAdapter {
 
-  /******************
+  /*---------------------
    * Generate Helper Method For Xml Mapper
-   *******************/
+   *---------------------*/
 
   protected void generateTextBlock(String text, XmlElement parent) {
     parent.addElement(new TextElement(text));
@@ -176,9 +176,9 @@ public abstract class AbstractXmbgPlugin extends PluginAdapter {
     parent.addElement(where);
   }
 
-  /******************
+  /*---------------
    * Generate Helper Method For Java Source
-   *******************/
+   **--------------*/
 
   protected void generateGetterFor(String field, FullyQualifiedJavaType type, InnerClass innerClass) {
     Method method = new Method();

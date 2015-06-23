@@ -53,7 +53,10 @@ public class XMLMergePlugin extends PluginAdapter {
   /**
    * 从DefaultShellCallback中借用的解析文件夹的函数
    *
-   * @throws ShellException
+   * @param targetProject target project
+   * @param targetPackage target package
+   * @return file instance
+   * @throws ShellException Cannot get infos form environment
    */
   public File getDirectory(String targetProject, String targetPackage)
       throws ShellException {
@@ -94,7 +97,7 @@ public class XMLMergePlugin extends PluginAdapter {
    *
    * @param packiage package declaration
    * @param fileName target file name
-   * @throws ShellException
+   * @throws ShellException Cannot get infos form environment
    */
   private File getTargetFile(String packiage, String fileName) throws ShellException {
     File root = new File(this.rootDir);
@@ -125,9 +128,10 @@ public class XMLMergePlugin extends PluginAdapter {
   /**
    * 访问并合并mapper的xml文件
    *
+   * @param document   generate xml dom tree
+   * @param targetFile the file for writing xml content
    * @throws java.io.IOException
    * @throws org.dom4j.DocumentException
-   * @author Pin Liu
    */
   private void visitAndMerge(final Document document, File targetFile) throws IOException, DocumentException {
     SAXReader reader = new SAXReader();
@@ -165,9 +169,8 @@ public class XMLMergePlugin extends PluginAdapter {
   /**
    * 合并已经存在的Xml元素
    *
-   * @param src  source xml node
-   * @param dest destination xml node
-   * @author Pin Liu
+   * @param src  The source xml element for merging
+   * @param dest The dest xml element for merging
    */
   protected void mergeExistedElement(XmlElement src, XmlElement dest) {
 
@@ -198,7 +201,7 @@ public class XMLMergePlugin extends PluginAdapter {
   /**
    * 重组XML元素的亲子节点,合并相邻的文本节点
    *
-   * @author Pin Liu
+   * @param xe The element whose content will be reformatted
    */
   protected void reformationTheElementChilds(XmlElement xe) {
     List<Element> reformationList = new ArrayList<>();
@@ -232,7 +235,8 @@ public class XMLMergePlugin extends PluginAdapter {
   /**
    * 转换dom4j的element元素，生成mbg的XmlElement元素
    *
-   * @author Pin Liu
+   * @param node The dom4j node to be transform
+   * @return The transform result
    */
   protected XmlElement transformElement(org.dom4j.Element node) {
     XmlElement xe = new XmlElement(node.getName());
@@ -273,9 +277,12 @@ public class XMLMergePlugin extends PluginAdapter {
     return xe;
   }
 
-  /*
+  /**
    * 从MBG生成的DOM文档结构中找到与element代表同一节点的元素对象
-   * @author Pin Liu
+   *
+   * @param document generate xml dom tree
+   * @param element  The dom4j element
+   * @return The xml element correspond to dom4j element
    */
   protected XmlElement findMatchedElementIn(Document document, org.dom4j.Element element) {
     org.dom4j.Attribute id = element.attribute("id");
