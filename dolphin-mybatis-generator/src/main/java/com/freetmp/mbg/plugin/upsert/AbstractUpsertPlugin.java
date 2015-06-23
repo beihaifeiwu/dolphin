@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-/*
+/**
  * 存在即更新否则插入方法生成插件
+ *
  * @author Pin Liu
  */
 public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
@@ -84,8 +85,8 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
   /**
    * add update xml element to mapper.xml for upsert
    *
-   * @param document
-   * @param introspectedTable
+   * @param document          The generated xml mapper dom
+   * @param introspectedTable The metadata for database table
    */
   protected void addSingleUpsertToSqlMap(Document document, IntrospectedTable introspectedTable) {
     XmlElement update = new XmlElement("update");
@@ -109,7 +110,9 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
   /**
    * 生成sqlMap里对应的xml元素
-   * @author Pin Liu
+   *
+   * @param introspectedTable The metadata for database table
+   * @param parent            The parent element for generated xml element
    */
   protected abstract void generateSqlMapContent(IntrospectedTable introspectedTable, XmlElement parent);
 
@@ -117,7 +120,9 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
   /**
    * 生成根据参数array判断where条件的元素
-   * @author Pin Liu
+   *
+   * @param introspectedTable The metadata for database table
+   * @return generated where condition element
    */
   protected XmlElement checkArrayWhere(IntrospectedTable introspectedTable) {
     XmlElement where = new XmlElement("where");
@@ -132,7 +137,9 @@ public abstract class AbstractUpsertPlugin extends AbstractXmbgPlugin {
 
   /**
    * 创建根据传入的Array数组进行判断的sql语句
-   * @author Pin Liu
+   *
+   * @param introspectedTable The metadata for database table
+   * @return generated xml element for check input array params
    */
   protected XmlElement buildSqlClause(IntrospectedTable introspectedTable) {
 

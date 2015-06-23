@@ -63,7 +63,7 @@ public abstract class AbstractMerger<M extends Node> {
     map.put(MarkerAnnotationExpr.class, new MarkerAnnotationExprMerger());
     map.put(NormalAnnotationExpr.class, new NormalAnnotationExprMerger());
     map.put(SingleMemberAnnotationExpr.class, new SingleMemberAnnotationExprMerger());
-    map.put(ArrayAccessExpr.class,new ArrayAccessExprMerger());
+    map.put(ArrayAccessExpr.class, new ArrayAccessExprMerger());
     map.put(ArrayCreationExpr.class, new ArrayAccessExprMerger());
     map.put(ArrayInitializerExpr.class, new ArrayInitializerExprMerger());
     map.put(AssignExpr.class, new AssignExprMerger());
@@ -76,7 +76,7 @@ public abstract class AbstractMerger<M extends Node> {
     map.put(DoubleLiteralExpr.class, new DoubleLiteralExprMerger());
     map.put(EnclosedExpr.class, new EnclosedExprMerger());
     map.put(FieldAccessExpr.class, new FieldAccessExprMerger());
-    map.put(InstanceOfExpr.class,new InstanceOfExprMerger());
+    map.put(InstanceOfExpr.class, new InstanceOfExprMerger());
     map.put(IntegerLiteralExpr.class, new IntegerLiteralExprMerger());
     map.put(IntegerLiteralMinValueExpr.class, new IntegerLiteralMinValueExprMerger());
     map.put(LambdaExpr.class, new LambdaExprMerger());
@@ -330,7 +330,10 @@ public abstract class AbstractMerger<M extends Node> {
   /**
    * first check if mapper of the type T exist, if existed return it
    * else check if mapper of the supper type exist, then return it
-   * ...
+   *
+   * @param <T>   the generic type which extends from Node
+   * @param clazz The class of type T
+   * @return null if not found else the merger of the type T
    */
   public static <T extends Node> AbstractMerger<T> getMerger(Class<T> clazz) {
 
@@ -436,26 +439,26 @@ public abstract class AbstractMerger<M extends Node> {
     return null;
   }
 
-  protected <T extends Node> boolean isEqualsUseMerger(T first, T second){
+  protected <T extends Node> boolean isEqualsUseMerger(T first, T second) {
 
-    if(first == second) return true;
-    if(first == null || second == null) return false;
+    if (first == second) return true;
+    if (first == null || second == null) return false;
 
-    if(first.getClass().equals(second.getClass())){
+    if (first.getClass().equals(second.getClass())) {
       AbstractMerger merger = getMerger(first.getClass());
-      return merger.isEquals(first,second);
+      return merger.isEquals(first, second);
     }
 
     return false;
   }
 
-  protected <T extends Node> boolean isEqualsUseMerger(List<T> first, List<T> second){
-    if(first == second) return true;
-    if(first == null || second == null) return false;
-    if(first.size() != second.size()) return false;
+  protected <T extends Node> boolean isEqualsUseMerger(List<T> first, List<T> second) {
+    if (first == second) return true;
+    if (first == null || second == null) return false;
+    if (first.size() != second.size()) return false;
 
-    for(int i = 0; i < first.size(); i++){
-      if(!isEqualsUseMerger(first.get(i),second.get(i))){
+    for (int i = 0; i < first.size(); i++) {
+      if (!isEqualsUseMerger(first.get(i), second.get(i))) {
         return false;
       }
     }
@@ -463,44 +466,44 @@ public abstract class AbstractMerger<M extends Node> {
     return true;
   }
 
-  protected <T extends Node> void mergeOrphanComments(T first, T second, T third){
-    List<Comment> comments = mergeCollections(first.getOrphanComments(),second.getOrphanComments());
-    if(comments != null && !comments.isEmpty()){
-      for(Comment comment : comments){
+  protected <T extends Node> void mergeOrphanComments(T first, T second, T third) {
+    List<Comment> comments = mergeCollections(first.getOrphanComments(), second.getOrphanComments());
+    if (comments != null && !comments.isEmpty()) {
+      for (Comment comment : comments) {
         third.addOrphanComment(comment);
       }
     }
   }
 
-  protected double similarity(String first, String second){
-    if(first == null || second == null) return 0d;
-    return levenshtein.similarity(first,second);
+  protected double similarity(String first, String second) {
+    if (first == null || second == null) return 0d;
+    return levenshtein.similarity(first, second);
   }
 
-  protected <T extends Node> void copyPosition(T source, T dest){
+  protected <T extends Node> void copyPosition(T source, T dest) {
     dest.setBeginColumn(source.getBeginColumn());
     dest.setBeginLine(source.getBeginLine());
     dest.setEndColumn(source.getEndColumn());
     dest.setEndLine(source.getEndLine());
   }
 
-  public abstract M doMerge(M first,M second);
+  public abstract M doMerge(M first, M second);
 
-  public M merge(M first, M second){
-    if(first == null) return second;
-    if(second == null) return first;
+  public M merge(M first, M second) {
+    if (first == null) return second;
+    if (second == null) return first;
 
-    M m = doMerge(first,second);
-    m.setComment(mergeSingle(first.getComment(),second.getComment()));
+    M m = doMerge(first, second);
+    m.setComment(mergeSingle(first.getComment(), second.getComment()));
     mergeOrphanComments(first, second, m);
     return m;
   }
 
   public abstract boolean doIsEquals(M first, M second);
 
-  public boolean isEquals(M first, M second){
+  public boolean isEquals(M first, M second) {
     if (first == second) return true;
     if (first == null || second == null) return false;
-    return doIsEquals(first,second);
+    return doIsEquals(first, second);
   }
 }

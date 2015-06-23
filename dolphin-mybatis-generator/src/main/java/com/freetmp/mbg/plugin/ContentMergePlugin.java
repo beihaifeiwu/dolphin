@@ -85,9 +85,10 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 访问并合并mapper的xml文件
    *
+   * @param document   generate xml dom tree
+   * @param targetFile the file for writing xml content
    * @throws java.io.IOException
    * @throws org.dom4j.DocumentException
-   * @author Pin Liu
    */
   private void visitAndMerge(final Document document, File targetFile) throws IOException, DocumentException {
     SAXReader reader = new SAXReader();
@@ -125,7 +126,8 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 合并已经存在的Xml元素
    *
-   * @author Pin Liu
+   * @param src  The source xml element for merging
+   * @param dest The dest xml element for merging
    */
   protected void mergeExistedElement(XmlElement src, XmlElement dest) {
 
@@ -156,7 +158,7 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 重组XML元素的亲子节点,合并相邻的文本节点
    *
-   * @author Pin Liu
+   * @param xe The element whose content will be reformatted
    */
   protected void reformationTheElementChilds(XmlElement xe) {
     List<Element> reformationList = new ArrayList<>();
@@ -187,9 +189,11 @@ public class ContentMergePlugin extends PluginAdapter {
     xe.getElements().addAll(reformationList);
   }
 
-  /*
+  /**
    * 转换dom4j的element元素，生成mbg的XmlElement元素
-   * @author Pin Liu
+   *
+   * @param node The dom4j node to be transform
+   * @return The transform result
    */
   protected XmlElement transformElement(org.dom4j.Element node) {
     XmlElement xe = new XmlElement(node.getName());
@@ -233,7 +237,9 @@ public class ContentMergePlugin extends PluginAdapter {
   /**
    * 从MBG生成的DOM文档结构中找到与element代表同一节点的元素对象
    *
-   * @author Pin Liu
+   * @param document generate xml dom tree
+   * @param element  The dom4j element
+   * @return The xml element correspond to dom4j element
    */
   protected XmlElement findMatchedElementIn(Document document, org.dom4j.Element element) {
     org.dom4j.Attribute id = element.attribute("id");
