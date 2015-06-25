@@ -311,6 +311,9 @@
     </profile>
     <profile>
       <id>xmbg-hsqldb-test</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>
