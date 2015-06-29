@@ -7,7 +7,7 @@
   <groupId>com.freetmp</groupId>
   <artifactId>dolphin-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 
   <name>dolphin</name>
   <description>The Dolphin Project is aim to accumulate the repeat problem solution and make it recycle</description>
@@ -190,10 +190,20 @@
       <dependency>
         <groupId>com.freetmp</groupId>
         <artifactId>dolphin-common</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>
@@ -271,6 +281,7 @@
     <module>dolphin-error-coder</module>
     <module>dolphin-common</module>
     <module>dolphin-dependency-manager</module>
+    <module>dolphin-spring-boot-monitor</module>
   </modules>
 
 

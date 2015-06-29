@@ -5,13 +5,13 @@
   <parent>
     <artifactId>dolphin-parent</artifactId>
     <groupId>com.freetmp</groupId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>xmbg-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 
   <properties>
     <surefire.version>2.18.1</surefire.version>
@@ -41,14 +41,14 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
-      <version>2.2.1</version>
+      <version>3.0-alpha-2</version>
     </dependency>
 
     <!-- Maven Plugin API -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.2.5</version>
+      <version>3.3.3</version>
     </dependency>
 
     <!-- dependencies to annotations -->
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>com.freetmp</groupId>
       <artifactId>dolphin-mybatis-generator</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
     </dependency>
 
     <!-- Junit Test -->
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis-spring</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.3</version>
       <scope>test</scope>
     </dependency>
 
@@ -347,7 +347,7 @@
           <plugin>
             <groupId>com.freetmp</groupId>
             <artifactId>xmbg-maven-plugin</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0</version>
             <executions>
               <execution>
                 <goals>
