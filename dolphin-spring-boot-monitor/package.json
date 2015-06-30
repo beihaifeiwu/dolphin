@@ -1,17 +1,27 @@
 {
   "name": "dolphin-spring-boot-monitor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Spring Boot Monitor",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "liupin",
   "license": "ISC",
   "devDependencies": {
+    "css-loader": "^0.14.5",
     "cssnano": "^2.0.2",
     "cssnext": "^1.8.0",
     "gulp": "^3.9.0",
-    "gulp-postcss": "^5.1.9"
+    "gulp-webpack": "^1.5.0",
+    "html-loader": "^0.3.0",
+    "postcss": "^4.1.13",
+    "postcss-loader": "^0.5.1",
+    "style-loader": "^0.12.3",
+    "vinyl-named": "^1.1.0",
+    "vue-loader": "^2.0.1"
+  },
+  "dependencies": {
+    "vue": "^0.12.4"
   }
 }
