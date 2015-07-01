@@ -1,11 +1,12 @@
 var gulp = require('gulp');
-var webpack = require('gulp-webpack');
-var named = require('vinyl-named');
+var glupWebpack = require('gulp-webpack');
+var webpack = require('webpack');
 
-var cssnext = require('cssnext')
 var cssnano = require('cssnano')
+var cssnext = require('cssnext')
+var vue = require('vue-loader')
 
-var srcFiles = ['**/*.vue','**/*.css','**/*.js'];
+var srcFiles = ['**/*.vue', '**/*.css', '**/*.js'];
 
 function mapFiles(list) {
     return list.map(function (file) {
@@ -14,15 +15,28 @@ function mapFiles(list) {
 }
 
 function webpackConfig(opt) {
+    var HtmlWebpackPlugin = require('html-webpack-plugin');
     var config = {
+        output: {
+            publicPath:"/assets/",
+            filename:"monitor.bundle.js"
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                title: "dolphin-spring-boot-monitor",
+                template:"src/assets/template.html",
+                inject: 'body'
+            })
+        ],
         module: {
             loaders: [
-                {test: /\.vue$/, loader: 'vue'},
-                {test: /\.css$/, loader: "style!css!postcss"}
+                {test: /\.vue$/, loader: vue.withLoaders({postcss: 'style!css!postcss'})},
+                {test: /\.css$/, loader: "style!css!postcss"},
+                {test: /\.(png|jpg)$/, loader: 'url?limit=8192'}
             ]
         },
         postcss: function () {
-            return [cssnext, cssnano];
+            return [cssnano(), cssnext()];
         }
     };
     if (!opt) return config;
@@ -32,20 +46,41 @@ function webpackConfig(opt) {
     return config
 }
 
-gulp.task('bundle', function () {
+gulp.task('clean',function(){
+    var del = require('del');
+    del(['target/classes/assets/'])
+})
+
+gulp.task('bundle',['clean'], function () {
     return gulp.src(mapFiles(srcFiles))
-        .pipe(named())
-        .pipe(webpack(webpackConfig()))
-        .pipe(gulp.dest('target/classes/resources/'));
+        .pipe(glupWebpack(webpackConfig(),webpack))
+        .pipe(gulp.dest('target/classes/assets/'));
 });
 
-gulp.task('watch', function () {
+gulp.task('watch',['clean'], function () {
     return gulp.src(mapFiles(srcFiles)
-        .pipe(named())
-        .pipe(webpack(webpackConfig({watch: true, devtool: 'source-map'})))
-        .pipe(gulp.dest('target/classes/resources/')));
+        .pipe(glupWebpack(webpackConfig({watch: true, devtool: 'source-map'})),webpack)
+        .pipe(gulp.dest('target/classes/assets/')));
 });
 
-gulp.task("default", ['watch'], function () {
+gulp.task('server',['clean'], function () {
+    var gutil = require("gulp-util");
+    var WebpackDevServer = require("webpack-dev-server");
+    var compiler = webpack(webpackConfig({watch: true, devtool: 'source-map'}))
+
+    new WebpackDevServer(compiler, {
+        // server and middleware options
+        contentBase: "target/classes/assets/"
+    }).listen(8080, "localhost", function (err) {
+            if (err) throw new gutil.PluginError("webpack-dev-server", err);
+            // Server listening
+            gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
+
+            // keep the server alive or continue?
+            // callback();
+        });
+});
+
+gulp.task("default", ['bundle'], function () {
     console.log("done")
 })
