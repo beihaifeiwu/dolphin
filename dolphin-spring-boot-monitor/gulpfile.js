@@ -4,6 +4,8 @@ var webpack = require('webpack');
 
 var cssnano = require('cssnano');
 var cssnext = require('cssnext');
+var cssimport = require('postcss-import');
+
 var vue = require('vue-loader');
 var del = require('del');
 var gutil = require('gulp-util');
@@ -47,7 +49,7 @@ function webpackConfig(opt) {
         },
         devtool: 'source-map',
         postcss: function () {
-            return [cssnano(), cssnext()];
+            return [cssimport({path:["src/assets/"], transform:cssnext}), cssnano(), cssnext()];
         }
     };
     if (!opt) return config;

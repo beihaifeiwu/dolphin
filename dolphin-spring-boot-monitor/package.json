@@ -24,6 +24,7 @@
     "imagemin": "^3.2.0",
     "node-libs-browser": "^0.5.2",
     "postcss": "^4.1.13",
+    "postcss-import": "^6.0.0",
     "postcss-loader": "^0.5.1",
     "style-loader": "^0.12.3",
     "vue-loader": "^2.0.1",
