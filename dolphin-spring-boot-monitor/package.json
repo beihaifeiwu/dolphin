@@ -20,11 +20,12 @@
     "gulp-webpack": "^1.5.0",
     "html-loader": "^0.3.0",
     "html-webpack-plugin": "^1.5.2",
+    "image-webpack-loader": "^1.6.1",
+    "imagemin": "^3.2.0",
     "node-libs-browser": "^0.5.2",
     "postcss": "^4.1.13",
     "postcss-loader": "^0.5.1",
     "style-loader": "^0.12.3",
-    "url-loader": "^0.5.6",
     "vue-loader": "^2.0.1",
     "webpack": "^1.10.0"
   },

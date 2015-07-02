@@ -11,7 +11,7 @@ Configuration
 open public class MvcConfig : WebMvcConfigurerAdapter() {
 
   override fun addResourceHandlers(registry: ResourceHandlerRegistry?) {
-    registry?.addResourceHandler("/assets/**")?.addResourceLocations("classpath:/assets/")
+    registry?.addResourceHandler("/assets/**")?.addResourceLocations("classpath:/assets/","classpath:/assets/imgs/")
     registry?.addResourceHandler("/","/index","/index.html")?.addResourceLocations("classpath:/static/index.html")
   }
 }

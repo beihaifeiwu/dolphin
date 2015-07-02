@@ -1,7 +1,2 @@
 	var Vue = require('vue');
-	var monitor = new Vue({
-		el: "#monitor",
-		data: {
-			message: "Hello World"
-		}
-	});
+	var monitor = new Vue(require('./monitor.vue'));
