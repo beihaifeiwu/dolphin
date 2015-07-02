@@ -2,10 +2,12 @@ var gulp = require('gulp');
 var glupWebpack = require('gulp-webpack');
 var webpack = require('webpack');
 
-var cssnano = require('cssnano')
-var cssnext = require('cssnext')
-var vue = require('vue-loader')
-
+var cssnano = require('cssnano');
+var cssnext = require('cssnext');
+var vue = require('vue-loader');
+var del = require('del');
+var gutil = require('gulp-util');
+var plumber = require('gulp-plumber');
 var srcFiles = ['**/*.vue', '**/*.css', '**/*.js'];
 
 function mapFiles(list) {
@@ -35,6 +37,7 @@ function webpackConfig(opt) {
                 {test: /\.(png|jpg)$/, loader: 'url?limit=8192'}
             ]
         },
+        devtool: 'source-map',
         postcss: function () {
             return [cssnano(), cssnext()];
         }
@@ -47,40 +50,29 @@ function webpackConfig(opt) {
 }
 
 gulp.task('clean',function(){
-    var del = require('del');
     del(['target/classes/assets/'])
 })
 
-gulp.task('bundle',['clean'], function () {
+gulp.task('compile',['clean'], function () {
     return gulp.src(mapFiles(srcFiles))
+        .pipe(plumber())
         .pipe(glupWebpack(webpackConfig(),webpack))
         .pipe(gulp.dest('target/classes/assets/'));
 });
 
-gulp.task('watch',['clean'], function () {
-    return gulp.src(mapFiles(srcFiles)
-        .pipe(glupWebpack(webpackConfig({watch: true, devtool: 'source-map'})),webpack)
-        .pipe(gulp.dest('target/classes/assets/')));
-});
-
-gulp.task('server',['clean'], function () {
-    var gutil = require("gulp-util");
-    var WebpackDevServer = require("webpack-dev-server");
-    var compiler = webpack(webpackConfig({watch: true, devtool: 'source-map'}))
-
-    new WebpackDevServer(compiler, {
-        // server and middleware options
-        contentBase: "target/classes/assets/"
-    }).listen(8080, "localhost", function (err) {
-            if (err) throw new gutil.PluginError("webpack-dev-server", err);
-            // Server listening
-            gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
-
-            // keep the server alive or continue?
-            // callback();
+gulp.task('move-html',['compile'], function(){
+    return gulp.src(['target/classes/assets/index.html'])
+        .pipe(gulp.dest('target/classes/static/'))
+        .on('end',function(){
+            gutil.log("moving index.html");
+            del(['target/classes/assets/index.html']);
         });
 });
 
-gulp.task("default", ['bundle'], function () {
-    console.log("done")
+gulp.task('watch',function () {
+    return gulp.watch(mapFiles(srcFiles),['move-html']);
+});
+
+gulp.task("default", ['move-html'], function () {
+    gutil.log("assets build done")
 })
