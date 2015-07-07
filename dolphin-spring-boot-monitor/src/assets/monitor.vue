@@ -1,39 +1,79 @@
-<style lang="postcss">
-  @custom-selector :--basic html, body;
-  @custom-selector :--layout-area section#icon, section#header, aside#sidebar, section#content; 
+<style lang="scss">
+  @import "monitor.scss";
 
-  @import "monitor.css";
+  %left { width: 5rem; margin-right: 2px; }
+  %right { flex: 1 1 auto; }
+  %top { flex-direction: row; height: 4rem; width: 100%; background-color: $back-color; }
+  %down { flex-direction: row; height: 100%; width: 100%; }
 
-  :--basic { margin: 0; padding: 0; height: 100%; width: 100%; background-color: var(--back-color); color: #ddd; }
-  
-  :--layout-area { border: 1px solid red; }
+  %area { background-color: $float-color; }
 
-  #container { display: flex; flex-direction: column; height: 100%; width: 100%; }
-  #header-container { display: flex; flex-flow: row nowrap; height: 4rem; }
-  #body-container { display: flex; flex-flow: row nowrap; height: 100%; }
-  #icon, #sidebar { display: flex; width: 5rem; justify-content: center; align-items: center; }
-  #header, #content { flex: auto; }
+  #container {
+    @extend %layout;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; height: 100%;
 
-  #icon > img { width: 4rem; height: 3.5rem; }
+    #header-container {
+      @extend %layout;
+      @extend %top;
+
+      #icon {
+        @extend %layout;
+        @extend %left;
+        @extend %area;
+        svg {
+          width: 4rem; height: 3.5rem;
+        }
+      }
+
+      #header {
+        @extend %layout;
+        @extend %right;
+        @extend %area;
+      }
+    }
+
+    #body-container {
+      @extend %layout;
+      @extend %down;
+
+      #sidebar {
+        @extend %layout;
+        @extend %left;
+        @extend %area;
+        flex-direction: column;
+        margin-top: 2px; 
+
+      }
+
+      #content {
+        @extend %layout;
+        @extend %right;
+        background-color: $content-back-color;
+        margin-top: 2px; 
+      }
+
+    }
+
+  }
+
 </style>
 
-<template>
-  
-  <div id="container">
-	  <header id="header-container">
-		  <section id="icon">
-		  	<img src="{{iconSrc}}" />
-		  </section>
-		  <section id="header">
-		  	<div v-component="headerView"></div>	
-		  </section>
-	  </header>
-	  <section id="body-container">
-		  <aside id="sidebar">Sidebar</aside>
-		  <section id="content">Main content</section>
-	  </section>
-  </div>
+<template lang="jade" >
 
+  #container
+    #header-container
+      #icon
+        svg
+          use(xlink:href="#clean-fire")
+      #header
+        div(v-component="headerView")
+    #body-container
+      #sidebar
+        div(v-component="sidebarView")
+      #content Main content  
+                  
 </template>
 
 <script type="text/javascript">
@@ -41,10 +81,11 @@
 		el: '#monitor',
 		replace: true,
 		data: {
-			iconSrc: require("./imgs/clean-fire.svg")
+
 		},
 		components: {
-			headerView: require('./vue/view/header.vue')
+			headerView: require('./vue/view/header.vue'),
+      sidebarView: require('./vue/view/sidebar.vue')
 		}
 	}
 </script>

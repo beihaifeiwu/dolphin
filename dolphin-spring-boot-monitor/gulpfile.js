@@ -1,56 +1,53 @@
-var gulp = require('gulp');
-var glupWebpack = require('gulp-webpack');
-var webpack = require('webpack');
+var basePaths = {
+    src: 'src/assets/', 
+    dest: { assets: 'build/assets/', statics: 'build/static/' },
+    maven: { assets: 'target/classes/assets/', statics: 'target/classes/static/' }
+};
+var paths = {
+    context: '/assets',
+    imgs: { src: basePaths.src + 'imgs/', dest: basePaths.dest.assets + 'imgs/' },
+    jade: { src: basePaths.src + 'jade/*.jade', dest: basePaths.dest.statics },
+    sprite: { src: basePaths.src + 'sprite/*.svg', dest: basePaths.src }
+};
 
-var cssnano = require('cssnano');
-var cssnext = require('cssnext');
-var cssimport = require('postcss-import');
+var gulp = require('gulp');
+var gutil = require('gulp-util');
+
+var plugins = require("gulp-load-plugins")({
+    pattern: ['gulp-*', 'gulp.*'],
+    replaceString: /\bgulp[\-.]/
+});
+
+var webpack = require('webpack');
 
 var vue = require('vue-loader');
 var del = require('del');
-var gutil = require('gulp-util');
-var plumber = require('gulp-plumber');
 
-
-var srcFiles = ['**/*.vue', '**/*.css', '**/*.js'];
-
-function mapFiles(list) {
-    return list.map(function (file) {
-        return 'src/' + file;
-    })
-}
+var bourbon = require('node-bourbon').includePaths;
 
 function webpackConfig(opt) {
-    var HtmlWebpackPlugin = require('html-webpack-plugin');
+    var ExtractTextPlugin = require('extract-text-webpack-plugin');
+    var scssLoader = ExtractTextPlugin.extract('style','css!sass?outputStyle=expanded&includePaths[]=' + bourbon);
     var config = {
         output: {
-            publicPath:"/assets/",
-            filename:"monitor.bundle.js"
+            publicPath: paths.context,
+            filename: "monitor.bundle.js"
         },
-        plugins: [
-            new HtmlWebpackPlugin({
-                title: "dolphin-spring-boot-monitor",
-                template:"src/assets/template.html",
-                inject: 'body'
-            })
-        ],
+        plugins: [ new ExtractTextPlugin("monitor.css") ],
         module: {
             loaders: [
-                {test: /\.vue$/, loader: vue.withLoaders({postcss: 'style!css!postcss'})},
-                {test: /\.css$/, loader: "style!css!postcss"},
+                {test: /\.vue$/, loader: vue.withLoaders({scss: scssLoader})},
+                {test: /\.scss$/, exclude: /node_modules/, loader: scssLoader},
                 {
                     test: /\.(jpe?g|png|gif|svg)$/i,
                     loaders: [
-                        'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                        'file?name=[name].[ext]',
                         'image-webpack?{progressive:true, optimizationLevel: 7, interlaced: false, pngquant:{quality: "65-90", speed: 4}}'
                     ]
                 }
             ]
         },
         devtool: 'source-map',
-        postcss: function () {
-            return [cssimport({path:["src/assets/"], transform:cssnext}), cssnano(), cssnext()];
-        }
     };
     if (!opt) return config;
     for (var i in opt) {
@@ -60,42 +57,71 @@ function webpackConfig(opt) {
 }
 
 gulp.task('clean',function(){
-    del(['target/classes/assets/']);
-    gutil.log("clean target/classes/assets directory");
-    del(['target/classes/static/']);
-    gutil.log("clean target/classes/static directory");
-})
-
-gulp.task('compile',['clean'], function () {
-    return gulp.src(mapFiles(srcFiles))
-        .pipe(plumber())
-        .pipe(glupWebpack(webpackConfig(),webpack))
-        .pipe(gulp.dest('target/classes/assets/'));
+    del([basePaths.dest.assets, basePaths.maven.assets]);
+    gutil.log("clean assets directory");
+    del([basePaths.dest.statics, basePaths.maven.statics]);
+    gutil.log("clean static directory");
 });
 
-gulp.task('move-imgs',['compile'], function(){
-    var imgs = ['*.svg','*.jpg','*.jpeg','*.gif','*.png','*.svg'].map(function(ext){return 'target/classes/assets/' + ext;});
+gulp.task('process-svgs', ['clean'], function(){
+
+    return gulp.src([paths.sprite.src, basePaths.src + "clean-fire.svg"])
+        .pipe(plugins.svgo())
+        .pipe(plugins.svgSprite({
+            mode: { inline: true, symbol: true },
+            svg: { xmlDeclaration: false }
+        }))
+        .pipe(gulp.dest(paths.sprite.dest))
+});
+
+gulp.task('compile',['process-svgs'], function () {
+    return gulp.src(basePaths.src + "monitor.js")
+        .pipe(plugins.plumber())
+        .pipe(plugins.webpack(webpackConfig(),webpack))
+        .pipe(gulp.dest(basePaths.dest.assets));
+});
+
+gulp.task('process-css',['compile'], function(){
+    return gulp.src(basePaths.dest.assets + "monitor.css")
+        .pipe(plugins.sourcemaps.init())
+        .pipe(plugins.minifyCss())
+        .pipe(plugins.sourcemaps.write())
+        .pipe(gulp.dest(basePaths.dest.assets))
+});
+
+gulp.task('process-jade',['process-css'], function(){
+    var locals = { context: paths.context };
+    return gulp.src(paths.jade.src)
+        .pipe(plugins.jade({ 'locals': locals, pretty: true }))
+        .pipe(gulp.dest(paths.jade.dest));
+});
+
+
+gulp.task('move-imgs',['process-jade'], function(){
+    var imgs = ['*.svg','*.jpg','*.jpeg','*.gif','*.png'].map(function(ext){return basePaths.dest.assets + ext;});
     return gulp.src(imgs)
-        .pipe(gulp.dest('target/classes/assets/imgs/'))
+        .pipe(gulp.dest(paths.imgs.dest))
         .on('end', function(){
             gutil.log("moving images");
             del(imgs);
         });
 });
 
-gulp.task('move-html',['move-imgs'], function(){
-    return gulp.src(['target/classes/assets/index.html'])
-        .pipe(gulp.dest('target/classes/static/'))
-        .on('end',function(){
-            gutil.log("moving index.html");
-            del(['target/classes/assets/index.html']);
-        });
+gulp.task('copy-build', ['move-imgs'], function(){
+    gutil.log("clean all temp resources");
+    del(paths.sprite.dest + "symbol");
+
+    gutil.log('copy build resources to maven directory');
+    gulp.src(basePaths.dest.assets + "**/*").pipe(gulp.dest(basePaths.maven.assets));
+    gulp.src(basePaths.dest.statics + "**/*").pipe(gulp.dest(basePaths.maven.statics));
+
 });
+
 
 gulp.task('watch',function () {
-    return gulp.watch(mapFiles(srcFiles),['move-html']);
+    return gulp.watch([basePaths.src + '**/*.*', '!' + paths.sprite.dest + 'symbol/**/*'],['copy-build']);
 });
 
-gulp.task("default", ['move-html'], function () {
-    gutil.log("assets build done")
+gulp.task("default", ['copy-build'], function () {
+    gutil.log("assets build done");
 })

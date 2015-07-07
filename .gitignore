@@ -170,3 +170,5 @@ node_modules
 
 dolphin-spring-boot-monitor/node
 dolphin-spring-boot-monitor/.project
+dolphin-spring-boot-monitor/build
+dolphin-spring-boot-monitor/src/assets/symbol

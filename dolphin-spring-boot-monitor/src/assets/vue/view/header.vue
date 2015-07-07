@@ -1,9 +1,9 @@
-<style lang="postcss">
+<style lang="sass">
 	
 </style>
 
-<template>
-	<h1> Just Headers </h1>
+<template lang="jade" >
+  h1 Just Headers
 </template>
 
 <script type="text/javascript">
