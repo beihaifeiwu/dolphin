@@ -22,7 +22,8 @@
         @extend %layout;
         @extend %left;
         @extend %area;
-        svg {
+        justify-content: center;
+        img {
           width: 4rem; height: 3.5rem;
         }
       }
@@ -65,8 +66,7 @@
   #container
     #header-container
       #icon
-        svg
-          use(xlink:href="#clean-fire")
+        img(src="{{logo}}")
       #header
         div(v-component="headerView")
     #body-container
@@ -81,7 +81,7 @@
 		el: '#monitor',
 		replace: true,
 		data: {
-
+      logo: require('./clean-fire.svg')
 		},
 		components: {
 			headerView: require('./vue/view/header.vue'),

@@ -18,6 +18,13 @@ html, body, section, aside {
 
 body > svg { 
   display: none;
+}
+
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
 } 
 
 // global mixins, placeholders

@@ -7,21 +7,21 @@
     flex-direction: column; 
     padding: 0px;
     svg { color: $front-color; }
-    li { @extend %layout; @extend %center; list-style-type: none; margin-bottom: 3px; }
-    svg { width: 3rem; height: 3rem; }
+    li { @extend %layout; @extend %center; list-style-type: none; margin-bottom: 1rem; }
+    svg { width: 2.5rem; height: 2.5rem; }
   }
 </style>
 
 <template lang="jade">
   mixin item(id)
-    li: a: svg: use(xlink:href="#{id}")
+    li: a: svg.icon(class="#{id}"): use(xlink:href="##{id}")
 
   ul#menus
-    +item("#meter")
-    +item("#user")
-    +item("#cog")
-    +item("#question")
-    +item("#switch")
+    +item("icon-meter")
+    +item("icon-user")
+    +item("icon-cog")
+    +item("icon-question")
+    +item("icon-switch")
 
 </template>
 

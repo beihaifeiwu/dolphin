@@ -4,10 +4,11 @@ var basePaths = {
     maven: { assets: 'target/classes/assets/', statics: 'target/classes/static/' }
 };
 var paths = {
-    context: '/assets',
+    context: '/assets/',
     imgs: { src: basePaths.src + 'imgs/', dest: basePaths.dest.assets + 'imgs/' },
     jade: { src: basePaths.src + 'jade/*.jade', dest: basePaths.dest.statics },
-    sprite: { src: basePaths.src + 'sprite/*.svg', dest: basePaths.src }
+    sprite: { src: basePaths.src + 'sprite/*.svg', dest: 'build/' },
+    vue: { src: basePaths.src + "vue/**/*.vue", dest: basePaths.dest.assets },
 };
 
 var gulp = require('gulp');
@@ -65,11 +66,12 @@ gulp.task('clean',function(){
 
 gulp.task('process-svgs', ['clean'], function(){
 
-    return gulp.src([paths.sprite.src, basePaths.src + "clean-fire.svg"])
+    return gulp.src([paths.sprite.src])
         .pipe(plugins.svgo())
         .pipe(plugins.svgSprite({
+            shape: { id: { generator: "icon-%s" }},
             mode: { inline: true, symbol: true },
-            svg: { xmlDeclaration: false }
+            svg: { xmlDeclaration: false, }
         }))
         .pipe(gulp.dest(paths.sprite.dest))
 });
@@ -92,7 +94,7 @@ gulp.task('process-css',['compile'], function(){
 gulp.task('process-jade',['process-css'], function(){
     var locals = { context: paths.context };
     return gulp.src(paths.jade.src)
-        .pipe(plugins.jade({ 'locals': locals, pretty: true }))
+        .pipe(plugins.jade({ 'locals': locals, pretty: true, basedir: paths.sprite.dest.substring(0, paths.sprite.dest.length) }))
         .pipe(gulp.dest(paths.jade.dest));
 });
 
@@ -107,10 +109,12 @@ gulp.task('move-imgs',['process-jade'], function(){
         });
 });
 
-gulp.task('copy-build', ['move-imgs'], function(){
+gulp.task('clean-temp', ['move-imgs'], function(){
     gutil.log("clean all temp resources");
     del(paths.sprite.dest + "symbol");
+})
 
+gulp.task('copy-build', ['clean-temp'], function(){
     gutil.log('copy build resources to maven directory');
     gulp.src(basePaths.dest.assets + "**/*").pipe(gulp.dest(basePaths.maven.assets));
     gulp.src(basePaths.dest.statics + "**/*").pipe(gulp.dest(basePaths.maven.statics));
@@ -119,7 +123,16 @@ gulp.task('copy-build', ['move-imgs'], function(){
 
 
 gulp.task('watch',function () {
-    return gulp.watch([basePaths.src + '**/*.*', '!' + paths.sprite.dest + 'symbol/**/*'],['copy-build']);
+    return gulp.watch([
+            basePaths.src + "*.js", 
+            basePaths.src + '*.svg', 
+            basePaths.src + '*.scss', 
+            basePaths.src + '*.vue',
+            paths.imgs.src,
+            paths.sprite.src,
+            paths.jade.src,
+            paths.vue.src
+        ],['copy-build']);
 });
 
 gulp.task("default", ['copy-build'], function () {
