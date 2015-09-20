@@ -276,12 +276,7 @@
   <modules>
     <module>dolphin-mybatis-generator</module>
     <module>xmbg-maven-plugin</module>
-    <module>dolphin-spring-batch</module>
-    <module>dolphin-querydsl</module>
-    <module>dolphin-error-coder</module>
     <module>dolphin-common</module>
-    <module>dolphin-dependency-manager</module>
-    <module>dolphin-spring-boot-monitor</module>
   </modules>
 
 
