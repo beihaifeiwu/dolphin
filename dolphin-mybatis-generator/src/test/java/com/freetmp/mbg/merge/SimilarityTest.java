@@ -17,10 +17,7 @@ public class SimilarityTest {
   public void testLevenshtein() {
     Levenshtein l = new Levenshtein();
 
-    System.out.println(l.distanceAbsolute("My string", "My $tring"));
     System.out.println(l.distance("My string", "My $tring"));
-    System.out.println(l.similarity("My string", "My $tring"));
-    System.out.println(l.similarity("// third comment","// fourth comment"));
   }
 
   @Test
@@ -34,7 +31,7 @@ public class SimilarityTest {
           }
           return 1.0;
         });
-    System.out.println(wl.distanceAbsolute("String1", "Srring2"));
+    System.out.println(wl.distance("String1", "Srring2"));
   }
 
   @Test
@@ -42,11 +39,11 @@ public class SimilarityTest {
     Damerau d = new Damerau();
 
     // One transposition
-    System.out.println(d.absoluteDistance("ABCDEF", "ABDCEF"));
+    System.out.println(d.distance("ABCDEF", "ABDCEF"));
 
     // Transposition of 2 characters that are far from each other
     // => 1 deletion + 1 insertion
-    System.out.println(d.absoluteDistance("ABCDEF", "BCDAEF"));
+    System.out.println(d.distance("ABCDEF", "BCDAEF"));
 
     // distance and similarity allways produce a result between 0 and 1
     System.out.println(d.distance("ABCDEF", "GHABCDE"));
@@ -64,8 +61,6 @@ public class SimilarityTest {
   public void testLongestCommonSubsequence(){
     LongestCommonSubsequence lcs = new LongestCommonSubsequence();
 
-    System.out.println(lcs.length("AGCAT", "GAC"));
-    System.out.println(lcs.distanceAbsolute("AGCAT", "GAC"));
     System.out.println(lcs.distance("AGCAT", "GAC"));
   }
 

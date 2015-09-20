@@ -139,8 +139,7 @@ select id, login_name, name, password, salt
   , roles, register_date
 from user
 where name like ?
-limit ?
-offset ? rows
+limit ? offset ?
 """
   }
 

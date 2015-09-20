@@ -149,7 +149,7 @@ with
     update user
     set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?
     where id = ?
-    and name = ?
+      and name = ?
     returning *
   )
 insert into user
@@ -174,7 +174,7 @@ with
     update user
     set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?
     where id = ?
-    and name = ?
+      and name = ?
     returning *
   )
 insert into user
@@ -202,7 +202,7 @@ where not exists (select *
 update user
 set id = ?, login_name = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?
 where id = ?
-and name = ?;
+  and name = ?;
 if @@rowcount = 0
   insert into user
     (id, login_name, name, password, salt
@@ -222,7 +222,7 @@ if @@rowcount = 0
 update user
 set id = ?, name = ?, password = ?, salt = ?, roles = ?, register_date = ?
 where id = ?
-and name = ?;
+  and name = ?;
 if @@rowcount = 0
   insert into user
     (id, name, password, salt, roles
