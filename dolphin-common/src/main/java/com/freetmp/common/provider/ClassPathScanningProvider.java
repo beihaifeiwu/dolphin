@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 
-/**
+/*
  * A component provider that scans the classpath from a base package. It then
  * applies exclude and include filters to the resulting classes to find candidates.
  * <p/>
@@ -77,14 +77,14 @@ public class ClassPathScanningProvider {
         this.metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
     }
 
-    /**
+    /*
      * Return the ResourceLoader that this component provider uses.
      */
     public final ResourceLoader getResourceLoader() {
         return this.resourcePatternResolver;
     }
 
-    /**
+    /*
      * Set the {@link MetadataReaderFactory} to use.
      * <p>Default is a {@link CachingMetadataReaderFactory} for the specified
      * {@linkplain #setResourceLoader resource loader}.
@@ -95,14 +95,14 @@ public class ClassPathScanningProvider {
         this.metadataReaderFactory = metadataReaderFactory;
     }
 
-    /**
+    /*
      * Return the MetadataReaderFactory used by this component provider.
      */
     public final MetadataReaderFactory getMetadataReaderFactory() {
         return this.metadataReaderFactory;
     }
 
-    /**
+    /*
      * Set the resource pattern to use when scanning the classpath.
      * This value will be appended to each base package name.
      *
@@ -114,14 +114,14 @@ public class ClassPathScanningProvider {
         this.resourcePattern = resourcePattern;
     }
 
-    /**
+    /*
      * Add an include type filter to the <i>end</i> of the inclusion list.
      */
     public void addIncludeFilter(TypeFilter includeFilter) {
         this.includeFilters.add(includeFilter);
     }
 
-    /**
+    /*
      * Add an exclude type filter to the <i>front</i> of the exclusion list.
      */
     public void addExcludeFilter(TypeFilter excludeFilter) {
@@ -133,7 +133,7 @@ public class ClassPathScanningProvider {
         this.excludeFilters.clear();
     }
 
-    /**
+    /*
      * Scan the class path for candidate components.
      *
      * @param basePackage the package to check for annotated classes
@@ -165,7 +165,7 @@ public class ClassPathScanningProvider {
     }
 
 
-    /**
+    /*
      * Resolve the specified base package into a pattern specification for
      * the package search path.
      * <p>The default implementation resolves placeholders against system properties,
@@ -178,7 +178,7 @@ public class ClassPathScanningProvider {
         return ClassUtils.convertClassNameToResourcePath(basePackage);
     }
 
-    /**
+    /*
      * Determine whether the given class does not match any exclude filter
      * and does match at least one include filter.
      *
@@ -199,7 +199,7 @@ public class ClassPathScanningProvider {
         return false;
     }
 
-    /**
+    /*
      * Determine whether the given bean definition qualifies as candidate.
      * <p>The default implementation checks whether the class is concrete
      * (i.e. not abstract and not an interface). Can be overridden in subclasses.
@@ -212,7 +212,7 @@ public class ClassPathScanningProvider {
     }
 
 
-    /**
+    /*
      * Clear the underlying metadata cache, removing all cached class metadata.
      */
     public void clearCache() {

@@ -26,7 +26,6 @@ package com.freetmp.common.exception;
  * @author Juergen Hoeller
  * @since 2.0
  * @see NestedIOException
- * @see org.springframework.web.util.NestedServletException
  */
 public abstract class NestedExceptionUtils {
 

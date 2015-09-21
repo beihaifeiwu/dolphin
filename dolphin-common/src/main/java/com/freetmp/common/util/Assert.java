@@ -19,7 +19,7 @@ package com.freetmp.common.util;
 import java.util.Collection;
 import java.util.Map;
 
-/**
+/*
  * Assertion utility class that assists in validating arguments.
  * Useful for identifying programmer errors early and clearly at runtime.
  *
@@ -52,7 +52,7 @@ import java.util.Map;
  */
 public abstract class Assert {
 
-	/**
+	/*
 	 * Assert a boolean expression, throwing {@code IllegalArgumentException}
 	 * if the test result is {@code false}.
 	 * <pre class="code">Assert.isTrue(i &gt; 0, "The value must be greater than zero");</pre>
@@ -66,7 +66,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert a boolean expression, throwing {@code IllegalArgumentException}
 	 * if the test result is {@code false}.
 	 * <pre class="code">Assert.isTrue(i &gt; 0);</pre>
@@ -77,7 +77,7 @@ public abstract class Assert {
 		isTrue(expression, "[Assertion failed] - this expression must be true");
 	}
 
-	/**
+	/*
 	 * Assert that an object is {@code null} .
 	 * <pre class="code">Assert.isNull(value, "The value must be null");</pre>
 	 * @param object the object to check
@@ -90,7 +90,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that an object is {@code null} .
 	 * <pre class="code">Assert.isNull(value);</pre>
 	 * @param object the object to check
@@ -100,7 +100,7 @@ public abstract class Assert {
 		isNull(object, "[Assertion failed] - the object argument must be null");
 	}
 
-	/**
+	/*
 	 * Assert that an object is not {@code null} .
 	 * <pre class="code">Assert.notNull(clazz, "The class must not be null");</pre>
 	 * @param object the object to check
@@ -113,7 +113,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that an object is not {@code null} .
 	 * <pre class="code">Assert.notNull(clazz);</pre>
 	 * @param object the object to check
@@ -123,7 +123,7 @@ public abstract class Assert {
 		notNull(object, "[Assertion failed] - this argument is required; it must not be null");
 	}
 
-	/**
+	/*
 	 * Assert that the given String is not empty; that is,
 	 * it must not be {@code null} and not the empty String.
 	 * <pre class="code">Assert.hasLength(name, "Name must not be empty");</pre>
@@ -137,7 +137,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that the given String is not empty; that is,
 	 * it must not be {@code null} and not the empty String.
 	 * <pre class="code">Assert.hasLength(name);</pre>
@@ -149,7 +149,7 @@ public abstract class Assert {
 				"[Assertion failed] - this String argument must have length; it must not be null or empty");
 	}
 
-	/**
+	/*
 	 * Assert that the given String has valid text content; that is, it must not
 	 * be {@code null} and must contain at least one non-whitespace character.
 	 * <pre class="code">Assert.hasText(name, "'name' must not be empty");</pre>
@@ -163,7 +163,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that the given String has valid text content; that is, it must not
 	 * be {@code null} and must contain at least one non-whitespace character.
 	 * <pre class="code">Assert.hasText(name, "'name' must not be empty");</pre>
@@ -175,7 +175,7 @@ public abstract class Assert {
 				"[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
 	}
 
-	/**
+	/*
 	 * Assert that the given text does not contain the given substring.
 	 * <pre class="code">Assert.doesNotContain(name, "rod", "Name must not contain 'rod'");</pre>
 	 * @param textToSearch the text to search
@@ -189,7 +189,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that the given text does not contain the given substring.
 	 * <pre class="code">Assert.doesNotContain(name, "rod");</pre>
 	 * @param textToSearch the text to search
@@ -201,7 +201,7 @@ public abstract class Assert {
 	}
 
 
-	/**
+	/*
 	 * Assert that an array has elements; that is, it must not be
 	 * {@code null} and must have at least one element.
 	 * <pre class="code">Assert.notEmpty(array, "The array must have elements");</pre>
@@ -215,7 +215,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that an array has elements; that is, it must not be
 	 * {@code null} and must have at least one element.
 	 * <pre class="code">Assert.notEmpty(array);</pre>
@@ -226,7 +226,7 @@ public abstract class Assert {
 		notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
 	}
 
-	/**
+	/*
 	 * Assert that an array has no null elements.
 	 * Note: Does not complain if the array is empty!
 	 * <pre class="code">Assert.noNullElements(array, "The array must have non-null elements");</pre>
@@ -244,7 +244,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that an array has no null elements.
 	 * Note: Does not complain if the array is empty!
 	 * <pre class="code">Assert.noNullElements(array);</pre>
@@ -255,7 +255,7 @@ public abstract class Assert {
 		noNullElements(array, "[Assertion failed] - this array must not contain any null elements");
 	}
 
-	/**
+	/*
 	 * Assert that a collection has elements; that is, it must not be
 	 * {@code null} and must have at least one element.
 	 * <pre class="code">Assert.notEmpty(collection, "Collection must have elements");</pre>
@@ -269,7 +269,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that a collection has elements; that is, it must not be
 	 * {@code null} and must have at least one element.
 	 * <pre class="code">Assert.notEmpty(collection, "Collection must have elements");</pre>
@@ -281,7 +281,7 @@ public abstract class Assert {
 				"[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
 	}
 
-	/**
+	/*
 	 * Assert that a Map has entries; that is, it must not be {@code null}
 	 * and must have at least one entry.
 	 * <pre class="code">Assert.notEmpty(map, "Map must have entries");</pre>
@@ -295,7 +295,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that a Map has entries; that is, it must not be {@code null}
 	 * and must have at least one entry.
 	 * <pre class="code">Assert.notEmpty(map);</pre>
@@ -307,7 +307,7 @@ public abstract class Assert {
 	}
 
 
-	/**
+	/*
 	 * Assert that the provided object is an instance of the provided class.
 	 * <pre class="code">Assert.instanceOf(Foo.class, foo);</pre>
 	 * @param clazz the required class
@@ -319,7 +319,7 @@ public abstract class Assert {
 		isInstanceOf(clazz, obj, "");
 	}
 
-	/**
+	/*
 	 * Assert that the provided object is an instance of the provided class.
 	 * <pre class="code">Assert.instanceOf(Foo.class, foo);</pre>
 	 * @param type the type to check against
@@ -341,7 +341,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}.
 	 * <pre class="code">Assert.isAssignable(Number.class, myClass);</pre>
 	 * @param superType the super type to check
@@ -352,7 +352,7 @@ public abstract class Assert {
 		isAssignable(superType, subType, "");
 	}
 
-	/**
+	/*
 	 * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}.
 	 * <pre class="code">Assert.isAssignable(Number.class, myClass);</pre>
 	 * @param superType the super type to check against
@@ -371,7 +371,7 @@ public abstract class Assert {
 	}
 
 
-	/**
+	/*
 	 * Assert a boolean expression, throwing {@code IllegalStateException}
 	 * if the test result is {@code false}. Call isTrue if you wish to
 	 * throw IllegalArgumentException on an assertion failure.
@@ -386,7 +386,7 @@ public abstract class Assert {
 		}
 	}
 
-	/**
+	/*
 	 * Assert a boolean expression, throwing {@link IllegalStateException}
 	 * if the test result is {@code false}.
 	 * <p>Call {@link #isTrue(boolean)} if you wish to

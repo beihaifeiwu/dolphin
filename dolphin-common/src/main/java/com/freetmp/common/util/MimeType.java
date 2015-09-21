@@ -463,7 +463,6 @@ public class MimeType implements Comparable<MimeType>, Serializable {
 	/**
 	 * Parse the given String value into a {@code MimeType} object,
 	 * with this method name following the 'valueOf' naming convention
-	 * (as supported by {@link org.springframework.core.convert.ConversionService}.
 	 * @see MimeTypeUtils#parseMimeType(String)
 	 */
 	public static MimeType valueOf(String value) {

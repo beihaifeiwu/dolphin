@@ -239,7 +239,9 @@
               </execution>
             </executions>
             <configuration>
+              <encoding>UTF-8</encoding>
               <failOnError>false</failOnError>
+              <quiet>true</quiet>
               <links>
                 <link>http://docs.oracle.com/javase/${version.javadoc}/docs/api</link>
               </links>

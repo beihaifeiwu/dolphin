@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-/**
+/*
  * Helper class that allows for specifying a method to invoke in a declarative
  * fashion, be it static or non-static.
  *
@@ -46,11 +46,11 @@ public class MethodInvoker {
 
 	private Object[] arguments = new Object[0];
 
-	/** The method we will call */
+	/* The method we will call */
 	private Method methodObject;
 
 
-	/**
+	/*
 	 * Set the target class on which to call the target method.
 	 * Only necessary when the target method is static; else,
 	 * a target object needs to be specified anyway.
@@ -61,14 +61,14 @@ public class MethodInvoker {
 		this.targetClass = targetClass;
 	}
 
-	/**
+	/*
 	 * Return the target class on which to call the target method.
 	 */
 	public Class<?> getTargetClass() {
 		return this.targetClass;
 	}
 
-	/**
+	/*
 	 * Set the target object on which to call the target method.
 	 * Only necessary when the target method is not static;
 	 * else, a target class is sufficient.
@@ -82,14 +82,14 @@ public class MethodInvoker {
 		}
 	}
 
-	/**
+	/*
 	 * Return the target object on which to call the target method.
 	 */
 	public Object getTargetObject() {
 		return this.targetObject;
 	}
 
-	/**
+	/*
 	 * Set the name of the method to be invoked.
 	 * Refers to either a static method or a non-static method,
 	 * depending on a target object being set.
@@ -100,14 +100,14 @@ public class MethodInvoker {
 		this.targetMethod = targetMethod;
 	}
 
-	/**
+	/*
 	 * Return the name of the method to be invoked.
 	 */
 	public String getTargetMethod() {
 		return this.targetMethod;
 	}
 
-	/**
+	/*
 	 * Set a fully qualified static method name to invoke,
 	 * e.g. "example.MyExampleClass.myExampleMethod".
 	 * Convenient alternative to specifying targetClass and targetMethod.
@@ -118,7 +118,7 @@ public class MethodInvoker {
 		this.staticMethod = staticMethod;
 	}
 
-	/**
+	/*
 	 * Set arguments for the method invocation. If this property is not set,
 	 * or the Object array is of length 0, a method with no arguments is assumed.
 	 */
@@ -126,7 +126,7 @@ public class MethodInvoker {
 		this.arguments = (arguments != null ? arguments : new Object[0]);
 	}
 
-	/**
+	/*
 	 * Return the arguments for the method invocation.
 	 */
 	public Object[] getArguments() {
@@ -134,7 +134,7 @@ public class MethodInvoker {
 	}
 
 
-	/**
+	/*
 	 * Prepare the specified method.
 	 * The method can be invoked any number of times afterwards.
 	 * @see #getPreparedMethod
@@ -182,7 +182,7 @@ public class MethodInvoker {
 		}
 	}
 
-	/**
+	/*
 	 * Resolve the given class name into a Class.
 	 * <p>The default implementations uses {@code ClassUtils.forName},
 	 * using the thread context class loader.
@@ -194,7 +194,7 @@ public class MethodInvoker {
 		return ClassUtils.forName(className, ClassUtils.getDefaultClassLoader());
 	}
 
-	/**
+	/*
 	 * Find a matching method with the specified name for the specified arguments.
 	 * @return a matching method, or {@code null} if none
 	 * @see #getTargetClass()
@@ -226,7 +226,7 @@ public class MethodInvoker {
 		return matchingMethod;
 	}
 
-	/**
+	/*
 	 * Return the prepared Method object that will be invoked.
 	 * <p>Can for example be used to determine the return type.
 	 * @return the prepared Method object (never {@code null})
@@ -241,7 +241,7 @@ public class MethodInvoker {
 		return this.methodObject;
 	}
 
-	/**
+	/*
 	 * Return whether this invoker has been prepared already,
 	 * i.e. whether it allows access to {@link #getPreparedMethod()} already.
 	 */
@@ -249,7 +249,7 @@ public class MethodInvoker {
 		return (this.methodObject != null);
 	}
 
-	/**
+	/*
 	 * Invoke the specified method.
 	 * <p>The invoker needs to have been prepared before.
 	 * @return the object (possibly null) returned by the method invocation,
@@ -270,7 +270,7 @@ public class MethodInvoker {
 	}
 
 
-	/**
+	/*
 	 * Algorithm that judges the match between the declared parameter types of a candidate method
 	 * and a specific list of arguments that this method is supposed to be invoked with.
 	 * <p>Determines a weight that represents the class hierarchy difference between types and

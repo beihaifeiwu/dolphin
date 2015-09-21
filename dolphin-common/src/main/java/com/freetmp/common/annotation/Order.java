@@ -40,7 +40,6 @@ import java.lang.annotation.Target;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0
- * @see org.springframework.core.Ordered
  * @see AnnotationAwareOrderComparator
  * @see OrderUtils
  * @see javax.annotation.Priority
