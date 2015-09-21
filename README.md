@@ -186,7 +186,7 @@ PostgreSQL的地理信息系统扩展插件Postgis为PostgreSQL数据库提供�
 但对于将列名转换为Java的驼峰命名的形式，MBG则没有给出解决方法。对于此XMBG通过插件`com.freetmp.mbg.plugin.ColumnNameConversionPlugin`
 提供了一种解决方案，通过正则表达式来匹配列名中的每一个单词项，然后再将所有的单词项组合在一下，且首个单词小写。作为插件的用法如下：
 ```xml
-    <plugin type="com.palmaplus.mbg.plugin.ColumnNameConversionPlugin">
+    <plugin type="com.freetmp.mbg.plugin.ColumnNameConversionPlugin">
         <property name="columnPattern" value="[A-Z][a-z]*" />
     </plugin>
 ```
